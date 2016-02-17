@@ -29,6 +29,7 @@ BasicGame.Boot.prototype =
     game.load.spritesheet('bubble-border', './assets/bubble-border.png', 9, 9);
     game.load.image('bubble-tail', './assets/bubble-tail.png');
     game.load.bitmapFont('prstart', './assets/prstart.png', './assets/prstart.fnt');
+
   },
   create: function () {
 
@@ -42,7 +43,7 @@ BasicGame.Boot.prototype =
     cursorPos = new Phaser.Plugin.Isometric.Point3();
 
     winTriggered = false;
-
+    dead = false;
 
   },
   update: function () {
@@ -85,12 +86,38 @@ BasicGame.Boot.prototype =
         game.add.tween(player).to({ isoZ :player.isoZ-100}, 500, Phaser.Easing.Linear.None, true);
         game.iso.simpleSort(isoGroup);
         moved = false;
+        if(!dead) {
+          bubble.kill();
+          bubble = game.world.add(new SpeechBubble(game, 180, 190, 100, "Oh s***"));
+          bubble.x = player.x;
+          bubble.y = player.y;
+          dead = true;
+        }
       } else if(this.checkTile(currentTileX, currentTileY) === 3) {
         if(!winTriggered) {
           bubble.kill();
           bubble = game.world.add(new SpeechBubble(game, 180, 190, 100, "We Won!"));
           bubble.x = player.x;
           bubble.y = player.y;
+
+          test = function(tile, delay) {
+            var tile = tile;
+            window.setTimeout(function() {
+              game.add.tween(tile).to({ isoZ: -500 }, 150, Phaser.Easing.Linear.None, true);
+            }, delay)
+          }
+
+          var delay = 0;
+
+          for (var y = 0; y < layout.length; y++) {
+            for (var x = 0; x < layout[y].length; x++) {
+              if(layout[y][x] > 0) {
+                delay += 100;
+                test(tiles[y][x], delay)
+              }
+
+            }
+          }
           winTriggered = true;
         }
         moved = false;
@@ -113,21 +140,25 @@ BasicGame.Boot.prototype =
     [0, 0, 0, 0, 2, 1, 1],
     [0, 0, 0, 0, 3, 1, ],
   ];
+
+  tiles = []
   var tile;
   for (var y = 0; y < layout.length; y++) {
+    tiles.push([]);
     for (var x = 0; x < layout[y].length; x++) {
       // Create a tile using the new game.add.isoSprite factory method at the specified position.
       // The last parameter is the group you want to add it to (just like game.add.sprite)
       if(layout[y][x] > 0) {
-        tile = game.add.isoSprite((x*38)+50, (y*38)+50, 0, 'tile', 0, isoGroup);
+        tiles[y][x] = game.add.isoSprite((x*38)+50, (y*38)+50, 0, 'tile', 0, isoGroup);
+        tiles[y][x].anchor.set(0.5, 0);
       }
       if(layout[y][x] === 2){
-        tile.tint = 0x86bfda;
+        tiles[y][x].tint = 0x86bfda;
       }
       if(layout[y][x] === 3){
-        tile.tint = 0x00FF00;
+        tiles[y][x].tint = 0x00FF00;
       }
-      tile.anchor.set(0.5, 0);
+
     }
   }
 
