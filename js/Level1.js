@@ -106,9 +106,10 @@ Simplicity.Level1.prototype =
       if(moved) {
         this.hasStepped = true;
         this.stepcount++;
-        this.timer = 2;
+        this.timer = 2.1;
         game.add.tween(this.player).to({ isoX: nextPosX, isoY: nextPosY}, 200, Phaser.Easing.Quadratic.InOut, true);
         if(this.stepcount > this.steps) {
+          game.time.events.remove(this.timerLoop);
           this.canPlay = false;
           this.changeLevel('Level1')
         }
