@@ -207,14 +207,15 @@ changeLevel: function(level){
       if(this.layout[y][x] > 0) {
         delay += 100;
         this.dropSprite(this.tiles[y][x], delay, -500)
+        if((this.player.isoX-50)/38 === x && (this.player.isoY-50)/38 == y) {
+          this.canPlay = false
+          this.dropSprite(this.player, delay+500, -500)
+
+        }
       }
 
     }
   }
-
-  delay += 200;
-
-  this.dropSprite(this.player, this.delay+200, -500, function(){this.canPlay = true}.bind(this))
 
   game.time.events.add(delay+1000, function() {
     game.world.removeAll()
