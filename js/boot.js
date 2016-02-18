@@ -13,7 +13,7 @@ Simplicity.Boot.prototype =
     game.time.advancedTiming = true;
     game.world.setBounds(0, 0, 2048, 1024);
 
-    game.camera.position = new Phaser.Point(1125, 200)
+
 
     // Add and enable the plug-in.
     game.plugins.add(new Phaser.Plugin.Isometric(game));

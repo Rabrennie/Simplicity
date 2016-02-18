@@ -35,7 +35,6 @@ Simplicity.Level1.prototype =
 
 
   this.bubble = game.world.add(new SpeechBubble(game, 180, 190, 200, "Get me to the green tile"));
-
   game.camera.x = 624;
   game.camera.y = 0;
 
@@ -67,6 +66,27 @@ update: function () {
     var currentTileX = ((this.player.isoX-this.offset)/38);
     var currentTileY = ((this.player.isoY-this.offset)/38);
 
+    var tintTile = function(tileX, tileY, tint) {
+      if(this.tiles[tileY][tileX].tint !== tint) {
+        this.tiles[tileY][tileX].tint = tint
+      }
+    }.bind(this);
+
+    if(this.checkTile(currentTileX, currentTileY) === 2) {
+      tintTile(currentTileX,currentTileY, 0x86bfda);
+    }
+    if(this.checkTile(currentTileX-1, currentTileY) === 2) {
+      tintTile(currentTileX-1,currentTileY, 0x86bfda);
+    }
+    if(this.checkTile(currentTileX+1, currentTileY) === 2) {
+      tintTile(currentTileX+1,currentTileY, 0x86bfda);
+    }
+    if(this.checkTile(currentTileX, currentTileY+1) === 2) {
+      tintTile(currentTileX,currentTileY+1, 0x86bfda);
+    }
+    if(this.checkTile(currentTileX, currentTileY-1) === 2) {
+      tintTile(currentTileX,currentTileY-1, 0x86bfda);
+    }
 
     var nextPosX = this.player.isoX, nextPosY = this.player.isoY, moved = false;
 
@@ -144,14 +164,10 @@ render: function () {
 },
 spawnTiles: function () {
   this.tiles = []
+  var count = 0;
+  this.layout.forEach(function(a) { count+= a.length});
   var tile;
-
-  dropTile = function(tile, delay) {
-    game.time.events.add(delay, function() {
-      game.add.tween(tile).to({ isoZ: 0 }, 150, Phaser.Easing.Linear.None, true);
-    }, this);
-
-  }
+  var tilesFalling = Math.round(count*0.2);
 
   this.delay = 0;
   var goalTile;
@@ -164,13 +180,14 @@ spawnTiles: function () {
       if(this.layout[y][x] > 0) {
         this.tiles[y][x] = game.add.isoSprite((x*38)+this.offset, (y*38)+this.offset, 500, 'tile', 0, isoGroup);
         this.tiles[y][x].anchor.set(0.5, 0);
-        this.delay += 100;
+        this.delay = y*200;
+        console.log((y*x)%tilesFalling)
         if(this.layout[y][x] !== 3) {
           this.dropSprite(this.tiles[y][x], this.delay, 0)
         }
       }
       if(this.layout[y][x] === 2){
-        this.tiles[y][x].tint = 0x86bfda;
+        // this.tiles[y][x].tint = 0x86bfda;
 
       }
       if(this.layout[y][x] === 3){
@@ -241,7 +258,7 @@ changeLevel: function(level){
     for (var x = 0; x < this.layout[y].length; x++) {
       if(this.layout[y][x] > 0) {
         if(this.layout[y][x] !== 3) {
-          delay += 100;
+          delay = y*200;
           this.dropSprite(this.tiles[y][x], delay, -500)
           if((this.player.isoX-this.offset)/38 === x && (this.player.isoY-this.offset)/38 == y) {
             this.canPlay = false
