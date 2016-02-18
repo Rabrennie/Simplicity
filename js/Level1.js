@@ -162,6 +162,17 @@ complete: function() {
 
     }
   }
+
+  delay += 200;
+  var _player = this.player;
+  window.setTimeout(function() {
+    game.add.tween(_player).to({ isoZ: -500 }, 150, Phaser.Easing.Linear.None, true);
+  }, delay)
+
+  window.setTimeout(function() {
+    game.state.start('Level1', false, false);
+  }, delay+1000)
+
   this.winTriggered = true;
 }
 };
