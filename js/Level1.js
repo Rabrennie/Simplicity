@@ -7,6 +7,7 @@ Simplicity.Level1.prototype =
     // Create a group for our tiles.
     isoGroup = game.add.group();
 
+    this.canPlay = false;
     this.winTriggered = false;
     this.dead = false;
 
@@ -39,7 +40,7 @@ Simplicity.Level1.prototype =
       game.add.tween(this.bubble).to({ x: this.player.x, y: this.player.y-19}, 140, Phaser.Easing.Linear.None, true);
     }
 
-    if(!game.tweens.isTweening(this.player)){
+    if(!game.tweens.isTweening(this.player) && this.canPlay){
       var currentTileX = ((this.player.isoX-50)/38);
       var currentTileY = ((this.player.isoY-50)/38);
 
@@ -71,6 +72,11 @@ Simplicity.Level1.prototype =
         moved = false;
         if(!this.dead) {
           this.changeBubble(failureStrings[Math.floor(Math.random() * failureStrings.length)]);
+
+          game.time.events.add(Phaser.Timer.SECOND, function() {
+            this.changeLevel('Level1')
+          }, this);
+
           this.dead = true;
         }
       } else if(this.checkTile(currentTileX, currentTileY) === 3) {
@@ -92,14 +98,27 @@ Simplicity.Level1.prototype =
   spawnTiles: function () {
   this.tiles = []
   var tile;
+
+  dropTile = function(tile, delay) {
+    game.time.events.add(delay, function() {
+      game.add.tween(tile).to({ isoZ: 0 }, 150, Phaser.Easing.Linear.None, true);
+    }, this);
+
+  }
+
+  this.delay = 0;
+
   for (var y = 0; y < this.layout.length; y++) {
     this.tiles.push([]);
     for (var x = 0; x < this.layout[y].length; x++) {
       // Create a tile using the new game.add.isoSprite factory method at the specified position.
       // The last parameter is the group you want to add it to (just like game.add.sprite)
       if(this.layout[y][x] > 0) {
-        this.tiles[y][x] = game.add.isoSprite((x*38)+50, (y*38)+50, 0, 'tile', 0, isoGroup);
+
+        this.tiles[y][x] = game.add.isoSprite((x*38)+50, (y*38)+50, 500, 'tile', 0, isoGroup);
         this.tiles[y][x].anchor.set(0.5, 0);
+        this.delay += 100;
+        this.dropSprite(this.tiles[y][x], this.delay, 0)
       }
       if(this.layout[y][x] === 2){
         this.tiles[y][x].tint = 0x86bfda;
@@ -113,11 +132,13 @@ Simplicity.Level1.prototype =
 },
 
 spawnPlayer: function() {
-  this.player = game.add.isoSprite(50, 50, 1, 'cube', 0, isoGroup);
+  this.player = game.add.isoSprite(50, 50, 500, 'cube', 0, isoGroup);
   this.player.tint = 0x86bfda;
   this.player.anchor.set(0.5);
   this.bubble.x = this.player.x;
   this.bubble.y = this.player.y;
+  this.dropSprite(this.player, this.delay+100, 0, function(){this.canPlay = true}.bind(this))
+
 },
 
 checkTile: function(x,y) {
@@ -145,12 +166,13 @@ changeBubble: function(text) {
 },
 complete: function() {
   this.changeBubble('WE WON')
-  dropTile = function(tile, delay) {
-    var tile = tile;
-    window.setTimeout(function() {
-      game.add.tween(tile).to({ isoZ: -500 }, 150, Phaser.Easing.Linear.None, true);
-    }, delay)
-  }
+
+  this.changeLevel('Level1');
+
+  this.winTriggered = true;
+},
+changeLevel: function(level){
+  var level = level;
 
   var delay = 0;
 
@@ -158,7 +180,7 @@ complete: function() {
     for (var x = 0; x < this.layout[y].length; x++) {
       if(this.layout[y][x] > 0) {
         delay += 100;
-        dropTile(this.tiles[y][x], delay)
+        this.dropSprite(this.tiles[y][x], delay, -500)
       }
 
     }
@@ -172,10 +194,18 @@ complete: function() {
 
   window.setTimeout(function() {
     game.world.removeAll()
-    game.state.start('Level1', false, true);
+    game.state.start(level, false, true);
   }, delay+1000)
 
-  this.winTriggered = true;
+},
+dropSprite: function(sprite, delay, to, cb) {
+  game.time.events.add(delay, function() {
+    game.add.tween(sprite).to({ isoZ: to }, 150, Phaser.Easing.Linear.None, true);
+    if(cb) {
+      cb();
+    }
+  }, this);
+
 }
 };
 
