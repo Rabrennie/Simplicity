@@ -67,7 +67,6 @@ Simplicity.Level1.prototype =
 
 
       if(this.checkTile(currentTileX, currentTileY) === 0) {
-        game.add.tween(this.player).to({ isoZ :this.player.isoZ-100}, 500, Phaser.Easing.Linear.None, true);
         game.iso.simpleSort(isoGroup);
         moved = false;
         if(!this.dead) {
@@ -77,6 +76,7 @@ Simplicity.Level1.prototype =
             this.changeLevel('Level1')
           }, this);
 
+          this.dropSprite(this.player, 200, -500, function(){this.canPlay = true}.bind(this))
           this.dead = true;
         }
       } else if(this.checkTile(currentTileX, currentTileY) === 3) {
@@ -187,15 +187,13 @@ changeLevel: function(level){
   }
 
   delay += 200;
-  var _player = this.player;
-  window.setTimeout(function() {
-    game.add.tween(_player).to({ isoZ: -500 }, 150, Phaser.Easing.Linear.None, true);
-  }, delay)
 
-  window.setTimeout(function() {
+  this.dropSprite(this.player, this.delay+200, -500, function(){this.canPlay = true}.bind(this))
+
+  game.time.events.add(delay+1000, function() {
     game.world.removeAll()
     game.state.start(level, false, true);
-  }, delay+1000)
+  }, this);
 
 },
 dropSprite: function(sprite, delay, to, cb) {
