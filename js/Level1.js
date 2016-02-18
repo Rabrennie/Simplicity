@@ -133,6 +133,7 @@ Simplicity.Level1.prototype =
   }
 
   this.delay = 0;
+  var goalTile;
 
   for (var y = 0; y < this.layout.length; y++) {
     this.tiles.push([]);
@@ -140,21 +141,26 @@ Simplicity.Level1.prototype =
       // Create a tile using the new game.add.isoSprite factory method at the specified position.
       // The last parameter is the group you want to add it to (just like game.add.sprite)
       if(this.layout[y][x] > 0) {
-
         this.tiles[y][x] = game.add.isoSprite((x*38)+50, (y*38)+50, 500, 'tile', 0, isoGroup);
         this.tiles[y][x].anchor.set(0.5, 0);
         this.delay += 100;
-        this.dropSprite(this.tiles[y][x], this.delay, 0)
+        if(this.layout[y][x] !== 3) {
+          this.dropSprite(this.tiles[y][x], this.delay, 0)
+        }
       }
       if(this.layout[y][x] === 2){
         this.tiles[y][x].tint = 0x86bfda;
+
       }
       if(this.layout[y][x] === 3){
+        goalTile = this.tiles[y][x];
         this.tiles[y][x].tint = 0x00FF00;
       }
 
     }
   }
+  this.delay += 500;
+  this.dropSprite(goalTile, this.delay, 0)
 },
 
 spawnPlayer: function() {
@@ -163,7 +169,7 @@ spawnPlayer: function() {
   this.player.anchor.set(0.5);
   this.bubble.x = this.player.x;
   this.bubble.y = this.player.y;
-  this.dropSprite(this.player, this.delay+100, 0, function(){this.canPlay = true}.bind(this))
+  this.dropSprite(this.player, this.delay+500, 0, function(){this.canPlay = true}.bind(this))
 
 },
 
@@ -201,20 +207,34 @@ changeLevel: function(level){
   var level = level;
 
   var delay = 0;
-
+  var goalTile;
+  var isOnGoal;
   for (var y = 0; y < this.layout.length; y++) {
     for (var x = 0; x < this.layout[y].length; x++) {
       if(this.layout[y][x] > 0) {
-        delay += 100;
-        this.dropSprite(this.tiles[y][x], delay, -500)
-        if((this.player.isoX-50)/38 === x && (this.player.isoY-50)/38 == y) {
-          this.canPlay = false
-          this.dropSprite(this.player, delay+500, -500)
-
+        if(this.layout[y][x] !== 3) {
+          delay += 100;
+          this.dropSprite(this.tiles[y][x], delay, -500)
+          if((this.player.isoX-50)/38 === x && (this.player.isoY-50)/38 == y) {
+            this.canPlay = false
+            this.dropSprite(this.player, delay+500, -500)
+          }
+        } else {
+          goalTile = this.tiles[y][x]
+          if((this.player.isoX-50)/38 === x && (this.player.isoY-50)/38 == y) {
+            isOnGoal = true;
+          }
         }
       }
 
     }
+  }
+  delay += 500;
+  this.dropSprite(goalTile, delay, -500);
+
+  if(isOnGoal) {
+    this.canPlay = false
+    this.dropSprite(this.player, delay+500, -500)
   }
 
   game.time.events.add(delay+1000, function() {
