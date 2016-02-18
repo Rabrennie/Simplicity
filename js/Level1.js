@@ -71,6 +71,7 @@ Simplicity.Level1.prototype =
         moved = false;
         if(!this.dead) {
           this.changeBubble(failureStrings[Math.floor(Math.random() * failureStrings.length)]);
+          this.dead = true;
         }
       } else if(this.checkTile(currentTileX, currentTileY) === 3) {
         if(!this.winTriggered) {
@@ -170,7 +171,8 @@ complete: function() {
   }, delay)
 
   window.setTimeout(function() {
-    game.state.start('Level1', false, false);
+    game.world.removeAll()
+    game.state.start('Level1', false, true);
   }, delay+1000)
 
   this.winTriggered = true;
