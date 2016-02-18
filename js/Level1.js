@@ -24,107 +24,125 @@ Simplicity.Level1.prototype =
       Phaser.Keyboard.SPACEBAR
     ]);
 
-    this.layout = [[2, 2, 2, 2, 2, 1, 1],
-    [0, 0, 0, 0, 2, 0, 1],
-    [0, 0, 0, 0, 2, 0, 1],
-    [0, 0, 0, 0, 2, 1, 1],
+    this.layout = [[2, 2, 2, 2, 2, 4, 1],
+    [0, 0, 0, 0, 2, 0, 4],
+    [0, 0, 0, 0, 2, 0, 4],
+    [0, 0, 0, 0, 2, 1, 4],
     [0, 0, 0, 0, 3, 1, ],
   ];
 
+  this.offset = 200;
+
+
   this.bubble = game.world.add(new SpeechBubble(game, 180, 190, 200, "Get me to the green tile"));
 
-    this.spawnTiles();
-    this.spawnPlayer();
+  game.camera.x = 624;
+  game.camera.y = 0;
 
-  },
-  update: function () {
-
-    if(!game.tweens.isTweening(this.bubble)){
-      game.add.tween(this.bubble).to({ x: this.player.x, y: this.player.y-19}, 140, Phaser.Easing.Linear.None, true);
-    }
-
-    if(!game.tweens.isTweening(this.player) && this.canPlay){
-
-      if(this.hasStepped && !this.timerStarted) {
-        this.timerStarted = true;
-        this.timerLoop = game.time.events.loop(100, function() {
-          this.timer -= 0.1;
-          if(this.timer < 0) {
-            game.time.events.remove(this.timerLoop);
-            this.canPlay = false;
-            this.changeLevel('Level1')
-          }
-        }, this);
-      }
-      var currentTileX = ((this.player.isoX-50)/38);
-      var currentTileY = ((this.player.isoY-50)/38);
+  this.spawnTiles();
+  this.spawnPlayer();
 
 
-      var nextPosX = this.player.isoX, nextPosY = this.player.isoY, moved = false;
 
-      if (this.cursors.down.isDown) {
-        nextPosX = this.player.isoX + 38;
-        nextPosY = this.player.isoY;
-        moved = true;
-      } else if (this.cursors.up.isDown) {
-        nextPosX = this.player.isoX - 38;
-        nextPosY = this.player.isoY;
-        moved = true;
-      } else if (this.cursors.right.isDown) {
-        nextPosX = this.player.isoX;
-        nextPosY = this.player.isoY - 38;
-        moved = true;
-      } else if (this.cursors.left.isDown) {
-        nextPosX = this.player.isoX;
-        nextPosY = this.player.isoY +  38;
-        moved = true;
-      }
+},
+update: function () {
 
+  if(!game.tweens.isTweening(this.bubble)){
+    game.add.tween(this.bubble).to({ x: this.player.x, y: this.player.y-19}, 140, Phaser.Easing.Linear.None, true);
+  }
 
-      if(this.checkTile(currentTileX, currentTileY) === 0) {
-        game.iso.simpleSort(isoGroup);
-        moved = false;
-        if(!this.dead) {
-          this.changeBubble(failureStrings[Math.floor(Math.random() * failureStrings.length)]);
+  if(!game.tweens.isTweening(this.player) && this.canPlay){
 
-          game.time.events.add(Phaser.Timer.SECOND, function() {
-            this.changeLevel('Level1')
-          }, this);
-
-          this.dropSprite(this.player, 200, -500, function(){this.canPlay = true}.bind(this))
-          game.time.events.remove(this.timerLoop);
-          this.dead = true;
-        }
-      } else if(this.checkTile(currentTileX, currentTileY) === 3) {
-        if(!this.winTriggered) {
-          game.time.events.remove(this.timerLoop);
-          this.complete();
-        }
-        moved = false;
-      }
-
-      if(moved) {
-        this.hasStepped = true;
-        this.stepcount++;
-        this.timer = 2.1;
-        game.add.tween(this.player).to({ isoX: nextPosX, isoY: nextPosY}, 200, Phaser.Easing.Quadratic.InOut, true);
-        if(this.stepcount > this.steps) {
+    if(this.hasStepped && !this.timerStarted) {
+      this.timerStarted = true;
+      this.timerLoop = game.time.events.loop(100, function() {
+        this.timer -= 0.1;
+        if(this.timer < 0) {
           game.time.events.remove(this.timerLoop);
           this.canPlay = false;
-          game.time.events.add(500, function() {
-            this.changeBubble('Too many steps :(')
-            this.changeLevel('Level1')
-          }, this)
+          this.changeLevel('Level1')
         }
+      }, this);
+    }
+    var currentTileX = ((this.player.isoX-this.offset)/38);
+    var currentTileY = ((this.player.isoY-this.offset)/38);
+
+
+    var nextPosX = this.player.isoX, nextPosY = this.player.isoY, moved = false;
+
+
+    if (this.cursors.down.isDown) {
+      nextPosX = this.player.isoX + 38;
+      nextPosY = this.player.isoY;
+      moved = true;
+    } else if (this.cursors.up.isDown ) {
+      nextPosX = this.player.isoX - 38;
+      nextPosY = this.player.isoY;
+      moved = true;
+    } else if (this.cursors.right.isDown) {
+      nextPosX = this.player.isoX;
+      nextPosY = this.player.isoY - 38;
+      moved = true;
+    } else if (this.cursors.left.isDown) {
+      nextPosX = this.player.isoX;
+      nextPosY = this.player.isoY +  38;
+      moved = true;
+    }
+
+
+    if(this.checkTile(currentTileX, currentTileY) === 0) {
+      game.iso.simpleSort(isoGroup);
+      moved = false;
+      if(!this.dead) {
+        this.changeBubble(failureStrings[Math.floor(Math.random() * failureStrings.length)]);
+
+        game.time.events.add(300, function() {
+          this.changeLevel('Level1')
+          this.dropSprite(this.player, 200, -500, function(){this.canPlay = true}.bind(this))
+        }, this);
+
+        game.time.events.remove(this.timerLoop);
+        this.dead = true;
+      }
+    } else if(this.checkTile(currentTileX, currentTileY) === 3) {
+      if(!this.winTriggered) {
+        game.time.events.remove(this.timerLoop);
+        this.complete();
+      }
+      moved = false;
+    }
+
+    var iceTiles = 0;
+    var origNextX = nextPosX;
+    var origNextY = nextPosY;
+
+    while(this.checkTile((nextPosX-this.offset)/38, (nextPosY-this.offset)/38) === 4 && moved) {
+      nextPosX = origNextX + nextPosX - this.player.isoX;
+      nextPosY = origNextY + nextPosY - this.player.isoY;
+    }
+
+    if(moved) {
+      this.hasStepped = true;
+      this.stepcount++;
+      this.timer = 2.1;
+      game.add.tween(this.player).to({ isoX: nextPosX, isoY: nextPosY}, 200, Phaser.Easing.Quadratic.InOut, true);
+      if(this.stepcount > this.steps) {
+        game.time.events.remove(this.timerLoop);
+        this.canPlay = false;
+        game.time.events.add(500, function() {
+          this.changeBubble('Too many steps :(')
+          this.changeLevel('Level1')
+        }, this)
       }
     }
-  },
-  render: function () {
-    game.debug.text(game.time.fps || '--', 2, 14, "#a7aebe");
-    game.debug.text(this.stepcount + ' / ' + this.steps , 2, 42, "#a7aebe");
-    game.debug.text(Math.round(this.timer*10)/10, 2, 28, "#a7aebe");
-  },
-  spawnTiles: function () {
+  }
+},
+render: function () {
+  game.debug.text(game.time.fps || '--', 2, 14, "#a7aebe");
+  game.debug.text(this.stepcount + ' / ' + this.steps , 2, 42, "#a7aebe");
+  game.debug.text(Math.round(this.timer*10)/10, 2, 28, "#a7aebe");
+},
+spawnTiles: function () {
   this.tiles = []
   var tile;
 
@@ -144,7 +162,7 @@ Simplicity.Level1.prototype =
       // Create a tile using the new game.add.isoSprite factory method at the specified position.
       // The last parameter is the group you want to add it to (just like game.add.sprite)
       if(this.layout[y][x] > 0) {
-        this.tiles[y][x] = game.add.isoSprite((x*38)+50, (y*38)+50, 500, 'tile', 0, isoGroup);
+        this.tiles[y][x] = game.add.isoSprite((x*38)+this.offset, (y*38)+this.offset, 500, 'tile', 0, isoGroup);
         this.tiles[y][x].anchor.set(0.5, 0);
         this.delay += 100;
         if(this.layout[y][x] !== 3) {
@@ -159,6 +177,10 @@ Simplicity.Level1.prototype =
         goalTile = this.tiles[y][x];
         this.tiles[y][x].tint = 0x00FF00;
       }
+      if(this.layout[y][x] === 4){
+        goalTile = this.tiles[y][x];
+        this.tiles[y][x].tint = 0xA5F2F3;
+      }
 
     }
   }
@@ -167,12 +189,12 @@ Simplicity.Level1.prototype =
 },
 
 spawnPlayer: function() {
-  this.player = game.add.isoSprite(50, 50, 500, 'cube', 0, isoGroup);
+  this.player = game.add.isoSprite(this.offset, this.offset, 500, 'cube', 0, isoGroup);
   this.player.tint = 0x86bfda;
   this.player.anchor.set(0.5);
   this.bubble.x = this.player.x;
   this.bubble.y = this.player.y;
-  this.dropSprite(this.player, this.delay+500, 0, function(){this.canPlay = true}.bind(this))
+  this.dropSprite(this.player, this.delay+500, 0, function(){this.canPlay = true; game.camera.follow(this.player)}.bind(this))
 
 },
 
@@ -207,6 +229,9 @@ complete: function() {
   this.winTriggered = true;
 },
 changeLevel: function(level){
+
+  game.camera.follow(null);
+
   var level = level;
 
   var delay = 0;
@@ -218,13 +243,13 @@ changeLevel: function(level){
         if(this.layout[y][x] !== 3) {
           delay += 100;
           this.dropSprite(this.tiles[y][x], delay, -500)
-          if((this.player.isoX-50)/38 === x && (this.player.isoY-50)/38 == y) {
+          if((this.player.isoX-this.offset)/38 === x && (this.player.isoY-this.offset)/38 == y) {
             this.canPlay = false
             this.dropSprite(this.player, delay+500, -500)
           }
         } else {
           goalTile = this.tiles[y][x]
-          if((this.player.isoX-50)/38 === x && (this.player.isoY-50)/38 == y) {
+          if((this.player.isoX-this.offset)/38 === x && (this.player.isoY-this.offset)/38 == y) {
             isOnGoal = true;
           }
         }
