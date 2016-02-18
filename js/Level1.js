@@ -10,6 +10,8 @@ Simplicity.Level1.prototype =
     this.canPlay = false;
     this.winTriggered = false;
     this.dead = false;
+    this.steps = 8;
+    this.stepcount = 0;
 
     this.cursors = game.input.keyboard.createCursorKeys();
 
@@ -87,13 +89,18 @@ Simplicity.Level1.prototype =
       }
 
       if(moved) {
-
+        this.stepcount++;
         game.add.tween(this.player).to({ isoX: nextPosX, isoY: nextPosY}, 200, Phaser.Easing.Quadratic.InOut, true);
+        if(this.stepcount > this.steps) {
+          this.canPlay = false;
+          this.changeLevel('Level1')
+        }
       }
     }
   },
   render: function () {
     game.debug.text(game.time.fps || '--', 2, 14, "#a7aebe");
+    game.debug.text(this.stepcount + ' / ' + this.steps , 2, 28, "#a7aebe");
   },
   spawnTiles: function () {
   this.tiles = []
