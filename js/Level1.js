@@ -111,7 +111,10 @@ Simplicity.Level1.prototype =
         if(this.stepcount > this.steps) {
           game.time.events.remove(this.timerLoop);
           this.canPlay = false;
-          this.changeLevel('Level1')
+          game.time.events.add(500, function() {
+            this.changeBubble('Too many steps :(')
+            this.changeLevel('Level1')
+          }, this)
         }
       }
     }
