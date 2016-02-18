@@ -12,9 +12,10 @@ Simplicity.Level1.prototype =
     this.dead = false;
     this.steps = 8;
     this.stepcount = 0;
-
+    this.timer = 2;
     this.cursors = game.input.keyboard.createCursorKeys();
-
+    this.hasStepped = false;
+    this.timerStarted = false;
     this.game.input.keyboard.addKeyCapture([
       Phaser.Keyboard.LEFT,
       Phaser.Keyboard.RIGHT,
@@ -43,6 +44,18 @@ Simplicity.Level1.prototype =
     }
 
     if(!game.tweens.isTweening(this.player) && this.canPlay){
+
+      if(this.hasStepped && !this.timerStarted) {
+        this.timerStarted = true;
+        this.timerLoop = game.time.events.loop(100, function() {
+          this.timer -= 0.1;
+          if(this.timer < 0) {
+            game.time.events.remove(this.timerLoop);
+            this.canPlay = false;
+            this.changeLevel('Level1')
+          }
+        }, this);
+      }
       var currentTileX = ((this.player.isoX-50)/38);
       var currentTileY = ((this.player.isoY-50)/38);
 
@@ -79,17 +92,21 @@ Simplicity.Level1.prototype =
           }, this);
 
           this.dropSprite(this.player, 200, -500, function(){this.canPlay = true}.bind(this))
+          game.time.events.remove(this.timerLoop);
           this.dead = true;
         }
       } else if(this.checkTile(currentTileX, currentTileY) === 3) {
         if(!this.winTriggered) {
+          game.time.events.remove(this.timerLoop);
           this.complete();
         }
         moved = false;
       }
 
       if(moved) {
+        this.hasStepped = true;
         this.stepcount++;
+        this.timer = 2;
         game.add.tween(this.player).to({ isoX: nextPosX, isoY: nextPosY}, 200, Phaser.Easing.Quadratic.InOut, true);
         if(this.stepcount > this.steps) {
           this.canPlay = false;
@@ -100,7 +117,8 @@ Simplicity.Level1.prototype =
   },
   render: function () {
     game.debug.text(game.time.fps || '--', 2, 14, "#a7aebe");
-    game.debug.text(this.stepcount + ' / ' + this.steps , 2, 28, "#a7aebe");
+    game.debug.text(this.stepcount + ' / ' + this.steps , 2, 42, "#a7aebe");
+    game.debug.text(Math.round(this.timer*10)/10, 2, 28, "#a7aebe");
   },
   spawnTiles: function () {
   this.tiles = []
