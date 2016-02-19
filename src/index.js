@@ -1,5 +1,5 @@
 import BootState from 'states/BootState';
-import Level from 'states/Level';
+import Level1 from 'states/Level1';
 
 
 class Game extends Phaser.Game {
@@ -7,7 +7,7 @@ class Game extends Phaser.Game {
   constructor() {
     super(800, 400, Phaser.AUTO, 'content', null, true, false);
     this.state.add('BootState', BootState, false);
-    this.state.add('Level', Level, false);
+    this.state.add('Level', Level1, false);
     this.state.start('BootState');
   }
 

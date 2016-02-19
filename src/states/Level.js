@@ -2,6 +2,13 @@ import SpeechBubble from '../objects/SpeechBubble'
 
 class Level extends Phaser.State {
 
+  preload() {
+    this.layout = [[2, 2, 2, 2, 2, 4, 1],
+    [0, 0, 0, 0, 2, 0, 4],
+    [0, 0, 0, 0, 2, 0, 4],
+    [0, 0, 0, 0, 2, 1, 4],
+    [0, 0, 0, 0, 3, 1, 0]];
+  }
   create() {
     this.isoGroup = this.game.add.group();
 
@@ -21,11 +28,6 @@ class Level extends Phaser.State {
       Phaser.Keyboard.DOWN,
       Phaser.Keyboard.SPACEBAR
     ]);
-    this.layout = [[2, 2, 2, 2, 2, 4, 1],
-    [0, 0, 0, 0, 2, 0, 4],
-    [0, 0, 0, 0, 2, 0, 4],
-    [0, 0, 0, 0, 2, 1, 4],
-    [0, 0, 0, 0, 3, 1, 0]];
 
     this.offset = 200;
 
@@ -164,7 +166,7 @@ class Level extends Phaser.State {
     var tilesFalling = Math.round(count*0.2);
 
     this.delay = 0;
-    var goalTile;
+    let goalTile = null;
 
     for (var y = 0; y < this.layout.length; y++) {
       this.tiles.push([]);
@@ -180,13 +182,14 @@ class Level extends Phaser.State {
             this.dropSprite(this.tiles[y][x], this.delay, 0)
           }
         }
-        if(this.layout[y][x] === 2) {
-          // this.tiles[y][x].tint = 0x86bfda;
-
-        }
+        // if(this.layout[y][x] === 2) {
+        //   // this.tiles[y][x].tint = 0x86bfda;
+        //
+        // }
         if(this.layout[y][x] === 3) {
           goalTile = this.tiles[y][x];
           this.tiles[y][x].tint = 0x00FF00;
+          this.dropSprite(goalTile, this.layout.length*200+500, 0)
         }
         if(this.layout[y][x] === 4) {
           goalTile = this.tiles[y][x];
@@ -195,8 +198,7 @@ class Level extends Phaser.State {
 
       }
     }
-    this.delay += 500;
-    this.dropSprite(goalTile, this.delay, 0)
+
   }
 
   spawnPlayer() {
