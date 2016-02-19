@@ -8,8 +8,7 @@ class Level extends Phaser.State {
     [0, 0, 0, 0, 2, 0, 4],
     [0, 0, 0, 0, 2, 1, 4],
     [0, 0, 0, 0, 3, 1, 0]];
-  }
-  create() {
+
     this.isoGroup = this.game.add.group();
 
     this.canPlay = false;
@@ -18,6 +17,7 @@ class Level extends Phaser.State {
     this.steps = 8;
     this.stepcount = 0;
     this.timer = 2;
+    this.timePerTile = 2;
     this.cursors = this.game.input.keyboard.createCursorKeys();
     this.hasStepped = false;
     this.timerStarted = false;
@@ -31,11 +31,14 @@ class Level extends Phaser.State {
 
     this.offset = 200;
 
+    this.triggers = [];
 
-    this.bubble = this.game.world.add(new SpeechBubble(this.game, 180, 190, 200, 'Get me to the green tile'));
+  }
+  create() {
     this.game.camera.x = 624;
     this.game.camera.y = 0;
 
+    this.spawnBubble();
     this.spawnTiles();
     this.spawnPlayer();
   }
@@ -61,6 +64,8 @@ class Level extends Phaser.State {
       }
       var currentTileX = ((this.player.isoX-this.offset)/38);
       var currentTileY = ((this.player.isoY-this.offset)/38);
+
+
 
       var tintTile = function(tileX, tileY, tint) {
         if(this.tiles[tileY][tileX].tint !== tint) {
@@ -105,6 +110,8 @@ class Level extends Phaser.State {
         moved = true;
       }
 
+      this.checkTrigger((nextPosX-this.offset)/38 , (nextPosY-this.offset)/38);
+
 
       if(this.checkTile(currentTileX, currentTileY) === 0) {
         this.game.iso.simpleSort(this.isoGroup);
@@ -139,7 +146,7 @@ class Level extends Phaser.State {
       if(moved) {
         this.hasStepped = true;
         this.stepcount++;
-        this.timer = 2.1;
+        this.timer = this.timePerTile;
         this.game.add.tween(this.player).to({ isoX: nextPosX, isoY: nextPosY }, 200, Phaser.Easing.Quadratic.InOut, true);
         if(this.stepcount > this.steps) {
           this.game.time.events.remove(this.timerLoop);
@@ -159,11 +166,14 @@ class Level extends Phaser.State {
     this.game.debug.text(Math.round(this.timer*10)/10, 2, 28, '#a7aebe');
   }
 
+  spawnBubble() {
+    this.bubble = this.game.world.add(new SpeechBubble(this.game, 180, 190, 200, 'Get me to the green tile'));
+  }
+
   spawnTiles() {
     this.tiles = []
     var count = 0;
     this.layout.forEach(function(a) { count+= a.length});
-    var tilesFalling = Math.round(count*0.2);
 
     this.delay = 0;
     let goalTile = null;
@@ -177,7 +187,7 @@ class Level extends Phaser.State {
           this.tiles[y][x] = this.game.add.isoSprite((x*38)+this.offset, (y*38)+this.offset, 500, 'tile', 0, this.isoGroup);
           this.tiles[y][x].anchor.set(0.5, 0);
           this.delay = y*200;
-          console.log((y*x)%tilesFalling)
+
           if(this.layout[y][x] !== 3) {
             this.dropSprite(this.tiles[y][x], this.delay, 0)
           }
@@ -289,7 +299,21 @@ class Level extends Phaser.State {
         cb();
       }
     }, this);
+  }
 
+  addTrigger(x, y, cb) {
+    this.triggers.push({ x, y, cb });
+  }
+
+  checkTrigger(x, y) {
+    this.triggers.forEach((a) => {
+      if(a.x === x && a.y === y && a.triggered !== true) {
+        this.game.time.events.add(250, () => {
+          a.cb();
+        });
+        a.triggered = true;
+      }
+    })
   }
 
 }
