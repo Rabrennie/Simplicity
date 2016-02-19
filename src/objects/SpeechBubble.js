@@ -52,23 +52,24 @@ var SpeechBubble = function(game, x, y, width, text) {
 SpeechBubble.prototype = Object.create(Phaser.Sprite.prototype);
 SpeechBubble.prototype.constructor = SpeechBubble;
 
-SpeechBubble.wrapBitmapText = function (bitmapText, maxWidth) {
-  var words = bitmapText.text.split(' '), output = "", test = "";
+SpeechBubble.wrapBitmapText = function(bitmapText, maxWidth) {
+  var words = bitmapText.text.split(' '), output = '', test = '';
 
   for (var w = 0, len = words.length; w < len; w++) {
-    test += words[w] + " ";
+    test += words[w] + ' ';
     bitmapText.text = test;
     bitmapText.updateText();
     if (bitmapText.textWidth > maxWidth) {
-      output += "\n" + words[w] + " ";
-    }
-    else {
-      output += words[w] + " ";
+      output += '\n' + words[w] + ' ';
+    } else {
+      output += words[w] + ' ';
     }
     test = output;
   }
 
-  output = output.replace(/(\s)$/gm, ""); // remove trailing spaces
+  output = output.replace(/(\s)$/gm, ' '); // remove trailing spaces
   bitmapText.text = output;
   bitmapText.updateText();
 }
+
+export default SpeechBubble;

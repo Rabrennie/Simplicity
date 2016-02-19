@@ -1,0 +1,20 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Dependency directory
+node_modules
+
+# Build files
+# dist
+release
+
+# Editor stuff people should locally ignore
+.idea
+.publish
