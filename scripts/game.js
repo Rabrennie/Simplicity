@@ -13,9 +13,9 @@ var _statesBootState = require('states/BootState');
 
 var _statesBootState2 = _interopRequireDefault(_statesBootState);
 
-var _statesLevel = require('states/Level');
+var _statesLevel1 = require('states/Level1');
 
-var _statesLevel2 = _interopRequireDefault(_statesLevel);
+var _statesLevel12 = _interopRequireDefault(_statesLevel1);
 
 var Game = (function (_Phaser$Game) {
   _inherits(Game, _Phaser$Game);
@@ -25,7 +25,7 @@ var Game = (function (_Phaser$Game) {
 
     _get(Object.getPrototypeOf(Game.prototype), 'constructor', this).call(this, 800, 400, Phaser.AUTO, 'content', null, true, false);
     this.state.add('BootState', _statesBootState2['default'], false);
-    this.state.add('Level', _statesLevel2['default'], false);
+    this.state.add('Level', _statesLevel12['default'], false);
     this.state.start('BootState');
   }
 
@@ -34,7 +34,7 @@ var Game = (function (_Phaser$Game) {
 
 new Game();
 
-},{"states/BootState":3,"states/Level":4}],2:[function(require,module,exports){
+},{"states/BootState":3,"states/Level1":5}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -152,7 +152,7 @@ var BootState = (function (_Phaser$State) {
       this.game.load.image('bubble-tail', './assets/bubble-tail.png');
       this.game.load.bitmapFont('prstart', './assets/prstart.png', './assets/prstart.fnt');
 
-      this.failureStrings = ['Did you read the instructions?', 'Good job', 'Great work', 'Thanks a lot', 'Oh S***', 'F YOU', 'Oh dear, I\'m dead'];
+      this.game.failureStrings = ['Did you read the instructions?', 'Good job', 'Great work', 'Thanks a lot', 'Oh S***', 'F YOU', 'Oh dear, I\'m dead'];
     }
   }, {
     key: 'create',
@@ -198,6 +198,11 @@ var Level = (function (_Phaser$State) {
   }
 
   _createClass(Level, [{
+    key: 'preload',
+    value: function preload() {
+      this.layout = [[2, 2, 2, 2, 2, 4, 1], [0, 0, 0, 0, 2, 0, 4], [0, 0, 0, 0, 2, 0, 4], [0, 0, 0, 0, 2, 1, 4], [0, 0, 0, 0, 3, 1, 0]];
+    }
+  }, {
     key: 'create',
     value: function create() {
       this.isoGroup = this.game.add.group();
@@ -212,7 +217,6 @@ var Level = (function (_Phaser$State) {
       this.hasStepped = false;
       this.timerStarted = false;
       this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT, Phaser.Keyboard.UP, Phaser.Keyboard.DOWN, Phaser.Keyboard.SPACEBAR]);
-      this.layout = [[2, 2, 2, 2, 2, 4, 1], [0, 0, 0, 0, 2, 0, 4], [0, 0, 0, 0, 2, 0, 4], [0, 0, 0, 0, 2, 1, 4], [0, 0, 0, 0, 3, 1, 0]];
 
       this.offset = 200;
 
@@ -357,7 +361,7 @@ var Level = (function (_Phaser$State) {
       var tilesFalling = Math.round(count * 0.2);
 
       this.delay = 0;
-      var goalTile;
+      var goalTile = null;
 
       for (var y = 0; y < this.layout.length; y++) {
         this.tiles.push([]);
@@ -373,13 +377,14 @@ var Level = (function (_Phaser$State) {
               this.dropSprite(this.tiles[y][x], this.delay, 0);
             }
           }
-          if (this.layout[y][x] === 2) {
-            // this.tiles[y][x].tint = 0x86bfda;
-
-          }
+          // if(this.layout[y][x] === 2) {
+          //   // this.tiles[y][x].tint = 0x86bfda;
+          //
+          // }
           if (this.layout[y][x] === 3) {
             goalTile = this.tiles[y][x];
             this.tiles[y][x].tint = 0x00FF00;
+            this.dropSprite(goalTile, this.layout.length * 200 + 500, 0);
           }
           if (this.layout[y][x] === 4) {
             goalTile = this.tiles[y][x];
@@ -387,8 +392,6 @@ var Level = (function (_Phaser$State) {
           }
         }
       }
-      this.delay += 500;
-      this.dropSprite(goalTile, this.delay, 0);
     }
   }, {
     key: 'spawnPlayer',
@@ -494,5 +497,49 @@ var Level = (function (_Phaser$State) {
 exports['default'] = Level;
 module.exports = exports['default'];
 
-},{"../objects/SpeechBubble":2}]},{},[1])
+},{"../objects/SpeechBubble":2}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _Level2 = require('./Level');
+
+var _Level3 = _interopRequireDefault(_Level2);
+
+var Level1 = (function (_Level) {
+  _inherits(Level1, _Level);
+
+  function Level1() {
+    _classCallCheck(this, Level1);
+
+    _get(Object.getPrototypeOf(Level1.prototype), 'constructor', this).apply(this, arguments);
+  }
+
+  _createClass(Level1, [{
+    key: 'preload',
+    value: function preload() {
+      _get(Object.getPrototypeOf(Level1.prototype), 'preload', this).call(this);
+      this.layout = [[2, 2, 2, 2, 2, 4, 1], [1, 1, 1, 1, 2, 1, 4], [1, 1, 1, 1, 2, 1, 4], [1, 1, 1, 1, 2, 1, 4], [1, 1, 1, 1, 3, 1, 1], [1, 1, 1, 1, 4, 1, 1], [1, 1, 1, 1, 4, 1, 1], [1, 1, 1, 1, 4, 1, 1], [1, 1, 1, 1, 4, 1, 1]];
+    }
+  }]);
+
+  return Level1;
+})(_Level3['default']);
+
+exports['default'] = Level1;
+module.exports = exports['default'];
+
+},{"./Level":4}]},{},[1])
 //# sourceMappingURL=game.js.map
