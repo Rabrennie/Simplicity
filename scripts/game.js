@@ -337,6 +337,10 @@ var Level = (function (_Phaser$State) {
           this.stepcount++;
           this.timer = this.timePerTile;
           this.game.add.tween(this.player).to({ isoX: nextPosX, isoY: nextPosY }, 200, Phaser.Easing.Quadratic.InOut, true);
+          var jump = this.game.add.tween(this.player.anchor).to({ y: 0.8 }, 100, Phaser.Easing.Quadratic.InOut);
+          var land = this.game.add.tween(this.player.anchor).to({ y: 0.5 }, 100, Phaser.Easing.Quadratic.InOut);
+          jump.chain(land);
+          jump.start();
           if (this.stepcount > this.steps) {
             this.game.time.events.remove(this.timerLoop);
             this.canPlay = false;
