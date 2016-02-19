@@ -201,10 +201,7 @@ var Level = (function (_Phaser$State) {
     key: 'preload',
     value: function preload() {
       this.layout = [[2, 2, 2, 2, 2, 4, 1], [0, 0, 0, 0, 2, 0, 4], [0, 0, 0, 0, 2, 0, 4], [0, 0, 0, 0, 2, 1, 4], [0, 0, 0, 0, 3, 1, 0]];
-    }
-  }, {
-    key: 'create',
-    value: function create() {
+
       this.isoGroup = this.game.add.group();
 
       this.canPlay = false;
@@ -213,6 +210,7 @@ var Level = (function (_Phaser$State) {
       this.steps = 8;
       this.stepcount = 0;
       this.timer = 2;
+      this.timePerTile = 2;
       this.cursors = this.game.input.keyboard.createCursorKeys();
       this.hasStepped = false;
       this.timerStarted = false;
@@ -220,10 +218,15 @@ var Level = (function (_Phaser$State) {
 
       this.offset = 200;
 
-      this.bubble = this.game.world.add(new _objectsSpeechBubble2['default'](this.game, 180, 190, 200, 'Get me to the green tile'));
+      this.triggers = [];
+    }
+  }, {
+    key: 'create',
+    value: function create() {
       this.game.camera.x = 624;
       this.game.camera.y = 0;
 
+      this.spawnBubble();
       this.spawnTiles();
       this.spawnPlayer();
     }
@@ -295,6 +298,8 @@ var Level = (function (_Phaser$State) {
           moved = true;
         }
 
+        this.checkTrigger((nextPosX - this.offset) / 38, (nextPosY - this.offset) / 38);
+
         if (this.checkTile(currentTileX, currentTileY) === 0) {
           this.game.iso.simpleSort(this.isoGroup);
           moved = false;
@@ -330,7 +335,7 @@ var Level = (function (_Phaser$State) {
         if (moved) {
           this.hasStepped = true;
           this.stepcount++;
-          this.timer = 2.1;
+          this.timer = this.timePerTile;
           this.game.add.tween(this.player).to({ isoX: nextPosX, isoY: nextPosY }, 200, Phaser.Easing.Quadratic.InOut, true);
           if (this.stepcount > this.steps) {
             this.game.time.events.remove(this.timerLoop);
@@ -351,6 +356,11 @@ var Level = (function (_Phaser$State) {
       this.game.debug.text(Math.round(this.timer * 10) / 10, 2, 28, '#a7aebe');
     }
   }, {
+    key: 'spawnBubble',
+    value: function spawnBubble() {
+      this.bubble = this.game.world.add(new _objectsSpeechBubble2['default'](this.game, 180, 190, 200, 'Get me to the green tile'));
+    }
+  }, {
     key: 'spawnTiles',
     value: function spawnTiles() {
       this.tiles = [];
@@ -358,7 +368,6 @@ var Level = (function (_Phaser$State) {
       this.layout.forEach(function (a) {
         count += a.length;
       });
-      var tilesFalling = Math.round(count * 0.2);
 
       this.delay = 0;
       var goalTile = null;
@@ -372,7 +381,7 @@ var Level = (function (_Phaser$State) {
             this.tiles[y][x] = this.game.add.isoSprite(x * 38 + this.offset, y * 38 + this.offset, 500, 'tile', 0, this.isoGroup);
             this.tiles[y][x].anchor.set(0.5, 0);
             this.delay = y * 200;
-            console.log(y * x % tilesFalling);
+
             if (this.layout[y][x] !== 3) {
               this.dropSprite(this.tiles[y][x], this.delay, 0);
             }
@@ -489,6 +498,25 @@ var Level = (function (_Phaser$State) {
         }
       }, this);
     }
+  }, {
+    key: 'addTrigger',
+    value: function addTrigger(x, y, cb) {
+      this.triggers.push({ x: x, y: y, cb: cb });
+    }
+  }, {
+    key: 'checkTrigger',
+    value: function checkTrigger(x, y) {
+      var _this = this;
+
+      this.triggers.forEach(function (a) {
+        if (a.x === x && a.y === y && a.triggered !== true) {
+          _this.game.time.events.add(250, function () {
+            a.cb();
+          });
+          a.triggered = true;
+        }
+      });
+    }
   }]);
 
   return Level;
@@ -514,6 +542,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var _objectsSpeechBubble = require('../objects/SpeechBubble');
+
+var _objectsSpeechBubble2 = _interopRequireDefault(_objectsSpeechBubble);
+
 var _Level2 = require('./Level');
 
 var _Level3 = _interopRequireDefault(_Level2);
@@ -530,8 +562,21 @@ var Level1 = (function (_Level) {
   _createClass(Level1, [{
     key: 'preload',
     value: function preload() {
+      var _this = this;
+
       _get(Object.getPrototypeOf(Level1.prototype), 'preload', this).call(this);
-      this.layout = [[2, 2, 2, 2, 2, 4, 1], [1, 1, 1, 1, 2, 1, 4], [1, 1, 1, 1, 2, 1, 4], [1, 1, 1, 1, 2, 1, 4], [1, 1, 1, 1, 3, 1, 1], [1, 1, 1, 1, 4, 1, 1], [1, 1, 1, 1, 4, 1, 1], [1, 1, 1, 1, 4, 1, 1], [1, 1, 1, 1, 4, 1, 1]];
+      this.layout = [[2, 2, 2, 2, 2, 0, 0], [0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 3, 0, 0]];
+
+      this.triggered = false;
+
+      this.addTrigger(4, 0, function () {
+        console.log("TEST");_this.changeBubble('Get to the green tile');
+      });
+    }
+  }, {
+    key: 'spawnBubble',
+    value: function spawnBubble() {
+      this.bubble = this.game.world.add(new _objectsSpeechBubble2['default'](this.game, 180, 190, 200, 'Follow the blue tiles!'));
     }
   }]);
 
@@ -541,5 +586,5 @@ var Level1 = (function (_Level) {
 exports['default'] = Level1;
 module.exports = exports['default'];
 
-},{"./Level":4}]},{},[1])
+},{"../objects/SpeechBubble":2,"./Level":4}]},{},[1])
 //# sourceMappingURL=game.js.map
