@@ -17,7 +17,7 @@ class BootState extends Phaser.State {
     this.game.load.image('bubble-tail', './assets/bubble-tail.png');
     this.game.load.bitmapFont('prstart', './assets/prstart.png', './assets/prstart.fnt');
 
-    this.failureStrings = ['Did you read the instructions?', 'Good job', 'Great work', 'Thanks a lot', 'Oh S***', 'F YOU', 'Oh dear, I\'m dead'];
+    this.game.failureStrings = ['Did you read the instructions?', 'Good job', 'Great work', 'Thanks a lot', 'Oh S***', 'F YOU', 'Oh dear, I\'m dead'];
   }
 
   create() {
