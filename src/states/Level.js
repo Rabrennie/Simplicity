@@ -4,10 +4,10 @@ class Level extends Phaser.State {
 
   preload() {
     this.layout = [[2, 2, 2, 2, 2, 4, 1],
-    [0, 0, 0, 0, 2, 0, 4],
-    [0, 0, 0, 0, 2, 0, 4],
-    [0, 0, 0, 0, 2, 1, 4],
-    [0, 0, 0, 0, 3, 1, 0]];
+    [0, 0, 0, 1, 2, 0, 4],
+    [0, 0, 1, 0, 2, 0, 4],
+    [0, 1, 0, 0, 2, 1, 4],
+    [1, 0, 0, 0, 3, 1, 1]];
 
     this.isoGroup = this.game.add.group();
 
@@ -32,6 +32,8 @@ class Level extends Phaser.State {
     this.offset = 200;
 
     this.triggers = [];
+
+    this.nextLevel = 'Level';
 
   }
   create() {
@@ -137,8 +139,10 @@ class Level extends Phaser.State {
 
       const origNextX = nextPosX;
       const origNextY = nextPosY;
+      let isJump = true;
 
       while(this.checkTile((nextPosX-this.offset)/38, (nextPosY-this.offset)/38) === 4 && moved) {
+        isJump = false;
         nextPosX = origNextX + nextPosX - this.player.isoX;
         nextPosY = origNextY + nextPosY - this.player.isoY;
       }
@@ -148,10 +152,12 @@ class Level extends Phaser.State {
         this.stepcount++;
         this.timer = this.timePerTile;
         this.game.add.tween(this.player).to({ isoX: nextPosX, isoY: nextPosY }, 200, Phaser.Easing.Quadratic.InOut, true);
-        const jump = this.game.add.tween(this.player.anchor).to({ y: 0.8 }, 100, Phaser.Easing.Quadratic.InOut);
-        const land = this.game.add.tween(this.player.anchor).to({ y: 0.5 }, 100, Phaser.Easing.Quadratic.InOut);
-        jump.chain(land);
-        jump.start()
+        if(isJump) {
+          const jump = this.game.add.tween(this.player.anchor).to({ y: 0.8 }, 100, Phaser.Easing.Quadratic.InOut);
+          const land = this.game.add.tween(this.player.anchor).to({ y: 0.5 }, 100, Phaser.Easing.Quadratic.InOut);
+          jump.chain(land);
+          jump.start()
+        }
         if(this.stepcount > this.steps) {
           this.game.time.events.remove(this.timerLoop);
           this.canPlay = false;
@@ -249,7 +255,7 @@ class Level extends Phaser.State {
   complete() {
     this.changeBubble('WE WON')
 
-    this.changeLevel('Level');
+    this.changeLevel(this.nextLevel);
 
     this.winTriggered = true;
   }

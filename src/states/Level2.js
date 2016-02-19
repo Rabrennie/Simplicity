@@ -1,17 +1,13 @@
 import SpeechBubble from '../objects/SpeechBubble'
 import Level from './Level';
 
-class Level1 extends Level {
+class Level2 extends Level {
 
   preload() {
     super.preload();
-
-
+    this.layout = [[2,2,2,3]];
     this.triggered = false;
 
-    this.nextLevel = 'Level2';
-
-    this.addTrigger(4, 0, () => {this.changeBubble('Get to the green tile')})
   }
 
   spawnBubble() {
@@ -20,4 +16,4 @@ class Level1 extends Level {
 
 }
 
-export default Level1;
+export default Level2;
