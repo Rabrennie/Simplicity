@@ -144,6 +144,8 @@ var BootState = (function (_Phaser$State) {
 
       this.game.load.image('tile', './assets/tile.png');
       this.game.load.image('cube', './assets/cube.png');
+      this.game.load.image('playButton', './assets/playButton.png');
+
       this.game.time.advancedTiming = true;
       this.game.world.setBounds(0, 0, 2048, 1024);
       // Add and enable the plug-in.
@@ -615,18 +617,12 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _Menu2 = require('./Menu');
-
-var _Menu3 = _interopRequireDefault(_Menu2);
-
-var MainMenu = (function (_Menu) {
-  _inherits(MainMenu, _Menu);
+var MainMenu = (function (_Phaser$State) {
+  _inherits(MainMenu, _Phaser$State);
 
   function MainMenu() {
     _classCallCheck(this, MainMenu);
@@ -635,47 +631,6 @@ var MainMenu = (function (_Menu) {
   }
 
   _createClass(MainMenu, [{
-    key: 'addButtons',
-    value: function addButtons() {
-      var _this = this;
-
-      this.addButton(this.game.world.centerX, this.game.world.centerY, 'Play', function () {
-        _this.state.start('Level1');
-      });
-    }
-  }]);
-
-  return MainMenu;
-})(_Menu3['default']);
-
-exports['default'] = MainMenu;
-module.exports = exports['default'];
-
-},{"./Menu":7}],7:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Menu = (function (_Phaser$State) {
-  _inherits(Menu, _Phaser$State);
-
-  function Menu() {
-    _classCallCheck(this, Menu);
-
-    _get(Object.getPrototypeOf(Menu.prototype), 'constructor', this).apply(this, arguments);
-  }
-
-  _createClass(Menu, [{
     key: 'preload',
     value: function preload() {
       this.buttons = [];
@@ -684,26 +639,41 @@ var Menu = (function (_Phaser$State) {
     key: 'create',
     value: function create() {
       this.game.camera.focusOnXY(this.game.world.centerX, this.game.world.centerY);
-      this.addButtons();
+      var test = new Phaser.Plugin.Isometric.Point3();
+      this.game.iso.unproject(new Phaser.Point(this.game.world.centerX, this.game.world.centerY), test);
+      this.tile = this.game.add.isoSprite(test.x, test.y, 0, 'playButton', 0);
+      this.tile.anchor.set(0.5, 0);
+
+      this.cursorPos = new Phaser.Plugin.Isometric.Point3();
     }
   }, {
-    key: 'addButton',
-    value: function addButton(x, y, text, onClick) {
-      var txt = this.game.add.text(x, y, text, { font: '65px Arial', fill: '#ff0044', align: 'center' });
-      txt.anchor.set(0.5);
+    key: 'update',
+    value: function update() {
 
-      txt.inputEnabled = true;
+      this.game.iso.unproject(this.game.input.activePointer.position, this.cursorPos);
 
-      txt.events.onInputUp.add(onClick);
+      var inBounds = this.tile.isoBounds.containsXY(this.cursorPos.x, this.cursorPos.y);
 
-      this.buttons.push(txt);
+      if (!this.tile.selected && inBounds && this.game.input.activePointer.isDown) {
+        this.tile.mouseDown = true;
+        this.tile.selected = true;
+        this.tile.tint = 0xAAFFAA;
+        this.game.add.tween(this.tile).to({ isoZ: -4 }, 100, Phaser.Easing.Quadratic.InOut, true);
+      } else if (this.tile.selected && !inBounds) {
+        this.tile.mouseDown = false;
+        this.tile.selected = false;
+        this.tile.tint = 0xffffff;
+        this.game.add.tween(this.tile).to({ isoZ: 0 }, 200, Phaser.Easing.Quadratic.InOut, true);
+      } else if (this.tile.selected && inBounds && !this.game.input.activePointer.isDown && this.tile.mouseDown) {
+        this.state.start('Level1');
+      }
     }
   }]);
 
-  return Menu;
+  return MainMenu;
 })(Phaser.State);
 
-exports['default'] = Menu;
+exports['default'] = MainMenu;
 module.exports = exports['default'];
 
 },{}]},{},[1])

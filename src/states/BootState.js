@@ -4,6 +4,8 @@ class BootState extends Phaser.State {
 
     this.game.load.image('tile', './assets/tile.png');
     this.game.load.image('cube', './assets/cube.png');
+    this.game.load.image('playButton', './assets/playButton.png');
+    
     this.game.time.advancedTiming = true;
     this.game.world.setBounds(0, 0, 2048, 1024);
     // Add and enable the plug-in.
