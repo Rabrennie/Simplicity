@@ -60,7 +60,7 @@ class Level extends Phaser.State {
           if(this.timer < 0) {
             this.game.time.events.remove(this.timerLoop);
             this.canPlay = false;
-            this.changeLevel('Level')
+            this.changeLevel(this.levelName)
           }
         }, this);
       }
@@ -122,8 +122,8 @@ class Level extends Phaser.State {
           this.changeBubble(this.game.failureStrings[Math.floor(Math.random() * this.game.failureStrings.length)]);
 
           this.game.time.events.add(300, function() {
-            this.changeLevel('Level')
-            this.dropSprite(this.player, 200, -500, function() {this.canPlay = true}.bind(this))
+            this.changeLevel(this.levelName)
+            this.dropSprite(this.player, 200, -500, function() {this.canPlay = false}.bind(this))
           }, this);
 
           this.game.time.events.remove(this.timerLoop);
@@ -163,7 +163,7 @@ class Level extends Phaser.State {
           this.canPlay = false;
           this.game.time.events.add(500, function() {
             this.changeBubble('Too many steps :(')
-            this.changeLevel('Level')
+            this.changeLevel(this.levelName)
           }, this)
         }
       }

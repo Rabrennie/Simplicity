@@ -21,7 +21,7 @@ class BootState extends Phaser.State {
   }
 
   create() {
-    this.game.state.start('Level');
+    this.game.state.start('MainMenu');
   }
 
 }

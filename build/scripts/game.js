@@ -13,13 +13,13 @@ var _statesBootState = require('states/BootState');
 
 var _statesBootState2 = _interopRequireDefault(_statesBootState);
 
+var _statesMainMenu = require('states/MainMenu');
+
+var _statesMainMenu2 = _interopRequireDefault(_statesMainMenu);
+
 var _statesLevel1 = require('states/Level1');
 
 var _statesLevel12 = _interopRequireDefault(_statesLevel1);
-
-var _statesLevel2 = require('states/Level2');
-
-var _statesLevel22 = _interopRequireDefault(_statesLevel2);
 
 var Game = (function (_Phaser$Game) {
   _inherits(Game, _Phaser$Game);
@@ -29,8 +29,8 @@ var Game = (function (_Phaser$Game) {
 
     _get(Object.getPrototypeOf(Game.prototype), 'constructor', this).call(this, 800, 400, Phaser.AUTO, 'content', null, true, false);
     this.state.add('BootState', _statesBootState2['default'], false);
-    this.state.add('Level', _statesLevel12['default'], false);
-    this.state.add('Level2', _statesLevel22['default'], false);
+    this.state.add('MainMenu', _statesMainMenu2['default'], false);
+    this.state.add('Level1', _statesLevel12['default'], false);
     this.state.start('BootState');
   }
 
@@ -39,7 +39,7 @@ var Game = (function (_Phaser$Game) {
 
 new Game();
 
-},{"states/BootState":3,"states/Level1":5,"states/Level2":6}],2:[function(require,module,exports){
+},{"states/BootState":3,"states/Level1":5,"states/MainMenu":6}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -162,7 +162,7 @@ var BootState = (function (_Phaser$State) {
   }, {
     key: 'create',
     value: function create() {
-      this.game.state.start('Level');
+      this.game.state.start('MainMenu');
     }
   }]);
 
@@ -254,7 +254,7 @@ var Level = (function (_Phaser$State) {
             if (this.timer < 0) {
               this.game.time.events.remove(this.timerLoop);
               this.canPlay = false;
-              this.changeLevel('Level');
+              this.changeLevel(this.levelName);
             }
           }, this);
         }
@@ -314,9 +314,9 @@ var Level = (function (_Phaser$State) {
             this.changeBubble(this.game.failureStrings[Math.floor(Math.random() * this.game.failureStrings.length)]);
 
             this.game.time.events.add(300, function () {
-              this.changeLevel('Level');
+              this.changeLevel(this.levelName);
               this.dropSprite(this.player, 200, -500, (function () {
-                this.canPlay = true;
+                this.canPlay = false;
               }).bind(this));
             }, this);
 
@@ -357,7 +357,7 @@ var Level = (function (_Phaser$State) {
             this.canPlay = false;
             this.game.time.events.add(500, function () {
               this.changeBubble('Too many steps :(');
-              this.changeLevel('Level');
+              this.changeLevel(this.levelName);
             }, this);
           }
         }
@@ -580,14 +580,16 @@ var Level1 = (function (_Level) {
       var _this = this;
 
       _get(Object.getPrototypeOf(Level1.prototype), 'preload', this).call(this);
+      this.layout = [[2, 2, 2, 2, 2, 0, 0], [0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 3, 0, 0]];
 
       this.triggered = false;
-
-      this.nextLevel = 'Level2';
 
       this.addTrigger(4, 0, function () {
         _this.changeBubble('Get to the green tile');
       });
+
+      this.levelName = 'Level1';
+      this.nextLevel = 'MainMenu';
     }
   }, {
     key: 'spawnBubble',
@@ -619,44 +621,90 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _objectsSpeechBubble = require('../objects/SpeechBubble');
+var _Menu2 = require('./Menu');
 
-var _objectsSpeechBubble2 = _interopRequireDefault(_objectsSpeechBubble);
+var _Menu3 = _interopRequireDefault(_Menu2);
 
-var _Level2 = require('./Level');
+var MainMenu = (function (_Menu) {
+  _inherits(MainMenu, _Menu);
 
-var _Level3 = _interopRequireDefault(_Level2);
+  function MainMenu() {
+    _classCallCheck(this, MainMenu);
 
-var Level2 = (function (_Level) {
-  _inherits(Level2, _Level);
-
-  function Level2() {
-    _classCallCheck(this, Level2);
-
-    _get(Object.getPrototypeOf(Level2.prototype), 'constructor', this).apply(this, arguments);
+    _get(Object.getPrototypeOf(MainMenu.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _createClass(Level2, [{
-    key: 'preload',
-    value: function preload() {
-      _get(Object.getPrototypeOf(Level2.prototype), 'preload', this).call(this);
+  _createClass(MainMenu, [{
+    key: 'addButtons',
+    value: function addButtons() {
+      var _this = this;
 
-      this.layout = [[2, 2, 2, 3]];
-
-      this.triggered = false;
-    }
-  }, {
-    key: 'spawnBubble',
-    value: function spawnBubble() {
-      this.bubble = this.game.world.add(new _objectsSpeechBubble2['default'](this.game, 180, 190, 200, 'Follow the blue tiles!'));
+      this.addButton(this.game.world.centerX, this.game.world.centerY, 'Play', function () {
+        _this.state.start('Level1');
+      });
     }
   }]);
 
-  return Level2;
-})(_Level3['default']);
+  return MainMenu;
+})(_Menu3['default']);
 
-exports['default'] = Level2;
+exports['default'] = MainMenu;
 module.exports = exports['default'];
 
-},{"../objects/SpeechBubble":2,"./Level":4}]},{},[1])
+},{"./Menu":7}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Menu = (function (_Phaser$State) {
+  _inherits(Menu, _Phaser$State);
+
+  function Menu() {
+    _classCallCheck(this, Menu);
+
+    _get(Object.getPrototypeOf(Menu.prototype), 'constructor', this).apply(this, arguments);
+  }
+
+  _createClass(Menu, [{
+    key: 'preload',
+    value: function preload() {
+      this.buttons = [];
+    }
+  }, {
+    key: 'create',
+    value: function create() {
+      this.game.camera.focusOnXY(this.game.world.centerX, this.game.world.centerY);
+      this.addButtons();
+    }
+  }, {
+    key: 'addButton',
+    value: function addButton(x, y, text, onClick) {
+      var txt = this.game.add.text(x, y, text, { font: '65px Arial', fill: '#ff0044', align: 'center' });
+      txt.anchor.set(0.5);
+
+      txt.inputEnabled = true;
+
+      txt.events.onInputUp.add(onClick);
+
+      this.buttons.push(txt);
+    }
+  }]);
+
+  return Menu;
+})(Phaser.State);
+
+exports['default'] = Menu;
+module.exports = exports['default'];
+
+},{}]},{},[1])
 //# sourceMappingURL=game.js.map
