@@ -118,7 +118,7 @@ module.exports = exports['default'];
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-  value: true
+    value: true
 });
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -130,45 +130,45 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var BootState = (function (_Phaser$State) {
-  _inherits(BootState, _Phaser$State);
+    _inherits(BootState, _Phaser$State);
 
-  function BootState() {
-    _classCallCheck(this, BootState);
+    function BootState() {
+        _classCallCheck(this, BootState);
 
-    _get(Object.getPrototypeOf(BootState.prototype), 'constructor', this).apply(this, arguments);
-  }
-
-  _createClass(BootState, [{
-    key: 'preload',
-    value: function preload() {
-
-      this.game.load.image('tile', './assets/tile.png');
-      this.game.load.image('cube', './assets/cube.png');
-      this.game.load.image('playButton', './assets/playButton.png');
-
-      this.game.time.advancedTiming = true;
-      this.game.world.setBounds(0, 0, 2048, 1024);
-      // Add and enable the plug-in.
-      this.game.plugins.add(new Phaser.Plugin.Isometric(this.game));
-
-      // This is used to set a game canvas-based offset for the 0, 0, 0 isometric coordinate - by default
-      // this point would be at screen coordinates 0, 0 (top left) which is usually undesirable.
-      this.game.iso.anchor.setTo(0.5, 0);
-
-      this.game.load.spritesheet('bubble-border', './assets/bubble-border.png', 9, 9);
-      this.game.load.image('bubble-tail', './assets/bubble-tail.png');
-      this.game.load.bitmapFont('prstart', './assets/prstart.png', './assets/prstart.fnt');
-
-      this.game.failureStrings = ['Did you read the instructions?', 'Good job', 'Great work', 'Thanks a lot', 'Oh S***', 'F YOU', 'Oh dear, I\'m dead'];
+        _get(Object.getPrototypeOf(BootState.prototype), 'constructor', this).apply(this, arguments);
     }
-  }, {
-    key: 'create',
-    value: function create() {
-      this.game.state.start('MainMenu');
-    }
-  }]);
 
-  return BootState;
+    _createClass(BootState, [{
+        key: 'preload',
+        value: function preload() {
+
+            this.game.load.image('tile', './assets/tile.png');
+            this.game.load.image('cube', './assets/cube.png');
+            this.game.load.image('playButton', './assets/playbutton.png');
+
+            this.game.time.advancedTiming = true;
+            this.game.world.setBounds(0, 0, 2048, 1024);
+            // Add and enable the plug-in.
+            this.game.plugins.add(new Phaser.Plugin.Isometric(this.game));
+
+            // This is used to set a game canvas-based offset for the 0, 0, 0 isometric coordinate - by default
+            // this point would be at screen coordinates 0, 0 (top left) which is usually undesirable.
+            this.game.iso.anchor.setTo(0.5, 0);
+
+            this.game.load.spritesheet('bubble-border', './assets/bubble-border.png', 9, 9);
+            this.game.load.image('bubble-tail', './assets/bubble-tail.png');
+            this.game.load.bitmapFont('prstart', './assets/prstart.png', './assets/prstart.fnt');
+
+            this.game.failureStrings = ['Did you read the instructions?', 'Good job', 'Great work', 'Thanks a lot', 'Oh S***', 'F YOU', 'Oh dear, I\'m dead'];
+        }
+    }, {
+        key: 'create',
+        value: function create() {
+            this.game.state.start('MainMenu');
+        }
+    }]);
+
+    return BootState;
 })(Phaser.State);
 
 exports['default'] = BootState;
