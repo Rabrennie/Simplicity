@@ -21,6 +21,14 @@ var _statesLevel1 = require('states/Level1');
 
 var _statesLevel12 = _interopRequireDefault(_statesLevel1);
 
+var _statesLevel2 = require('states/Level2');
+
+var _statesLevel22 = _interopRequireDefault(_statesLevel2);
+
+var _statesLevel3 = require('states/Level3');
+
+var _statesLevel32 = _interopRequireDefault(_statesLevel3);
+
 var Game = (function (_Phaser$Game) {
   _inherits(Game, _Phaser$Game);
 
@@ -31,6 +39,8 @@ var Game = (function (_Phaser$Game) {
     this.state.add('BootState', _statesBootState2['default'], false);
     this.state.add('MainMenu', _statesMainMenu2['default'], false);
     this.state.add('Level1', _statesLevel12['default'], false);
+    this.state.add('Level2', _statesLevel22['default'], false);
+    this.state.add('Level3', _statesLevel32['default'], false);
     this.state.start('BootState');
   }
 
@@ -39,7 +49,7 @@ var Game = (function (_Phaser$Game) {
 
 new Game();
 
-},{"states/BootState":3,"states/Level1":5,"states/MainMenu":6}],2:[function(require,module,exports){
+},{"states/BootState":3,"states/Level1":5,"states/Level2":6,"states/Level3":7,"states/MainMenu":8}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -587,16 +597,16 @@ var Level1 = (function (_Level) {
       this.triggered = false;
 
       this.addTrigger(4, 0, function () {
-        _this.changeBubble('Get to the green tile');
+        _this.changeBubble('These blue tiles seem to lead the way');
       });
 
       this.levelName = 'Level1';
-      this.nextLevel = 'MainMenu';
+      this.nextLevel = 'Level2';
     }
   }, {
     key: 'spawnBubble',
     value: function spawnBubble() {
-      this.bubble = this.game.world.add(new _objectsSpeechBubble2['default'](this.game, 180, 190, 200, 'Follow the blue tiles!'));
+      this.bubble = this.game.world.add(new _objectsSpeechBubble2['default'](this.game, 180, 190, 200, 'We need to get to the green tile.'));
     }
   }]);
 
@@ -607,6 +617,128 @@ exports['default'] = Level1;
 module.exports = exports['default'];
 
 },{"../objects/SpeechBubble":2,"./Level":4}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _objectsSpeechBubble = require('../objects/SpeechBubble');
+
+var _objectsSpeechBubble2 = _interopRequireDefault(_objectsSpeechBubble);
+
+var _Level2 = require('./Level');
+
+var _Level3 = _interopRequireDefault(_Level2);
+
+var Level2 = (function (_Level) {
+  _inherits(Level2, _Level);
+
+  function Level2() {
+    _classCallCheck(this, Level2);
+
+    _get(Object.getPrototypeOf(Level2.prototype), 'constructor', this).apply(this, arguments);
+  }
+
+  _createClass(Level2, [{
+    key: 'preload',
+    value: function preload() {
+      var _this = this;
+
+      _get(Object.getPrototypeOf(Level2.prototype), 'preload', this).call(this);
+      this.layout = [[2, 2, 2, 2, 2, 2, 2], [0, 0, 0, 0, 1, 0, 2], [0, 0, 0, 0, 1, 0, 2], [0, 0, 0, 0, 1, 0, 2], [0, 0, 0, 0, 3, 2, 2]];
+
+      this.triggered = false;
+
+      this.addTrigger(4, 0, function () {
+        _this.changeBubble('That doesn\'t look like the right way');
+      });
+
+      this.levelName = 'Level2';
+      this.nextLevel = 'Level3';
+    }
+  }, {
+    key: 'spawnBubble',
+    value: function spawnBubble() {
+      this.bubble = this.game.world.add(new _objectsSpeechBubble2['default'](this.game, 180, 190, 200, 'Follow the blue tiles!'));
+    }
+  }]);
+
+  return Level2;
+})(_Level3['default']);
+
+exports['default'] = Level2;
+module.exports = exports['default'];
+
+},{"../objects/SpeechBubble":2,"./Level":4}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _objectsSpeechBubble = require('../objects/SpeechBubble');
+
+var _objectsSpeechBubble2 = _interopRequireDefault(_objectsSpeechBubble);
+
+var _Level2 = require('./Level');
+
+var _Level3 = _interopRequireDefault(_Level2);
+
+var Level3 = (function (_Level) {
+  _inherits(Level3, _Level);
+
+  function Level3() {
+    _classCallCheck(this, Level3);
+
+    _get(Object.getPrototypeOf(Level3.prototype), 'constructor', this).apply(this, arguments);
+  }
+
+  _createClass(Level3, [{
+    key: 'preload',
+    value: function preload() {
+      _get(Object.getPrototypeOf(Level3.prototype), 'preload', this).call(this);
+      this.layout = [[2, 2, 2, 2, 2, 2, 2], [0, 0, 0, 0, 1, 0, 2], [2, 2, 2, 2, 2, 2, 2], [2, 0, 0, 0, 1, 0, 0], [2, 2, 2, 2, 3, 0, 0]];
+
+      this.triggered = false;
+
+      this.levelName = 'Level3';
+      this.nextLevel = 'MainMenu';
+    }
+  }, {
+    key: 'spawnBubble',
+    value: function spawnBubble() {
+      this.bubble = this.game.world.add(new _objectsSpeechBubble2['default'](this.game, 180, 190, 200, 'I don\'t think we can trust those blue tiles'));
+    }
+  }]);
+
+  return Level3;
+})(_Level3['default']);
+
+exports['default'] = Level3;
+module.exports = exports['default'];
+
+},{"../objects/SpeechBubble":2,"./Level":4}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
