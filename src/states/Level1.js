@@ -13,14 +13,14 @@ class Level1 extends Level {
 
     this.triggered = false;
 
-    this.addTrigger(4, 0, () => {this.changeBubble('Get to the green tile')})
+    this.addTrigger(4, 0, () => {this.changeBubble('These blue tiles seem to lead the way')})
 
     this.levelName = 'Level1';
-    this.nextLevel = 'MainMenu';
+    this.nextLevel = 'Level2';
   }
 
   spawnBubble() {
-    this.bubble = this.game.world.add(new SpeechBubble(this.game, 180, 190, 200, 'Follow the blue tiles!'));
+    this.bubble = this.game.world.add(new SpeechBubble(this.game, 180, 190, 200, 'We need to get to the green tile.'));
   }
 
 }
