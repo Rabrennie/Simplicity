@@ -31,6 +31,6 @@
     "yargs": "^3.16.1"
   },
   "dependencies": {
-    "phaser": "^2.4.1"
+    "tween.js": "^16.3.4"
   }
 }

@@ -11,7 +11,7 @@
     "commonjs": true
   },
   "globals": {
-    "Phaser": true,
+    "THREE": true,
   },
   "rules": {
     "semi": 0,
