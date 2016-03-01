@@ -1,4 +1,3 @@
-
 class Entity {
   constructor(geometry, material) {
     this.geometry = geometry;
@@ -11,6 +10,7 @@ class Entity {
   }
 
   // TODO: add animation
+  // some way to pass in tweens
   animate() {}
 
   lookAt(camera) {
@@ -19,7 +19,6 @@ class Entity {
 
   test() {
     this.mesh.position.x += 100;
-    console.log('test');
   }
 
 }

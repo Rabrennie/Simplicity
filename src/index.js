@@ -1,9 +1,9 @@
 import Simplicity from 'init';
-import Player from './entities/Player.js';
 
-const player = new Player();
+import Level from './state/Level';
 
-player.addToScene(Simplicity.scene);
+Simplicity.StateManager.add('test', new Level());
+Simplicity.StateManager.load('test');
 
 gameLoop();
 // function init() {
@@ -32,11 +32,10 @@ gameLoop();
 function gameLoop() {
   window.requestAnimationFrame(gameLoop);
   TWEEN.update();
-  player.lookAt(Simplicity.camera);
-  Simplicity.renderer.render(Simplicity.scene, Simplicity.camera);
-  if(Simplicity.keysDown[68]) {
-    player.test();
-  }
+  Simplicity.StateManager.loop();
+  Simplicity.renderer.render(Simplicity.StateManager.scene, Simplicity.camera);
+  console.log()
+
 }
 
     // function movePlayer() {
