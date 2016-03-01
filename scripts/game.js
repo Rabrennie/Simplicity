@@ -1,13 +1,13 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-'use strict';
+"use strict";
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Entity = (function () {
   function Entity(geometry, material) {
@@ -19,33 +19,33 @@ var Entity = (function () {
   }
 
   _createClass(Entity, [{
-    key: 'addToScene',
+    key: "addToScene",
     value: function addToScene(scene) {
       scene.add(this.mesh);
     }
 
     // TODO: add animation
+    // some way to pass in tweens
   }, {
-    key: 'animate',
+    key: "animate",
     value: function animate() {}
   }, {
-    key: 'lookAt',
+    key: "lookAt",
     value: function lookAt(camera) {
       camera.lookAt(this.mesh.position);
     }
   }, {
-    key: 'test',
+    key: "test",
     value: function test() {
       this.mesh.position.x += 100;
-      console.log('test');
     }
   }]);
 
   return Entity;
 })();
 
-exports['default'] = Entity;
-module.exports = exports['default'];
+exports["default"] = Entity;
+module.exports = exports["default"];
 
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -93,13 +93,12 @@ var _init = require('init');
 
 var _init2 = _interopRequireDefault(_init);
 
-var _entitiesPlayerJs = require('./entities/Player.js');
+var _stateLevel = require('./state/Level');
 
-var _entitiesPlayerJs2 = _interopRequireDefault(_entitiesPlayerJs);
+var _stateLevel2 = _interopRequireDefault(_stateLevel);
 
-var player = new _entitiesPlayerJs2['default']();
-
-player.addToScene(_init2['default'].scene);
+_init2['default'].StateManager.add('test', new _stateLevel2['default']());
+_init2['default'].StateManager.load('test');
 
 gameLoop();
 // function init() {
@@ -128,11 +127,9 @@ gameLoop();
 function gameLoop() {
   window.requestAnimationFrame(gameLoop);
   TWEEN.update();
-  player.lookAt(_init2['default'].camera);
-  _init2['default'].renderer.render(_init2['default'].scene, _init2['default'].camera);
-  if (_init2['default'].keysDown[68]) {
-    player.test();
-  }
+  _init2['default'].StateManager.loop();
+  _init2['default'].renderer.render(_init2['default'].StateManager.scene, _init2['default'].camera);
+  console.log();
 }
 
 // function movePlayer() {
@@ -153,18 +150,25 @@ function gameLoop() {
 //   })
 // }
 
-},{"./entities/Player.js":2,"init":4}],4:[function(require,module,exports){
+},{"./state/Level":5,"init":4}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _stateStateManager = require('./state/StateManager');
+
+var _stateStateManager2 = _interopRequireDefault(_stateStateManager);
+
 var Simplicity = {};
 
 Simplicity.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
-Simplicity.scene = new THREE.Scene();
 Simplicity.renderer = new THREE.WebGLRenderer({ antialias: true });
 Simplicity.keysDown = {};
+Simplicity.StateManager = new _stateStateManager2['default']();
 
 Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
 Simplicity.camera.position.z = 1000;
@@ -184,5 +188,163 @@ window.addEventListener('keyup', function (e) {
 exports['default'] = Simplicity;
 module.exports = exports['default'];
 
-},{}]},{},[3])
+},{"./state/StateManager":7}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _State2 = require('./State');
+
+var _State3 = _interopRequireDefault(_State2);
+
+var _init = require('../init');
+
+var _init2 = _interopRequireDefault(_init);
+
+var _entitiesPlayerJs = require('../entities/Player.js');
+
+var _entitiesPlayerJs2 = _interopRequireDefault(_entitiesPlayerJs);
+
+var Level = (function (_State) {
+  _inherits(Level, _State);
+
+  function Level() {
+    _classCallCheck(this, Level);
+
+    _get(Object.getPrototypeOf(Level.prototype), 'constructor', this).call(this);
+  }
+
+  _createClass(Level, [{
+    key: 'create',
+    value: function create() {
+      this.player = new _entitiesPlayerJs2['default']();
+      this.player.addToScene(_init2['default'].StateManager.scene);
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      if (_init2['default'].keysDown[68]) {
+        this.player.test();
+      }
+      this.player.lookAt(_init2['default'].camera);
+    }
+  }]);
+
+  return Level;
+})(_State3['default']);
+
+exports['default'] = Level;
+module.exports = exports['default'];
+
+},{"../entities/Player.js":2,"../init":4,"./State":6}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var State = (function () {
+  function State() {
+    _classCallCheck(this, State);
+  }
+
+  _createClass(State, [{
+    key: "preload",
+    value: function preload() {}
+  }, {
+    key: "create",
+    value: function create() {}
+  }, {
+    key: "update",
+    value: function update() {}
+  }, {
+    key: "render",
+    value: function render() {}
+  }]);
+
+  return State;
+})();
+
+exports["default"] = State;
+module.exports = exports["default"];
+
+},{}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _initJs = require('../init.js');
+
+var _initJs2 = _interopRequireDefault(_initJs);
+
+var StateManager = (function () {
+  function StateManager() {
+    _classCallCheck(this, StateManager);
+
+    this.states = {};
+    this.currentState = { name: null, state: null };
+    this.scene = new THREE.Scene();
+  }
+
+  _createClass(StateManager, [{
+    key: 'add',
+    value: function add(name, state) {
+      this.states[name] = state;
+    }
+  }, {
+    key: 'load',
+    value: function load(name) {
+      if (!this.states[name]) {
+        console.error('Cannot load state ' + name);
+        return;
+      }
+
+      this.scene = new THREE.Scene();
+
+      var state = this.states[name];
+
+      state.preload();
+      state.create();
+
+      this.currentState = { name: name, state: state };
+    }
+  }, {
+    key: 'loop',
+    value: function loop() {
+      this.currentState.state.update();
+      this.currentState.state.render();
+    }
+  }]);
+
+  return StateManager;
+})();
+
+exports['default'] = StateManager;
+module.exports = exports['default'];
+
+},{"../init.js":4}]},{},[3])
 //# sourceMappingURL=game.js.map
