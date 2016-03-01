@@ -151,7 +151,7 @@ function serve() {
   browserSync(options);
 
   // Watches for changes in files inside the './src' folder.
-  gulp.watch(SOURCE_PATH + '/**/*.js', ['watch-js']);
+  gulp.watch(SOURCE_PATH + '/**/**/*.js', ['watch-js']);
 
   // Watches for changes in files inside the './static' folder. Also sets 'keepFiles' to true (see cleanBuild()).
   gulp.watch(STATIC_PATH + '/**/*', ['watch-static']).on('change', function() {

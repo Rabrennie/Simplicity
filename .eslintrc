@@ -12,6 +12,7 @@
   },
   "globals": {
     "THREE": true,
+    "TWEEN": true,
   },
   "rules": {
     "semi": 0,
