@@ -13,14 +13,14 @@ var _stateStateManager2 = _interopRequireDefault(_stateStateManager);
 
 var Simplicity = {};
 
-Simplicity.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
+Simplicity.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 20000);
 Simplicity.renderer = new THREE.WebGLRenderer({ antialias: true });
 Simplicity.keysDown = {};
 Simplicity.StateManager = new _stateStateManager2['default']();
 
 Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
-Simplicity.camera.position.z = 1000;
-Simplicity.camera.position.y = 300;
+Simplicity.camera.position.z = 1500;
+Simplicity.camera.position.y = 1000;
 Simplicity.renderer.setClearColor(0x373B44, 1);
 
 Object.defineProperties(Simplicity, {
@@ -60,6 +60,8 @@ var Entity = (function () {
     this.geometry = geometry;
     this.material = material;
     this.mesh = new THREE.Mesh(this.geometry, this.material);
+
+    this.canMove = true;
   }
 
   _createClass(Entity, [{
@@ -75,16 +77,35 @@ var Entity = (function () {
     // some way to pass in tweens
   }, {
     key: "animate",
-    value: function animate() {}
+    value: function animate() {
+      var _this = this;
+
+      this.canMove = false;
+      var move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x + 200 }, 250);
+      var rotate = new TWEEN.Tween(this.mesh.rotation).to({ z: this.mesh.rotation.z - 1.5708 }, 250);
+      var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
+      var moveDown = new TWEEN.Tween(this.mesh.position).to({ y: 0 }, 125);
+
+      moveUp.chain(moveDown);
+
+      move.start();rotate.start(), moveUp.start();
+
+      move.onComplete(function () {
+        _this.canMove = true;
+      });
+    }
   }, {
-    key: "lookAt",
-    value: function lookAt(camera) {
+    key: "cameraFollow",
+    value: function cameraFollow(camera) {
+      camera.follow = this.mesh;
       camera.lookAt(this.mesh.position);
     }
   }, {
     key: "test",
     value: function test() {
-      this.mesh.position.x += 100;
+      if (this.canMove) {
+        this.animate();
+      }
     }
   }, {
     key: "position",
@@ -191,52 +212,20 @@ _Simplicity2['default'].StateManager.add('test', new _stateLevel2['default']());
 _Simplicity2['default'].StateManager.load('test');
 
 gameLoop();
-// function init() {
-//   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
-//   camera.position.z = 1000;
-//   camera.position.y = 300;
-//
-//   scene = new THREE.Scene();
-//
-//   layout = [[1,1,1,1,1,1], [1,1,1], [1,1,1]]
-//
-//   for (var y = 0; y < layout.length; y++) {
-//     for (var x = 0; x < layout[y].length; x++) {
-//       var geometry = new THREE.BoxGeometry(200, 100, 200, 1, 1, 1);
-//       var material =  new THREE.MeshBasicMaterial({
-//         color: 0xfff999fff,
-//         wireframe: true,
-//         wireframelinewidth:0 })
-//       mesh = new THREE.Mesh(geometry, material);
-//       mesh.position.x = x*200
-//       mesh.position.z = y*200
-//       mesh.position.y = -150
-//       scene.add( mesh );
-//       }
-//     }
+
 function gameLoop() {
   window.requestAnimationFrame(gameLoop);
   TWEEN.update();
+  if (_Simplicity2['default'].camera.follow) {
+    _Simplicity2['default'].camera.position.x = _Simplicity2['default'].camera.follow.position.x;
+    _Simplicity2['default'].camera.position.z = _Simplicity2['default'].camera.follow.position.z + 1500;
+  }
   _Simplicity2['default'].StateManager.loop();
   _Simplicity2['default'].renderer.render(_Simplicity2['default'].scene, _Simplicity2['default'].camera);
 }
 
 // function movePlayer() {
-//   canPlay = false;
-//   var move = new TWEEN.Tween(mesh.position).to({x: mesh.position.x+200}, 250);
-//   var camMove = new TWEEN.Tween(camera.position).to({x: mesh.position.x+200}, 250);
-//   var rotate = new TWEEN.Tween(mesh.rotation).to({z:  mesh.rotation.z-1.5708}, 250);
 //
-//   var moveUp = new TWEEN.Tween(mesh.position).to({y: 50}, 125);
-//   var moveDown = new TWEEN.Tween(mesh.position).to({y: 0}, 125);
-//
-//   moveUp.chain(moveDown);
-//
-//   move.start(); rotate.start(), moveUp.start(); camMove.start();
-//
-//   move.onComplete(function() {
-//     canPlay = true;
-//   })
 // }
 
 },{"./state/Level":6,"Simplicity":1}],6:[function(require,module,exports){
@@ -279,15 +268,30 @@ var Level = (function (_State) {
     _classCallCheck(this, Level);
 
     _get(Object.getPrototypeOf(Level.prototype), 'constructor', this).call(this);
+    this.layout = [[1, 1, 1], [1, 1, 1], [1, 1, 1]];
+    this.tiles = [];
   }
 
   _createClass(Level, [{
     key: 'create',
     value: function create() {
       this.player = new _entitiesPlayerJs2['default']();
-      this.tile = new _entitiesTileJs2['default']();
       this.player.addToScene(_Simplicity2['default'].scene);
-      this.tile.addToScene(_Simplicity2['default'].scene);
+      this.player.cameraFollow(_Simplicity2['default'].camera);
+      this.spawnTiles();
+    }
+  }, {
+    key: 'spawnTiles',
+    value: function spawnTiles() {
+      for (var y = 0; y < this.layout.length; y++) {
+        this.tiles.push([]);
+        for (var x = 0; x < this.layout[y].length; x++) {
+          this.tiles[y][x] = new _entitiesTileJs2['default']();
+          this.tiles[y][x].addToScene(_Simplicity2['default'].scene);
+          this.tiles[y][x].position.x = x * 200;
+          this.tiles[y][x].position.z = y * 200;
+        }
+      }
     }
   }, {
     key: 'update',
@@ -298,7 +302,6 @@ var Level = (function (_State) {
       if (this.player.position.x > 5400) {
         _Simplicity2['default'].StateManager.load('test');
       }
-      this.player.lookAt(_Simplicity2['default'].camera);
     }
   }]);
 

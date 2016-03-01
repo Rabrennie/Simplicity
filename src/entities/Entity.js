@@ -3,6 +3,8 @@ class Entity {
     this.geometry = geometry;
     this.material =  material;
     this.mesh = new THREE.Mesh(this.geometry, this.material);
+
+    this.canMove = true;
   }
 
   addToScene(scene) {
@@ -14,14 +16,31 @@ class Entity {
 
   // TODO: add animation
   // some way to pass in tweens
-  animate() {}
+  animate() {
+    this.canMove = false;
+    var move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x+200 }, 250);
+    var rotate = new TWEEN.Tween(this.mesh.rotation).to({ z:  this.mesh.rotation.z-1.5708 }, 250);
+    var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
+    var moveDown = new TWEEN.Tween(this.mesh.position).to({ y: 0 }, 125);
 
-  lookAt(camera) {
+    moveUp.chain(moveDown);
+
+    move.start(); rotate.start(), moveUp.start();
+
+    move.onComplete(() => {
+      this.canMove = true;
+    })
+  }
+
+  cameraFollow(camera) {
+    camera.follow = this.mesh;
     camera.lookAt(this.mesh.position);
   }
 
   test() {
-    this.mesh.position.x += 100;
+    if(this.canMove) {
+      this.animate();
+    }
   }
 
   get position() {
