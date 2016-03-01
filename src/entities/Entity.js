@@ -3,8 +3,8 @@ class Entity {
     this.geometry = geometry;
     this.material =  material;
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-
     this.canMove = true;
+    this.animations = { moveRight: this.moveRightAnim };
   }
 
   addToScene(scene) {
@@ -14,23 +14,25 @@ class Entity {
     scene.add(this.egh);
   }
 
-  // TODO: add animation
-  // some way to pass in tweens
-  animate() {
+  moveRightAnim() {
     this.canMove = false;
-    var move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x+200 }, 250);
-    var rotate = new TWEEN.Tween(this.mesh.rotation).to({ z:  this.mesh.rotation.z-1.5708 }, 250);
-    var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
-    var moveDown = new TWEEN.Tween(this.mesh.position).to({ y: 0 }, 125);
+
+    const move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x+200 }, 250);
+    const rotate = new TWEEN.Tween(this.mesh.rotation).to({ z:  this.mesh.rotation.z-1.5708 }, 250);
+    const moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
+    const moveDown = new TWEEN.Tween(this.mesh.position).to({ y: 0 }, 125);
 
     moveUp.chain(moveDown);
-
-    move.start(); rotate.start(), moveUp.start();
 
     move.onComplete(() => {
       this.canMove = true;
     })
+
+    move.start();
+    rotate.start();
+    moveUp.start();
   }
+
 
   cameraFollow(camera) {
     camera.follow = this.mesh;
@@ -39,7 +41,7 @@ class Entity {
 
   test() {
     if(this.canMove) {
-      this.animate();
+      this.moveRightAnim();
     }
   }
 

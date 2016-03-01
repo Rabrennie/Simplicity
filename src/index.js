@@ -17,7 +17,3 @@ function gameLoop() {
   Simplicity.StateManager.loop();
   Simplicity.renderer.render(Simplicity.scene, Simplicity.camera);
 }
-
-    // function movePlayer() {
-    //
-    // }

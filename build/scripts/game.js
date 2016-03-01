@@ -13,8 +13,16 @@ var _stateStateManager2 = _interopRequireDefault(_stateStateManager);
 
 var Simplicity = {};
 
+var supportsWebGL = (function () {
+  try {
+    return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
+  } catch (e) {
+    return false;
+  }
+})();
+
 Simplicity.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 20000);
-Simplicity.renderer = new THREE.WebGLRenderer({ antialias: true });
+Simplicity.renderer = supportsWebGL ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer({ antialias: true });
 Simplicity.keysDown = {};
 Simplicity.StateManager = new _stateStateManager2['default']();
 
@@ -60,8 +68,8 @@ var Entity = (function () {
     this.geometry = geometry;
     this.material = material;
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-
     this.canMove = true;
+    this.animations = { moveRight: this.moveRightAnim };
   }
 
   _createClass(Entity, [{
@@ -72,15 +80,13 @@ var Entity = (function () {
       this.egh.material.linewidth = 1;
       scene.add(this.egh);
     }
-
-    // TODO: add animation
-    // some way to pass in tweens
   }, {
-    key: "animate",
-    value: function animate() {
+    key: "moveRightAnim",
+    value: function moveRightAnim() {
       var _this = this;
 
       this.canMove = false;
+
       var move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x + 200 }, 250);
       var rotate = new TWEEN.Tween(this.mesh.rotation).to({ z: this.mesh.rotation.z - 1.5708 }, 250);
       var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
@@ -88,11 +94,13 @@ var Entity = (function () {
 
       moveUp.chain(moveDown);
 
-      move.start();rotate.start(), moveUp.start();
-
       move.onComplete(function () {
         _this.canMove = true;
       });
+
+      move.start();
+      rotate.start();
+      moveUp.start();
     }
   }, {
     key: "cameraFollow",
@@ -104,7 +112,7 @@ var Entity = (function () {
     key: "test",
     value: function test() {
       if (this.canMove) {
-        this.animate();
+        this.moveRightAnim();
       }
     }
   }, {
@@ -223,10 +231,6 @@ function gameLoop() {
   _Simplicity2['default'].StateManager.loop();
   _Simplicity2['default'].renderer.render(_Simplicity2['default'].scene, _Simplicity2['default'].camera);
 }
-
-// function movePlayer() {
-//
-// }
 
 },{"./state/Level":6,"Simplicity":1}],6:[function(require,module,exports){
 'use strict';
