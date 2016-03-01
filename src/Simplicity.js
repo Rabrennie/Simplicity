@@ -12,6 +12,10 @@ Simplicity.camera.position.z = 1000;
 Simplicity.camera.position.y = 300;
 Simplicity.renderer.setClearColor(0x373B44, 1);
 
+Object.defineProperties(Simplicity, {
+  scene: { get: function() { return this.StateManager.scene; } } // eslint-disable-line object-shorthand
+});
+
 document.body.appendChild(Simplicity.renderer.domElement);
 
 window.addEventListener('keydown', (e) => {

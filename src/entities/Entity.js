@@ -7,6 +7,9 @@ class Entity {
 
   addToScene(scene) {
     scene.add(this.mesh);
+    this.egh = new THREE.EdgesHelper(this.mesh, 0x373B44);
+    this.egh.material.linewidth = 1;
+    scene.add(this.egh);
   }
 
   // TODO: add animation
@@ -19,6 +22,10 @@ class Entity {
 
   test() {
     this.mesh.position.x += 100;
+  }
+
+  get position() {
+    return this.mesh.position;
   }
 
 }

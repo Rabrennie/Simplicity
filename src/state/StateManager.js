@@ -1,5 +1,3 @@
-import Simplicity from '../init.js';
-
 class StateManager {
   constructor() {
     this.states = {}

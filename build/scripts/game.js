@@ -1,4 +1,48 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _stateStateManager = require('./state/StateManager');
+
+var _stateStateManager2 = _interopRequireDefault(_stateStateManager);
+
+var Simplicity = {};
+
+Simplicity.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
+Simplicity.renderer = new THREE.WebGLRenderer({ antialias: true });
+Simplicity.keysDown = {};
+Simplicity.StateManager = new _stateStateManager2['default']();
+
+Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
+Simplicity.camera.position.z = 1000;
+Simplicity.camera.position.y = 300;
+Simplicity.renderer.setClearColor(0x373B44, 1);
+
+Object.defineProperties(Simplicity, {
+  scene: { get: function get() {
+      return this.StateManager.scene;
+    } } // eslint-disable-line object-shorthand
+});
+
+document.body.appendChild(Simplicity.renderer.domElement);
+
+window.addEventListener('keydown', function (e) {
+  Simplicity.keysDown[e.keyCode] = true;
+});
+
+window.addEventListener('keyup', function (e) {
+  delete Simplicity.keysDown[e.keyCode];
+});
+
+exports['default'] = Simplicity;
+module.exports = exports['default'];
+
+},{"./state/StateManager":8}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22,6 +66,9 @@ var Entity = (function () {
     key: "addToScene",
     value: function addToScene(scene) {
       scene.add(this.mesh);
+      this.egh = new THREE.EdgesHelper(this.mesh, 0x373B44);
+      this.egh.material.linewidth = 1;
+      scene.add(this.egh);
     }
 
     // TODO: add animation
@@ -39,6 +86,11 @@ var Entity = (function () {
     value: function test() {
       this.mesh.position.x += 100;
     }
+  }, {
+    key: "position",
+    get: function get() {
+      return this.mesh.position;
+    }
   }]);
 
   return Entity;
@@ -47,7 +99,7 @@ var Entity = (function () {
 exports["default"] = Entity;
 module.exports = exports["default"];
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -84,21 +136,59 @@ var Player = (function (_Entity) {
 exports['default'] = Player;
 module.exports = exports['default'];
 
-},{"./Entity":1}],3:[function(require,module,exports){
+},{"./Entity":2}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _Entity2 = require('./Entity');
+
+var _Entity3 = _interopRequireDefault(_Entity2);
+
+var geometry = new THREE.BoxGeometry(200, 100, 200, 1, 1, 1),
+    material = new THREE.MeshBasicMaterial({ color: 0xDEE1B6 });
+
+var Tile = (function (_Entity) {
+  _inherits(Tile, _Entity);
+
+  function Tile() {
+    _classCallCheck(this, Tile);
+
+    _get(Object.getPrototypeOf(Tile.prototype), 'constructor', this).call(this, geometry, material);
+    this.mesh.position.y = -150;
+  }
+
+  return Tile;
+})(_Entity3['default']);
+
+exports['default'] = Tile;
+module.exports = exports['default'];
+
+},{"./Entity":2}],5:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _init = require('init');
+var _Simplicity = require('Simplicity');
 
-var _init2 = _interopRequireDefault(_init);
+var _Simplicity2 = _interopRequireDefault(_Simplicity);
 
 var _stateLevel = require('./state/Level');
 
 var _stateLevel2 = _interopRequireDefault(_stateLevel);
 
-_init2['default'].StateManager.add('test', new _stateLevel2['default']());
-_init2['default'].StateManager.load('test');
+_Simplicity2['default'].StateManager.add('test', new _stateLevel2['default']());
+_Simplicity2['default'].StateManager.load('test');
 
 gameLoop();
 // function init() {
@@ -127,9 +217,8 @@ gameLoop();
 function gameLoop() {
   window.requestAnimationFrame(gameLoop);
   TWEEN.update();
-  _init2['default'].StateManager.loop();
-  _init2['default'].renderer.render(_init2['default'].StateManager.scene, _init2['default'].camera);
-  console.log();
+  _Simplicity2['default'].StateManager.loop();
+  _Simplicity2['default'].renderer.render(_Simplicity2['default'].scene, _Simplicity2['default'].camera);
 }
 
 // function movePlayer() {
@@ -150,45 +239,7 @@ function gameLoop() {
 //   })
 // }
 
-},{"./state/Level":5,"init":4}],4:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _stateStateManager = require('./state/StateManager');
-
-var _stateStateManager2 = _interopRequireDefault(_stateStateManager);
-
-var Simplicity = {};
-
-Simplicity.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
-Simplicity.renderer = new THREE.WebGLRenderer({ antialias: true });
-Simplicity.keysDown = {};
-Simplicity.StateManager = new _stateStateManager2['default']();
-
-Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
-Simplicity.camera.position.z = 1000;
-Simplicity.camera.position.y = 300;
-Simplicity.renderer.setClearColor(0x373B44, 1);
-
-document.body.appendChild(Simplicity.renderer.domElement);
-
-window.addEventListener('keydown', function (e) {
-  Simplicity.keysDown[e.keyCode] = true;
-});
-
-window.addEventListener('keyup', function (e) {
-  delete Simplicity.keysDown[e.keyCode];
-});
-
-exports['default'] = Simplicity;
-module.exports = exports['default'];
-
-},{"./state/StateManager":7}],5:[function(require,module,exports){
+},{"./state/Level":6,"Simplicity":1}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -209,13 +260,17 @@ var _State2 = require('./State');
 
 var _State3 = _interopRequireDefault(_State2);
 
-var _init = require('../init');
+var _Simplicity = require('../Simplicity');
 
-var _init2 = _interopRequireDefault(_init);
+var _Simplicity2 = _interopRequireDefault(_Simplicity);
 
 var _entitiesPlayerJs = require('../entities/Player.js');
 
 var _entitiesPlayerJs2 = _interopRequireDefault(_entitiesPlayerJs);
+
+var _entitiesTileJs = require('../entities/Tile.js');
+
+var _entitiesTileJs2 = _interopRequireDefault(_entitiesTileJs);
 
 var Level = (function (_State) {
   _inherits(Level, _State);
@@ -230,15 +285,20 @@ var Level = (function (_State) {
     key: 'create',
     value: function create() {
       this.player = new _entitiesPlayerJs2['default']();
-      this.player.addToScene(_init2['default'].StateManager.scene);
+      this.tile = new _entitiesTileJs2['default']();
+      this.player.addToScene(_Simplicity2['default'].scene);
+      this.tile.addToScene(_Simplicity2['default'].scene);
     }
   }, {
     key: 'update',
     value: function update() {
-      if (_init2['default'].keysDown[68]) {
+      if (_Simplicity2['default'].keysDown[68]) {
         this.player.test();
       }
-      this.player.lookAt(_init2['default'].camera);
+      if (this.player.position.x > 5400) {
+        _Simplicity2['default'].StateManager.load('test');
+      }
+      this.player.lookAt(_Simplicity2['default'].camera);
     }
   }]);
 
@@ -248,7 +308,7 @@ var Level = (function (_State) {
 exports['default'] = Level;
 module.exports = exports['default'];
 
-},{"../entities/Player.js":2,"../init":4,"./State":6}],6:[function(require,module,exports){
+},{"../Simplicity":1,"../entities/Player.js":3,"../entities/Tile.js":4,"./State":7}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -284,7 +344,7 @@ var State = (function () {
 exports["default"] = State;
 module.exports = exports["default"];
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -293,13 +353,7 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var _initJs = require('../init.js');
-
-var _initJs2 = _interopRequireDefault(_initJs);
 
 var StateManager = (function () {
   function StateManager() {
@@ -346,5 +400,5 @@ var StateManager = (function () {
 exports['default'] = StateManager;
 module.exports = exports['default'];
 
-},{"../init.js":4}]},{},[3])
+},{}]},{},[5])
 //# sourceMappingURL=game.js.map

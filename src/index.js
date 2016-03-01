@@ -1,4 +1,4 @@
-import Simplicity from 'init';
+import Simplicity from 'Simplicity';
 
 import Level from './state/Level';
 
@@ -33,9 +33,7 @@ function gameLoop() {
   window.requestAnimationFrame(gameLoop);
   TWEEN.update();
   Simplicity.StateManager.loop();
-  Simplicity.renderer.render(Simplicity.StateManager.scene, Simplicity.camera);
-  console.log()
-
+  Simplicity.renderer.render(Simplicity.scene, Simplicity.camera);
 }
 
     // function movePlayer() {
