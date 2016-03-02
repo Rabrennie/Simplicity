@@ -78,7 +78,7 @@ function copyThree() {
   var srcList = ['three.min.js'];
 
   if (!isProduction()) {
-    srcList.push('three.map', 'three.js');
+    srcList.push('three.map', 'three.js', 'examples/js/renderers/CanvasRenderer.js', 'examples/js/renderers/Projector.js');
   }
 
   srcList = srcList.map(function(file) {
