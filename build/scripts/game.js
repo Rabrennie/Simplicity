@@ -21,7 +21,7 @@ var supportsWebGL = (function () {
   }
 })();
 
-Simplicity.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 20000);
+Simplicity.camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 20000);
 Simplicity.renderer = supportsWebGL ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer({ antialias: true });
 Simplicity.keysDown = {};
 Simplicity.StateManager = new _stateStateManager2['default']();
@@ -51,15 +51,15 @@ exports['default'] = Simplicity;
 module.exports = exports['default'];
 
 },{"./state/StateManager":8}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var Entity = (function () {
   function Entity(geometry, material) {
@@ -68,12 +68,12 @@ var Entity = (function () {
     this.geometry = geometry;
     this.material = material;
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.canMove = true;
-    this.animations = { moveRight: this.moveRightAnim };
+    this.tweening = false;
+    console.log(this.mesh);
   }
 
   _createClass(Entity, [{
-    key: "addToScene",
+    key: 'addToScene',
     value: function addToScene(scene) {
       scene.add(this.mesh);
       this.egh = new THREE.EdgesHelper(this.mesh, 0x373B44);
@@ -81,11 +81,11 @@ var Entity = (function () {
       scene.add(this.egh);
     }
   }, {
-    key: "moveRightAnim",
+    key: 'moveRightAnim',
     value: function moveRightAnim() {
       var _this = this;
 
-      this.canMove = false;
+      this.tweening = true;
 
       var move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x + 200 }, 250);
       var rotate = new TWEEN.Tween(this.mesh.rotation).to({ z: this.mesh.rotation.z - 1.5708 }, 250);
@@ -94,8 +94,9 @@ var Entity = (function () {
 
       moveUp.chain(moveDown);
 
-      move.onComplete(function () {
-        _this.canMove = true;
+      rotate.onComplete(function () {
+        _this.mesh.rotation.set(0, 0, 0);
+        _this.tweening = false;
       });
 
       move.start();
@@ -103,20 +104,108 @@ var Entity = (function () {
       moveUp.start();
     }
   }, {
-    key: "cameraFollow",
+    key: 'moveLeftAnim',
+    value: function moveLeftAnim() {
+      var _this2 = this;
+
+      this.tweening = true;
+
+      var move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x - 200 }, 250);
+      var rotate = new TWEEN.Tween(this.mesh.rotation).to({ z: this.mesh.rotation.z + 1.5708 }, 250);
+      var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
+      var moveDown = new TWEEN.Tween(this.mesh.position).to({ y: 0 }, 125);
+
+      moveUp.chain(moveDown);
+
+      rotate.onComplete(function () {
+        _this2.mesh.rotation.set(0, 0, 0);
+        _this2.tweening = false;
+      });
+
+      move.start();
+      rotate.start();
+      moveUp.start();
+    }
+  }, {
+    key: 'moveDownAnim',
+    value: function moveDownAnim() {
+      var _this3 = this;
+
+      this.tweening = true;
+
+      var move = new TWEEN.Tween(this.mesh.position).to({ z: this.mesh.position.z + 200 }, 250);
+      var rotate = new TWEEN.Tween(this.mesh.rotation).to({ x: this.mesh.rotation.x + 1.5708 }, 250);
+      var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
+      var moveDown = new TWEEN.Tween(this.mesh.position).to({ y: 0 }, 125);
+
+      moveUp.chain(moveDown);
+
+      rotate.onComplete(function () {
+        _this3.mesh.rotation.set(0, 0, 0);
+        _this3.tweening = false;
+      });
+
+      move.start();
+      rotate.start();
+      moveUp.start();
+    }
+  }, {
+    key: 'moveUpAnim',
+    value: function moveUpAnim() {
+      var _this4 = this;
+
+      this.tweening = true;
+
+      var move = new TWEEN.Tween(this.mesh.position).to({ z: this.mesh.position.z - 200 }, 250);
+      var rotate = new TWEEN.Tween(this.mesh.rotation).to({ x: this.mesh.rotation.x - 1.5708 }, 250);
+      var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
+      var moveDown = new TWEEN.Tween(this.mesh.position).to({ y: 0 }, 125);
+
+      moveUp.chain(moveDown);
+
+      rotate.onComplete(function () {
+        _this4.mesh.rotation.set(0, 0, 0);
+        _this4.tweening = false;
+      });
+
+      move.start();
+      rotate.start();
+      moveUp.start();
+    }
+  }, {
+    key: 'cameraFollow',
     value: function cameraFollow(camera) {
       camera.follow = this.mesh;
       camera.lookAt(this.mesh.position);
     }
   }, {
-    key: "test",
-    value: function test() {
-      if (this.canMove) {
-        this.moveRightAnim();
+    key: 'move',
+    value: function move(direction) {
+      if (!this.tweening) {
+        switch (direction) {
+          case 'right':
+            this.moveRightAnim();
+            break;
+
+          case 'down':
+            this.moveDownAnim();
+            break;
+
+          case 'left':
+            this.moveLeftAnim();
+            break;
+
+          case 'up':
+            this.moveUpAnim();
+            break;
+
+          default:
+            break;
+        }
       }
     }
   }, {
-    key: "position",
+    key: 'position',
     get: function get() {
       return this.mesh.position;
     }
@@ -125,8 +214,8 @@ var Entity = (function () {
   return Entity;
 })();
 
-exports["default"] = Entity;
-module.exports = exports["default"];
+exports['default'] = Entity;
+module.exports = exports['default'];
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -134,6 +223,8 @@ module.exports = exports["default"];
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
@@ -159,6 +250,18 @@ var Player = (function (_Entity) {
     _get(Object.getPrototypeOf(Player.prototype), 'constructor', this).call(this, geometry, material);
   }
 
+  _createClass(Player, [{
+    key: 'tileX',
+    get: function get() {
+      return this.position.x / 200;
+    }
+  }, {
+    key: 'tileZ',
+    get: function get() {
+      return this.position.z / 200;
+    }
+  }]);
+
   return Player;
 })(_Entity3['default']);
 
@@ -171,6 +274,8 @@ module.exports = exports['default'];
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
@@ -195,7 +300,35 @@ var Tile = (function (_Entity) {
 
     _get(Object.getPrototypeOf(Tile.prototype), 'constructor', this).call(this, geometry, material);
     this.mesh.position.y = -150;
+
+    this.afterTriggered = false;
+    this.beforeTriggered = false;
   }
+
+  _createClass(Tile, [{
+    key: 'nextTo',
+    value: function nextTo(player) {
+      console.log('nextTo');
+    }
+  }, {
+    key: 'beforeStepOn',
+    value: function beforeStepOn(player) {
+      if (!this.beforeTriggered) {
+        console.log('beforeStepOn', this.mesh.position);
+      }
+      this.beforeTriggered = true;
+      this.afterTriggered = false;
+    }
+  }, {
+    key: 'afterStepOn',
+    value: function afterStepOn(player) {
+      if (!this.afterTriggered) {
+        console.log('afterStepOn', this.mesh.position);
+      }
+      this.afterTriggered = true;
+      this.beforeTriggered = false;
+    }
+  }]);
 
   return Tile;
 })(_Entity3['default']);
@@ -287,25 +420,66 @@ var Level = (function (_State) {
   }, {
     key: 'spawnTiles',
     value: function spawnTiles() {
-      for (var y = 0; y < this.layout.length; y++) {
+      for (var z = 0; z < this.layout.length; z++) {
         this.tiles.push([]);
-        for (var x = 0; x < this.layout[y].length; x++) {
-          this.tiles[y][x] = new _entitiesTileJs2['default']();
-          this.tiles[y][x].addToScene(_Simplicity2['default'].scene);
-          this.tiles[y][x].position.x = x * 200;
-          this.tiles[y][x].position.z = y * 200;
+        for (var x = 0; x < this.layout[z].length; x++) {
+          this.tiles[z][x] = new _entitiesTileJs2['default']();
+          this.tiles[z][x].addToScene(_Simplicity2['default'].scene);
+          this.tiles[z][x].position.x = x * 200;
+          this.tiles[z][x].position.z = z * 200;
         }
       }
     }
   }, {
     key: 'update',
     value: function update() {
-      if (_Simplicity2['default'].keysDown[68]) {
-        this.player.test();
+
+      this.afterTrigger();
+
+      if (!this.player.tweening) {
+        if (_Simplicity2['default'].keysDown[68]) {
+          this.beforeTrigger(this.player.tileZ, this.player.tileX + 1);
+          this.player.move('right');
+        } else if (_Simplicity2['default'].keysDown[83]) {
+          this.beforeTrigger(this.player.tileZ + 1, this.player.tileX);
+          this.player.move('down');
+        } else if (_Simplicity2['default'].keysDown[65]) {
+          this.beforeTrigger(this.player.tileZ, this.player.tileX - 1);
+          this.player.move('left');
+        } else if (_Simplicity2['default'].keysDown[87]) {
+          this.beforeTrigger(this.player.tileZ - 1, this.player.tileX);
+          this.player.move('up');
+        }
       }
-      if (this.player.position.x > 5400) {
-        _Simplicity2['default'].StateManager.load('test');
+    }
+  }, {
+    key: 'beforeTrigger',
+    value: function beforeTrigger(z, x) {
+      if (!this.player.tweening) {
+        if (this.checkTile(z, x)) {
+          this.tiles[z][x].beforeStepOn();
+        }
       }
+    }
+  }, {
+    key: 'afterTrigger',
+    value: function afterTrigger() {
+      if (!this.player.tweening) {
+        if (this.checkTile(this.player.tileZ, this.player.tileX)) {
+          this.tiles[this.player.tileZ][this.player.tileX].afterStepOn();
+        }
+      }
+    }
+  }, {
+    key: 'checkTile',
+    value: function checkTile(z, x) {
+      if (this.tiles[z] !== undefined) {
+        if (this.tiles[z][x]) {
+          return true;
+        }
+      }
+
+      return false;
     }
   }]);
 

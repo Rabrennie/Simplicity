@@ -7,6 +7,14 @@ class Player extends Entity {
   constructor() {
     super(geometry, material);
   }
+
+  get tileX() {
+    return this.position.x/200;
+  }
+
+  get tileZ() {
+    return this.position.z/200;
+  }
 }
 
 export default Player;

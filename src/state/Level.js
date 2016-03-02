@@ -20,25 +20,63 @@ class Level extends State {
   }
 
   spawnTiles() {
-    for (var y = 0; y < this.layout.length; y++) {
+    for (var z = 0; z < this.layout.length; z++) {
       this.tiles.push([]);
-      for (var x = 0; x < this.layout[y].length; x++) {
-        this.tiles[y][x] = new Tile();
-        this.tiles[y][x].addToScene(Simplicity.scene);
-        this.tiles[y][x].position.x = x*200;
-        this.tiles[y][x].position.z = y*200;
+      for (var x = 0; x < this.layout[z].length; x++) {
+        this.tiles[z][x] = new Tile();
+        this.tiles[z][x].addToScene(Simplicity.scene);
+        this.tiles[z][x].position.x = x*200;
+        this.tiles[z][x].position.z = z*200;
       }
     }
   }
 
   update() {
-    if(Simplicity.keysDown[68]) {
-      this.player.test();
-    }
-    if(this.player.position.x > 5400) {
-      Simplicity.StateManager.load('test');
+
+    this.afterTrigger();
+
+    if(!this.player.tweening) {
+      if(Simplicity.keysDown[68]) {
+        this.beforeTrigger(this.player.tileZ,this.player.tileX+1);
+        this.player.move('right');
+      } else if(Simplicity.keysDown[83]) {
+        this.beforeTrigger(this.player.tileZ+1,this.player.tileX);
+        this.player.move('down');
+      } else if(Simplicity.keysDown[65]) {
+        this.beforeTrigger(this.player.tileZ,this.player.tileX-1);
+        this.player.move('left');
+      } else if(Simplicity.keysDown[87]) {
+        this.beforeTrigger(this.player.tileZ-1,this.player.tileX);
+        this.player.move('up');
+      }
     }
 
+  }
+
+  beforeTrigger(z, x) {
+    if(!this.player.tweening) {
+      if(this.checkTile(z, x)) {
+        this.tiles[z][x].beforeStepOn();
+      }
+    }
+  }
+
+  afterTrigger() {
+    if(!this.player.tweening) {
+      if(this.checkTile(this.player.tileZ, this.player.tileX)) {
+        this.tiles[this.player.tileZ][this.player.tileX].afterStepOn();
+      }
+    }
+  }
+
+  checkTile(z, x) {
+    if(this.tiles[z] !== undefined) {
+      if(this.tiles[z][x]) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
 

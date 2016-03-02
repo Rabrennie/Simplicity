@@ -3,8 +3,8 @@ class Entity {
     this.geometry = geometry;
     this.material =  material;
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.canMove = true;
-    this.animations = { moveRight: this.moveRightAnim };
+    this.tweening = false;
+    console.log(this.mesh)
   }
 
   addToScene(scene) {
@@ -15,7 +15,7 @@ class Entity {
   }
 
   moveRightAnim() {
-    this.canMove = false;
+    this.tweening = true;
 
     const move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x+200 }, 250);
     const rotate = new TWEEN.Tween(this.mesh.rotation).to({ z:  this.mesh.rotation.z-1.5708 }, 250);
@@ -24,8 +24,69 @@ class Entity {
 
     moveUp.chain(moveDown);
 
-    move.onComplete(() => {
-      this.canMove = true;
+    rotate.onComplete(() => {
+      this.mesh.rotation.set(0, 0, 0);
+      this.tweening = false;
+    })
+
+    move.start();
+    rotate.start();
+    moveUp.start();
+  }
+
+  moveLeftAnim() {
+    this.tweening = true;
+
+    const move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x-200 }, 250);
+    const rotate = new TWEEN.Tween(this.mesh.rotation).to({ z:  this.mesh.rotation.z+1.5708 }, 250);
+    const moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
+    const moveDown = new TWEEN.Tween(this.mesh.position).to({ y: 0 }, 125);
+
+    moveUp.chain(moveDown);
+
+    rotate.onComplete(() => {
+      this.mesh.rotation.set(0, 0, 0);
+      this.tweening = false;
+    })
+
+    move.start();
+    rotate.start();
+    moveUp.start();
+  }
+
+  moveDownAnim() {
+    this.tweening = true;
+
+    const move = new TWEEN.Tween(this.mesh.position).to({ z: this.mesh.position.z+200 }, 250);
+    const rotate = new TWEEN.Tween(this.mesh.rotation).to({ x:  this.mesh.rotation.x+1.5708 }, 250);
+    const moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
+    const moveDown = new TWEEN.Tween(this.mesh.position).to({ y: 0 }, 125);
+
+    moveUp.chain(moveDown);
+
+    rotate.onComplete(() => {
+      this.mesh.rotation.set(0, 0, 0);
+      this.tweening = false;
+    })
+
+    move.start();
+    rotate.start();
+    moveUp.start();
+  }
+
+  moveUpAnim() {
+    this.tweening = true;
+
+    const move = new TWEEN.Tween(this.mesh.position).to({ z: this.mesh.position.z-200 }, 250);
+    const rotate = new TWEEN.Tween(this.mesh.rotation).to({ x:  this.mesh.rotation.x-1.5708 }, 250);
+    const moveUp = new TWEEN.Tween(this.mesh.position).to({ y: 50 }, 125);
+    const moveDown = new TWEEN.Tween(this.mesh.position).to({ y: 0 }, 125);
+
+    moveUp.chain(moveDown);
+
+    rotate.onComplete(() => {
+      this.mesh.rotation.set(0, 0, 0);
+      this.tweening = false;
     })
 
     move.start();
@@ -39,9 +100,28 @@ class Entity {
     camera.lookAt(this.mesh.position);
   }
 
-  test() {
-    if(this.canMove) {
-      this.moveRightAnim();
+  move(direction) {
+    if(!this.tweening) {
+      switch (direction) {
+          case 'right':
+            this.moveRightAnim();
+            break;
+
+          case 'down':
+            this.moveDownAnim();
+            break;
+
+          case 'left':
+            this.moveLeftAnim();
+            break;
+
+          case 'up':
+            this.moveUpAnim();
+            break;
+
+          default:
+            break;
+      }
     }
   }
 
