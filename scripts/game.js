@@ -69,7 +69,7 @@ var Entity = (function () {
     this.material = material;
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.tweening = false;
-    console.log(this.mesh);
+    this.lastDirection;
   }
 
   _createClass(Entity, [{
@@ -176,6 +176,8 @@ var Entity = (function () {
     key: 'cameraFollow',
     value: function cameraFollow(camera) {
       camera.follow = this.mesh;
+      camera.position.x = camera.follow.position.x;
+      camera.position.z = camera.follow.position.z + 1500;
       camera.lookAt(this.mesh.position);
     }
   }, {
@@ -184,18 +186,22 @@ var Entity = (function () {
       if (!this.tweening) {
         switch (direction) {
           case 'right':
+            this.lastDirection = 'right';
             this.moveRightAnim();
             break;
 
           case 'down':
+            this.lastDirection = 'down';
             this.moveDownAnim();
             break;
 
           case 'left':
+            this.lastDirection = 'left';
             this.moveLeftAnim();
             break;
 
           case 'up':
+            this.lastDirection = 'up';
             this.moveUpAnim();
             break;
 
@@ -251,6 +257,28 @@ var Player = (function (_Entity) {
   }
 
   _createClass(Player, [{
+    key: 'fall',
+    value: function fall(cb) {
+      this.tweening = true;
+      var rotate = null;
+      var move = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y - 2000 }, 600);
+
+      if (this.lastDirection === 'right') {
+        rotate = new TWEEN.Tween(this.mesh.rotation).to({ z: -4.7124 }, 600);
+      } else if (this.lastDirection === 'left') {
+        rotate = new TWEEN.Tween(this.mesh.rotation).to({ z: 4.7124 }, 600);
+      } else if (this.lastDirection === 'up') {
+        rotate = new TWEEN.Tween(this.mesh.rotation).to({ x: -4.7124 }, 600);
+      } else if (this.lastDirection === 'down') {
+        rotate = new TWEEN.Tween(this.mesh.rotation).to({ x: 4.7124 }, 600);
+      }
+
+      move.onComplete(cb);
+
+      move.start();
+      rotate.start();
+    }
+  }, {
     key: 'tileX',
     get: function get() {
       return this.position.x / 200;
@@ -303,27 +331,40 @@ var Tile = (function (_Entity) {
 
     this.afterTriggered = false;
     this.beforeTriggered = false;
+
+    this.beforeCallback = function () {
+      console.log('test');
+    };
+    this.afterCallback = function () {
+      console.log('test');
+    };
   }
+
+  // TODO: make the callback setable
 
   _createClass(Tile, [{
     key: 'nextTo',
     value: function nextTo(player) {
       console.log('nextTo');
     }
+
+    // TODO: make the callback setable
   }, {
     key: 'beforeStepOn',
     value: function beforeStepOn(player) {
       if (!this.beforeTriggered) {
-        console.log('beforeStepOn', this.mesh.position);
+        this.beforeCallback(player);
       }
       this.beforeTriggered = true;
       this.afterTriggered = false;
     }
+
+    // TODO: make the callback setable
   }, {
     key: 'afterStepOn',
     value: function afterStepOn(player) {
       if (!this.afterTriggered) {
-        console.log('afterStepOn', this.mesh.position);
+        this.afterCallback(player);
       }
       this.afterTriggered = true;
       this.beforeTriggered = false;
@@ -467,6 +508,8 @@ var Level = (function (_State) {
       if (!this.player.tweening) {
         if (this.checkTile(this.player.tileZ, this.player.tileX)) {
           this.tiles[this.player.tileZ][this.player.tileX].afterStepOn();
+        } else {
+          this.fall();
         }
       }
     }
@@ -480,6 +523,20 @@ var Level = (function (_State) {
       }
 
       return false;
+    }
+  }, {
+    key: 'fall',
+    value: function fall() {
+      var _this = this;
+
+      this.player.fall(function () {
+        _this.reset();
+      });
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      _Simplicity2['default'].StateManager.load('test');
     }
   }]);
 
