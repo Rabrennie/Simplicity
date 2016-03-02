@@ -65,6 +65,8 @@ class Level extends State {
     if(!this.player.tweening) {
       if(this.checkTile(this.player.tileZ, this.player.tileX)) {
         this.tiles[this.player.tileZ][this.player.tileX].afterStepOn();
+      } else {
+        this.fall();
       }
     }
   }
@@ -77,6 +79,14 @@ class Level extends State {
     }
 
     return false;
+  }
+
+  fall() {
+    this.player.fall(() => {this.reset()});
+  }
+
+  reset() {
+    Simplicity.StateManager.load('test');
   }
 }
 

@@ -4,7 +4,7 @@ class Entity {
     this.material =  material;
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.tweening = false;
-    console.log(this.mesh)
+    this.lastDirection;
   }
 
   addToScene(scene) {
@@ -97,6 +97,8 @@ class Entity {
 
   cameraFollow(camera) {
     camera.follow = this.mesh;
+    camera.position.x = camera.follow.position.x;
+    camera.position.z = camera.follow.position.z+1500;
     camera.lookAt(this.mesh.position);
   }
 
@@ -104,18 +106,22 @@ class Entity {
     if(!this.tweening) {
       switch (direction) {
           case 'right':
+            this.lastDirection = 'right';
             this.moveRightAnim();
             break;
 
           case 'down':
+            this.lastDirection = 'down';
             this.moveDownAnim();
             break;
 
           case 'left':
+            this.lastDirection = 'left';
             this.moveLeftAnim();
             break;
 
           case 'up':
+            this.lastDirection = 'up';
             this.moveUpAnim();
             break;
 

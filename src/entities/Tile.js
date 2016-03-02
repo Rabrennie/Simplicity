@@ -10,23 +10,29 @@ class Tile extends Entity {
 
     this.afterTriggered = false;
     this.beforeTriggered = false;
+
+    this.beforeCallback = function() {console.log('test')};
+    this.afterCallback = function() {console.log('test')};
   }
 
+  // TODO: make the callback setable
   nextTo(player) {
     console.log('nextTo');
   }
 
+  // TODO: make the callback setable
   beforeStepOn(player) {
     if(!this.beforeTriggered) {
-      console.log('beforeStepOn', this.mesh.position);
+      this.beforeCallback(player);
     }
     this.beforeTriggered = true;
     this.afterTriggered = false;
   }
 
+  // TODO: make the callback setable
   afterStepOn(player) {
     if(!this.afterTriggered) {
-      console.log('afterStepOn', this.mesh.position);
+      this.afterCallback(player);
     }
     this.afterTriggered = true;
     this.beforeTriggered = false;

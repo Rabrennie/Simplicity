@@ -8,6 +8,27 @@ class Player extends Entity {
     super(geometry, material);
   }
 
+  fall(cb) {
+    this.tweening = true;
+    let rotate = null;
+    const move = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y-2000 }, 600)
+
+    if(this.lastDirection === 'right') {
+      rotate = new TWEEN.Tween(this.mesh.rotation).to({ z: -4.7124 }, 600);
+    } else if(this.lastDirection === 'left') {
+      rotate = new TWEEN.Tween(this.mesh.rotation).to({ z: 4.7124 }, 600);
+    } else if(this.lastDirection === 'up') {
+      rotate = new TWEEN.Tween(this.mesh.rotation).to({ x: -4.7124 }, 600);
+    } else if(this.lastDirection === 'down') {
+      rotate = new TWEEN.Tween(this.mesh.rotation).to({ x: 4.7124 }, 600);
+    }
+
+    move.onComplete(cb);
+
+    move.start();
+    rotate.start();
+  }
+
   get tileX() {
     return this.position.x/200;
   }
