@@ -13,14 +13,13 @@ class Tile extends Entity {
 
     this.beforeCallback = function() {console.log('test')};
     this.afterCallback = function() {console.log('test')};
+
   }
 
-  // TODO: make the callback setable
   nextTo(player) {
-    console.log('nextTo');
+    console.log('nextTo', player);
   }
 
-  // TODO: make the callback setable
   beforeStepOn(player) {
     if(!this.beforeTriggered) {
       this.beforeCallback(player);
@@ -29,7 +28,6 @@ class Tile extends Entity {
     this.afterTriggered = false;
   }
 
-  // TODO: make the callback setable
   afterStepOn(player) {
     if(!this.afterTriggered) {
       this.afterCallback(player);

@@ -1,3 +1,22 @@
+body {
+  overflow: hidden;
+}
+
 * {
   margin: 0;
+  padding: 0;
+}
+
+.ui {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+}
+
+.test {
+  position: absolute;
+  left:50vw;
+  top:50vh;
+  color:green;
+  font-size: 100px;
 }

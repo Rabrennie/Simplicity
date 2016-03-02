@@ -11,6 +11,10 @@ var _stateStateManager = require('./state/StateManager');
 
 var _stateStateManager2 = _interopRequireDefault(_stateStateManager);
 
+var _uiUIManager = require('./ui/UIManager');
+
+var _uiUIManager2 = _interopRequireDefault(_uiUIManager);
+
 var Simplicity = {};
 
 var supportsWebGL = (function () {
@@ -25,6 +29,7 @@ Simplicity.camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.i
 Simplicity.renderer = supportsWebGL ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer({ antialias: true });
 Simplicity.keysDown = {};
 Simplicity.StateManager = new _stateStateManager2['default']();
+Simplicity.UIManager = new _uiUIManager2['default']();
 
 Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
 Simplicity.camera.position.z = 1500;
@@ -50,7 +55,7 @@ window.addEventListener('keyup', function (e) {
 exports['default'] = Simplicity;
 module.exports = exports['default'];
 
-},{"./state/StateManager":8}],2:[function(require,module,exports){
+},{"./state/StateManager":8,"./ui/UIManager":9}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -340,15 +345,11 @@ var Tile = (function (_Entity) {
     };
   }
 
-  // TODO: make the callback setable
-
   _createClass(Tile, [{
     key: 'nextTo',
     value: function nextTo(player) {
-      console.log('nextTo');
+      console.log('nextTo', player);
     }
-
-    // TODO: make the callback setable
   }, {
     key: 'beforeStepOn',
     value: function beforeStepOn(player) {
@@ -358,8 +359,6 @@ var Tile = (function (_Entity) {
       this.beforeTriggered = true;
       this.afterTriggered = false;
     }
-
-    // TODO: make the callback setable
   }, {
     key: 'afterStepOn',
     value: function afterStepOn(player) {
@@ -446,7 +445,7 @@ var Level = (function (_State) {
     _classCallCheck(this, Level);
 
     _get(Object.getPrototypeOf(Level.prototype), 'constructor', this).call(this);
-    this.layout = [[1, 1, 1], [1, 1, 1], [1, 1, 1]];
+    this.layout = [[1, 1, 1], [1, 1, 1], [0, 1, 0], [1, 1, 1], [1, 1, 1]];
     this.tiles = [];
   }
 
@@ -457,6 +456,7 @@ var Level = (function (_State) {
       this.player.addToScene(_Simplicity2['default'].scene);
       this.player.cameraFollow(_Simplicity2['default'].camera);
       this.spawnTiles();
+      _Simplicity2['default'].UIManager.add('test', 'test');
     }
   }, {
     key: 'spawnTiles',
@@ -464,10 +464,12 @@ var Level = (function (_State) {
       for (var z = 0; z < this.layout.length; z++) {
         this.tiles.push([]);
         for (var x = 0; x < this.layout[z].length; x++) {
-          this.tiles[z][x] = new _entitiesTileJs2['default']();
-          this.tiles[z][x].addToScene(_Simplicity2['default'].scene);
-          this.tiles[z][x].position.x = x * 200;
-          this.tiles[z][x].position.z = z * 200;
+          if (this.layout[z][x] > 0) {
+            this.tiles[z][x] = new _entitiesTileJs2['default']();
+            this.tiles[z][x].addToScene(_Simplicity2['default'].scene);
+            this.tiles[z][x].position.x = x * 200;
+            this.tiles[z][x].position.z = z * 200;
+          }
         }
       }
     }
@@ -481,6 +483,7 @@ var Level = (function (_State) {
         if (_Simplicity2['default'].keysDown[68]) {
           this.beforeTrigger(this.player.tileZ, this.player.tileX + 1);
           this.player.move('right');
+          _Simplicity2['default'].UIManager.update('test', 'rekt');
         } else if (_Simplicity2['default'].keysDown[83]) {
           this.beforeTrigger(this.player.tileZ + 1, this.player.tileX);
           this.player.move('down');
@@ -636,6 +639,62 @@ var StateManager = (function () {
 })();
 
 exports['default'] = StateManager;
+module.exports = exports['default'];
+
+},{}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var UIManager = (function () {
+  function UIManager() {
+    _classCallCheck(this, UIManager);
+
+    this.elems = {};
+    this.wrapper = document.getElementsByClassName('ui')[0];
+  }
+
+  _createClass(UIManager, [{
+    key: 'add',
+    value: function add(name, html, parent) {
+      var div = document.createElement('div');
+      div.innerHTML = html;
+      div.className = name;
+      if (parent) {
+        parent.appendChild(div);
+      } else {
+        this.wrapper.appendChild(div);
+      }
+      this.elems[name] = div;
+      console.log(this.elems);
+    }
+  }, {
+    key: 'get',
+    value: function get(name) {
+      return this.elems[name];
+    }
+  }, {
+    key: 'remove',
+    value: function remove(name) {
+      this.get(name).remove();
+    }
+  }, {
+    key: 'update',
+    value: function update(name, html) {
+      this.get(name).innerHTML = html;
+    }
+  }]);
+
+  return UIManager;
+})();
+
+exports['default'] = UIManager;
 module.exports = exports['default'];
 
 },{}]},{},[5])

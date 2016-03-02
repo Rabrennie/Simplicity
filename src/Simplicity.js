@@ -1,4 +1,5 @@
 import StateManager from './state/StateManager';
+import UIManager from './ui/UIManager';
 
 const Simplicity = {};
 
@@ -8,6 +9,7 @@ Simplicity.camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.i
 Simplicity.renderer = supportsWebGL? new THREE.WebGLRenderer({ antialias: true }): new THREE.CanvasRenderer({ antialias: true });
 Simplicity.keysDown = {};
 Simplicity.StateManager = new StateManager();
+Simplicity.UIManager = new UIManager();
 
 Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
 Simplicity.camera.position.z = 1500;

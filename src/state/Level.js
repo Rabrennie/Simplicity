@@ -7,7 +7,7 @@ import Tile from '../entities/Tile.js';
 class Level extends State {
   constructor() {
     super();
-    this.layout = [[1, 1, 1],[1, 1, 1],[1, 1, 1]];
+    this.layout = [[1, 1, 1],[1, 1, 1],[0, 1, 0],[1, 1, 1],[1, 1, 1]];
     this.tiles = [];
 
   }
@@ -17,16 +17,19 @@ class Level extends State {
     this.player.addToScene(Simplicity.scene);
     this.player.cameraFollow(Simplicity.camera);
     this.spawnTiles();
+    Simplicity.UIManager.add('test', 'test')
   }
 
   spawnTiles() {
     for (var z = 0; z < this.layout.length; z++) {
       this.tiles.push([]);
       for (var x = 0; x < this.layout[z].length; x++) {
-        this.tiles[z][x] = new Tile();
-        this.tiles[z][x].addToScene(Simplicity.scene);
-        this.tiles[z][x].position.x = x*200;
-        this.tiles[z][x].position.z = z*200;
+        if(this.layout[z][x] > 0) {
+          this.tiles[z][x] = new Tile();
+          this.tiles[z][x].addToScene(Simplicity.scene);
+          this.tiles[z][x].position.x = x*200;
+          this.tiles[z][x].position.z = z*200;
+        }
       }
     }
   }
@@ -39,6 +42,7 @@ class Level extends State {
       if(Simplicity.keysDown[68]) {
         this.beforeTrigger(this.player.tileZ,this.player.tileX+1);
         this.player.move('right');
+        Simplicity.UIManager.update('test', 'rekt');
       } else if(Simplicity.keysDown[83]) {
         this.beforeTrigger(this.player.tileZ+1,this.player.tileX);
         this.player.move('down');
