@@ -30,11 +30,13 @@ Simplicity.renderer = supportsWebGL ? new THREE.WebGLRenderer({ antialias: true 
 Simplicity.keysDown = {};
 Simplicity.StateManager = new _stateStateManager2['default']();
 Simplicity.UIManager = new _uiUIManager2['default']();
-
+Simplicity.clear = function () {
+  Simplicity.UIManager.clear();
+};
 Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
 Simplicity.camera.position.z = 1500;
 Simplicity.camera.position.y = 1000;
-Simplicity.renderer.setClearColor(0x373B44, 1);
+Simplicity.renderer.setClearColor(0x161616, 1);
 
 Object.defineProperties(Simplicity, {
   scene: { get: function get() {
@@ -55,7 +57,7 @@ window.addEventListener('keyup', function (e) {
 exports['default'] = Simplicity;
 module.exports = exports['default'];
 
-},{"./state/StateManager":8,"./ui/UIManager":9}],2:[function(require,module,exports){
+},{"./state/StateManager":11,"./ui/UIManager":12}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -81,7 +83,7 @@ var Entity = (function () {
     key: 'addToScene',
     value: function addToScene(scene) {
       scene.add(this.mesh);
-      this.egh = new THREE.EdgesHelper(this.mesh, 0x373B44);
+      this.egh = new THREE.EdgesHelper(this.mesh, 0x515151);
       this.egh.material.linewidth = 1;
       scene.add(this.egh);
     }
@@ -250,7 +252,7 @@ var _Entity2 = require('./Entity');
 var _Entity3 = _interopRequireDefault(_Entity2);
 
 var geometry = new THREE.BoxGeometry(200, 200, 200, 1, 1, 1),
-    material = new THREE.MeshBasicMaterial({ color: 0xE1B866 });
+    material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 
 var Player = (function (_Entity) {
   _inherits(Player, _Entity);
@@ -323,47 +325,55 @@ var _Entity2 = require('./Entity');
 var _Entity3 = _interopRequireDefault(_Entity2);
 
 var geometry = new THREE.BoxGeometry(200, 100, 200, 1, 1, 1),
-    material = new THREE.MeshBasicMaterial({ color: 0xDEE1B6 });
+    material = new THREE.MeshBasicMaterial({ color: 0xEEEEEE });
 
 var Tile = (function (_Entity) {
   _inherits(Tile, _Entity);
 
-  function Tile() {
+  function Tile(newMaterial) {
     _classCallCheck(this, Tile);
 
-    _get(Object.getPrototypeOf(Tile.prototype), 'constructor', this).call(this, geometry, material);
+    if (newMaterial) {
+      _get(Object.getPrototypeOf(Tile.prototype), 'constructor', this).call(this, geometry, newMaterial);
+    } else {
+      _get(Object.getPrototypeOf(Tile.prototype), 'constructor', this).call(this, geometry, material);
+    }
+
     this.mesh.position.y = -150;
 
+    this.nextTriggered = false;
     this.afterTriggered = false;
     this.beforeTriggered = false;
 
-    this.beforeCallback = function () {
-      console.log('test');
-    };
-    this.afterCallback = function () {
-      console.log('test');
-    };
+    this.nextCallback = function () {};
+    this.beforeCallback = function () {};
+    this.afterCallback = function () {};
   }
+
+  // can only trigger once for now
 
   _createClass(Tile, [{
     key: 'nextTo',
-    value: function nextTo(player) {
-      console.log('nextTo', player);
+    value: function nextTo(level) {
+      if (!this.nextTriggered) {
+        this.nextCallback(level);
+        this.nextTriggered = true;
+      }
     }
   }, {
     key: 'beforeStepOn',
-    value: function beforeStepOn(player) {
+    value: function beforeStepOn(level) {
       if (!this.beforeTriggered) {
-        this.beforeCallback(player);
+        this.beforeCallback(level);
       }
       this.beforeTriggered = true;
       this.afterTriggered = false;
     }
   }, {
     key: 'afterStepOn',
-    value: function afterStepOn(player) {
+    value: function afterStepOn(level) {
       if (!this.afterTriggered) {
-        this.afterCallback(player);
+        this.afterCallback(level);
       }
       this.afterTriggered = true;
       this.beforeTriggered = false;
@@ -379,6 +389,112 @@ module.exports = exports['default'];
 },{"./Entity":2}],5:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _TileJs = require('../Tile.js');
+
+var _TileJs2 = _interopRequireDefault(_TileJs);
+
+var GoalTile = (function (_Tile) {
+  _inherits(GoalTile, _Tile);
+
+  function GoalTile() {
+    _classCallCheck(this, GoalTile);
+
+    _get(Object.getPrototypeOf(GoalTile.prototype), 'constructor', this).call(this, new THREE.MeshBasicMaterial({ color: 0x00E500 }));
+    this.afterCallback = function (level) {
+      level.win();
+    };
+  }
+
+  return GoalTile;
+})(_TileJs2['default']);
+
+exports['default'] = GoalTile;
+module.exports = exports['default'];
+
+},{"../Tile.js":4}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _TileJs = require('../Tile.js');
+
+var _TileJs2 = _interopRequireDefault(_TileJs);
+
+var GuideTile = (function (_Tile) {
+  _inherits(GuideTile, _Tile);
+
+  function GuideTile() {
+    _classCallCheck(this, GuideTile);
+
+    _get(Object.getPrototypeOf(GuideTile.prototype), 'constructor', this).call(this);
+
+    this.nextCallback = function () {
+      this.mesh.material = new THREE.MeshBasicMaterial({ color: 0x00B4FF });
+    };
+  }
+
+  return GuideTile;
+})(_TileJs2['default']);
+
+exports['default'] = GuideTile;
+module.exports = exports['default'];
+
+},{"../Tile.js":4}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _Tile = require('../Tile');
+
+var _Tile2 = _interopRequireDefault(_Tile);
+
+var _GuideTile = require('./GuideTile');
+
+var _GuideTile2 = _interopRequireDefault(_GuideTile);
+
+var _GoalTile = require('./GoalTile');
+
+var _GoalTile2 = _interopRequireDefault(_GoalTile);
+
+var Tiles = {
+  1: _Tile2['default'],
+  2: _GuideTile2['default'],
+  3: _GoalTile2['default']
+
+};
+
+exports['default'] = Tiles;
+module.exports = exports['default'];
+
+},{"../Tile":4,"./GoalTile":5,"./GuideTile":6}],8:[function(require,module,exports){
+'use strict';
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _Simplicity = require('Simplicity');
@@ -389,7 +505,7 @@ var _stateLevel = require('./state/Level');
 
 var _stateLevel2 = _interopRequireDefault(_stateLevel);
 
-_Simplicity2['default'].StateManager.add('test', new _stateLevel2['default']());
+_Simplicity2['default'].StateManager.add('test', _stateLevel2['default']);
 _Simplicity2['default'].StateManager.load('test');
 
 gameLoop();
@@ -405,7 +521,7 @@ function gameLoop() {
   _Simplicity2['default'].renderer.render(_Simplicity2['default'].scene, _Simplicity2['default'].camera);
 }
 
-},{"./state/Level":6,"Simplicity":1}],6:[function(require,module,exports){
+},{"./state/Level":9,"Simplicity":1}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -434,9 +550,9 @@ var _entitiesPlayerJs = require('../entities/Player.js');
 
 var _entitiesPlayerJs2 = _interopRequireDefault(_entitiesPlayerJs);
 
-var _entitiesTileJs = require('../entities/Tile.js');
+var _entitiesTilesTilesJs = require('../entities/tiles/Tiles.js');
 
-var _entitiesTileJs2 = _interopRequireDefault(_entitiesTileJs);
+var _entitiesTilesTilesJs2 = _interopRequireDefault(_entitiesTilesTilesJs);
 
 var Level = (function (_State) {
   _inherits(Level, _State);
@@ -445,7 +561,7 @@ var Level = (function (_State) {
     _classCallCheck(this, Level);
 
     _get(Object.getPrototypeOf(Level.prototype), 'constructor', this).call(this);
-    this.layout = [[1, 1, 1], [1, 1, 1], [0, 1, 0], [1, 1, 1], [1, 1, 1]];
+    this.layout = [[1, 2, 1], [1, 2, 1], [0, 2, 0], [1, 2, 1], [1, 3, 1]];
     this.tiles = [];
   }
 
@@ -456,7 +572,10 @@ var Level = (function (_State) {
       this.player.addToScene(_Simplicity2['default'].scene);
       this.player.cameraFollow(_Simplicity2['default'].camera);
       this.spawnTiles();
-      _Simplicity2['default'].UIManager.add('test', 'test');
+      _Simplicity2['default'].UIManager.add('test', '2');
+      this.maxSteps = 5;
+      this.curSteps = 0;
+      this.timeBetween = 2;
     }
   }, {
     key: 'spawnTiles',
@@ -465,7 +584,7 @@ var Level = (function (_State) {
         this.tiles.push([]);
         for (var x = 0; x < this.layout[z].length; x++) {
           if (this.layout[z][x] > 0) {
-            this.tiles[z][x] = new _entitiesTileJs2['default']();
+            this.tiles[z][x] = new _entitiesTilesTilesJs2['default'][this.layout[z][x]]();
             this.tiles[z][x].addToScene(_Simplicity2['default'].scene);
             this.tiles[z][x].position.x = x * 200;
             this.tiles[z][x].position.z = z * 200;
@@ -477,22 +596,30 @@ var Level = (function (_State) {
     key: 'update',
     value: function update() {
 
+      if (this.moved) {
+        this.onStep();
+      }
+
       this.afterTrigger();
 
       if (!this.player.tweening) {
+        this.moved = false;
         if (_Simplicity2['default'].keysDown[68]) {
           this.beforeTrigger(this.player.tileZ, this.player.tileX + 1);
           this.player.move('right');
-          _Simplicity2['default'].UIManager.update('test', 'rekt');
+          this.moved = true;
         } else if (_Simplicity2['default'].keysDown[83]) {
           this.beforeTrigger(this.player.tileZ + 1, this.player.tileX);
           this.player.move('down');
+          this.moved = true;
         } else if (_Simplicity2['default'].keysDown[65]) {
           this.beforeTrigger(this.player.tileZ, this.player.tileX - 1);
           this.player.move('left');
+          this.moved = true;
         } else if (_Simplicity2['default'].keysDown[87]) {
           this.beforeTrigger(this.player.tileZ - 1, this.player.tileX);
           this.player.move('up');
+          this.moved = true;
         }
       }
     }
@@ -501,7 +628,7 @@ var Level = (function (_State) {
     value: function beforeTrigger(z, x) {
       if (!this.player.tweening) {
         if (this.checkTile(z, x)) {
-          this.tiles[z][x].beforeStepOn();
+          this.tiles[z][x].beforeStepOn(this);
         }
       }
     }
@@ -510,9 +637,25 @@ var Level = (function (_State) {
     value: function afterTrigger() {
       if (!this.player.tweening) {
         if (this.checkTile(this.player.tileZ, this.player.tileX)) {
-          this.tiles[this.player.tileZ][this.player.tileX].afterStepOn();
+          this.tiles[this.player.tileZ][this.player.tileX].afterStepOn(this);
         } else {
           this.fall();
+        }
+
+        if (this.checkTile(this.player.tileZ - 1, this.player.tileX)) {
+          this.tiles[this.player.tileZ - 1][this.player.tileX].nextTo(this);
+        }
+
+        if (this.checkTile(this.player.tileZ + 1, this.player.tileX)) {
+          this.tiles[this.player.tileZ + 1][this.player.tileX].nextTo(this);
+        }
+
+        if (this.checkTile(this.player.tileZ, this.player.tileX - 1)) {
+          this.tiles[this.player.tileZ][this.player.tileX - 1].nextTo(this);
+        }
+
+        if (this.checkTile(this.player.tileZ, this.player.tileX + 1)) {
+          this.tiles[this.player.tileZ][this.player.tileX + 1].nextTo(this);
         }
       }
     }
@@ -532,6 +675,7 @@ var Level = (function (_State) {
     value: function fall() {
       var _this = this;
 
+      this.timer.stop();
       this.player.fall(function () {
         _this.reset();
       });
@@ -539,7 +683,47 @@ var Level = (function (_State) {
   }, {
     key: 'reset',
     value: function reset() {
+      this.moved = false;
+      _Simplicity2['default'].keysDown = {};
       _Simplicity2['default'].StateManager.load('test');
+    }
+  }, {
+    key: 'win',
+    value: function win() {
+      var _this2 = this;
+
+      this.timer.stop();
+      this.player.tweening = true;
+      var winContainer = _Simplicity2['default'].UIManager.add('win', '');
+      _Simplicity2['default'].UIManager.add('title', 'You Win', winContainer);
+      var nextBtn = _Simplicity2['default'].UIManager.add('nextBtn', 'Next Level', winContainer);
+      nextBtn.addEventListener('mouseup', function () {
+        _this2.reset();
+      });
+    }
+  }, {
+    key: 'onStep',
+    value: function onStep() {
+      this.curSteps += 1;
+      this.moved = false;
+
+      if (this.timer) {
+        this.timer.stop();
+      }
+
+      if (this.curSteps > this.maxSteps) {
+        this.reset();
+        return;
+      }
+
+      this.time = { val: this.timeBetween };
+      this.timer = new TWEEN.Tween(this.time).to({ val: 0 }, 2000);
+
+      this.timer.onUpdate(function () {
+        _Simplicity2['default'].UIManager.update('test', Math.round(this.val * 10) / 10);
+      });
+
+      this.timer.start();
     }
   }]);
 
@@ -549,16 +733,22 @@ var Level = (function (_State) {
 exports['default'] = Level;
 module.exports = exports['default'];
 
-},{"../Simplicity":1,"../entities/Player.js":3,"../entities/Tile.js":4,"./State":7}],7:[function(require,module,exports){
-"use strict";
+},{"../Simplicity":1,"../entities/Player.js":3,"../entities/tiles/Tiles.js":7,"./State":10}],10:[function(require,module,exports){
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _Simplicity = require('../Simplicity');
+
+var _Simplicity2 = _interopRequireDefault(_Simplicity);
 
 var State = (function () {
   function State() {
@@ -566,26 +756,31 @@ var State = (function () {
   }
 
   _createClass(State, [{
-    key: "preload",
+    key: 'preload',
     value: function preload() {}
   }, {
-    key: "create",
+    key: 'create',
     value: function create() {}
   }, {
-    key: "update",
+    key: 'update',
     value: function update() {}
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {}
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      _Simplicity2['default'].clear();
+    }
   }]);
 
   return State;
 })();
 
-exports["default"] = State;
-module.exports = exports["default"];
+exports['default'] = State;
+module.exports = exports['default'];
 
-},{}],8:[function(require,module,exports){
+},{"../Simplicity":1}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -618,9 +813,12 @@ var StateManager = (function () {
         return;
       }
 
-      this.scene = new THREE.Scene();
+      if (this.currentState.state) {
+        this.currentState.state.destroy();
+      }
 
-      var state = this.states[name];
+      this.scene = new THREE.Scene();
+      var state = new this.states[name]();
 
       state.preload();
       state.create();
@@ -641,7 +839,7 @@ var StateManager = (function () {
 exports['default'] = StateManager;
 module.exports = exports['default'];
 
-},{}],9:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -664,15 +862,16 @@ var UIManager = (function () {
     key: 'add',
     value: function add(name, html, parent) {
       var div = document.createElement('div');
-      div.innerHTML = html;
-      div.className = name;
       if (parent) {
         parent.appendChild(div);
       } else {
         this.wrapper.appendChild(div);
       }
+      div.innerHTML = html;
+      div.className = name;
       this.elems[name] = div;
-      console.log(this.elems);
+
+      return div;
     }
   }, {
     key: 'get',
@@ -689,6 +888,15 @@ var UIManager = (function () {
     value: function update(name, html) {
       this.get(name).innerHTML = html;
     }
+  }, {
+    key: 'clear',
+    value: function clear() {
+      for (var elem in this.elems) {
+        if (this.elems.hasOwnProperty(elem)) {
+          this.get(elem).remove();
+        }
+      }
+    }
   }]);
 
   return UIManager;
@@ -697,5 +905,5 @@ var UIManager = (function () {
 exports['default'] = UIManager;
 module.exports = exports['default'];
 
-},{}]},{},[5])
+},{}]},{},[8])
 //# sourceMappingURL=game.js.map
