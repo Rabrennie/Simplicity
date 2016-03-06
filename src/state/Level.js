@@ -142,9 +142,16 @@ class Level extends State {
     this.curSteps+=1;
     this.moved = false;
 
-    const gb = 1-(this.curSteps/this.maxSteps);
-    const color = new THREE.Color(1, gb, gb);
-    this.player.material.color.setHex(color.getHex());
+    const percentageLeft = 1-(this.curSteps/this.maxSteps);
+    let color = 0xFFFFFF;
+
+    if(percentageLeft < 0.2) {
+      color = 0xFF0000;
+    } else if(percentageLeft <= 0.6) {
+      color = 0xfff200;
+    }
+
+    this.player.material.color.setHex(color);
 
     Simplicity.UIManager.update('counter', `${this.curSteps} / ${this.maxSteps}`)
 
