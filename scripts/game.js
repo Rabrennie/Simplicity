@@ -712,9 +712,16 @@ var Level = (function (_State) {
       this.curSteps += 1;
       this.moved = false;
 
-      var gb = 1 - this.curSteps / this.maxSteps;
-      var color = new THREE.Color(1, gb, gb);
-      this.player.material.color.setHex(color.getHex());
+      var percentageLeft = 1 - this.curSteps / this.maxSteps;
+      var color = 0xFFFFFF;
+
+      if (percentageLeft < 0.2) {
+        color = 0xFF0000;
+      } else if (percentageLeft <= 0.6) {
+        color = 0xfff200;
+      }
+
+      this.player.material.color.setHex(color);
 
       _Simplicity2['default'].UIManager.update('counter', this.curSteps + ' / ' + this.maxSteps);
 
