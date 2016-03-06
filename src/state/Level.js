@@ -9,6 +9,8 @@ class Level extends State {
     super();
     this.layout = [[1, 2, 1],[1, 2, 1],[0, 2, 0],[1, 2, 1],[1, 3, 1]];
     this.tiles = [];
+    this.levelName = 'test';
+    this.nextLevelName = 'test';
   }
 
   create() {
@@ -18,11 +20,12 @@ class Level extends State {
     this.spawnTiles();
 
     this.timeBetween = 2;
-    Simplicity.UIManager.add('test', this.timeBetween);
+    Simplicity.UIManager.add('timer', this.timeBetween);
 
     this.maxSteps = 5;
     this.curSteps = 0;
     Simplicity.UIManager.add('counter', `${this.curSteps} / ${this.maxSteps}`);
+
   }
 
   spawnTiles() {
@@ -46,6 +49,14 @@ class Level extends State {
     }
 
     this.afterTrigger();
+
+    if(Simplicity.keysDown[82]) {
+      this.reset();
+    }
+
+    if(Simplicity.keysDown[32] && this.won) {
+      this.reset();
+    }
 
     if(!this.player.tweening) {
       this.moved = false;
@@ -119,15 +130,33 @@ class Level extends State {
     this.player.fall(() => {this.reset()});
   }
 
-  reset() {
+  reset(nextLevel) {
+    if(this.timer) {
+      this.timer.stop();
+    }
     this.moved = false;
     Simplicity.keysDown = {}
     const color = new THREE.Color(1, 1, 1);
     this.player.material.color.setHex(color.getHex());
-    Simplicity.StateManager.load('test');
+
+    if(nextLevel) {
+      this.nextLevel();
+    } else {
+      this.restartLevel();
+    }
+  }
+
+
+  restartLevel() {
+    Simplicity.StateManager.load(this.levelName);
+  }
+
+  nextLevel() {
+    Simplicity.StateManager.load(this.nextName);
   }
 
   win() {
+    this.won = true;
     this.timer.stop();
     this.player.tweening = true;
     const winContainer = Simplicity.UIManager.add('win', '')
@@ -145,9 +174,9 @@ class Level extends State {
     const percentageLeft = 1-(this.curSteps/this.maxSteps);
     let color = 0xFFFFFF;
 
-    if(percentageLeft < 0.2) {
+    if(percentageLeft < 0.1) {
       color = 0xFF0000;
-    } else if(percentageLeft <= 0.6) {
+    } else if(percentageLeft <= 0.5) {
       color = 0xfff200;
     }
 
@@ -168,7 +197,7 @@ class Level extends State {
     this.timer = new TWEEN.Tween(this.time).to({ val:0 }, 2000);
 
     this.timer.onUpdate(function() {
-      Simplicity.UIManager.update('test', Math.round(this.val*10)/10)
+      Simplicity.UIManager.update('timer', Math.round(this.val*10)/10)
     })
 
     this.timer.start();
