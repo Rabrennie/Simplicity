@@ -563,6 +563,8 @@ var Level = (function (_State) {
     _get(Object.getPrototypeOf(Level.prototype), 'constructor', this).call(this);
     this.layout = [[1, 2, 1], [1, 2, 1], [0, 2, 0], [1, 2, 1], [1, 3, 1]];
     this.tiles = [];
+    this.levelName = 'test';
+    this.nextLevelName = 'test';
   }
 
   _createClass(Level, [{
@@ -574,7 +576,7 @@ var Level = (function (_State) {
       this.spawnTiles();
 
       this.timeBetween = 2;
-      _Simplicity2['default'].UIManager.add('test', this.timeBetween);
+      _Simplicity2['default'].UIManager.add('timer', this.timeBetween);
 
       this.maxSteps = 5;
       this.curSteps = 0;
@@ -604,6 +606,14 @@ var Level = (function (_State) {
       }
 
       this.afterTrigger();
+
+      if (_Simplicity2['default'].keysDown[82]) {
+        this.reset();
+      }
+
+      if (_Simplicity2['default'].keysDown[32] && this.won) {
+        this.reset();
+      }
 
       if (!this.player.tweening) {
         this.moved = false;
@@ -685,18 +695,37 @@ var Level = (function (_State) {
     }
   }, {
     key: 'reset',
-    value: function reset() {
+    value: function reset(nextLevel) {
+      if (this.timer) {
+        this.timer.stop();
+      }
       this.moved = false;
       _Simplicity2['default'].keysDown = {};
       var color = new THREE.Color(1, 1, 1);
       this.player.material.color.setHex(color.getHex());
-      _Simplicity2['default'].StateManager.load('test');
+
+      if (nextLevel) {
+        this.nextLevel();
+      } else {
+        this.restartLevel();
+      }
+    }
+  }, {
+    key: 'restartLevel',
+    value: function restartLevel() {
+      _Simplicity2['default'].StateManager.load(this.levelName);
+    }
+  }, {
+    key: 'nextLevel',
+    value: function nextLevel() {
+      _Simplicity2['default'].StateManager.load(this.nextName);
     }
   }, {
     key: 'win',
     value: function win() {
       var _this2 = this;
 
+      this.won = true;
       this.timer.stop();
       this.player.tweening = true;
       var winContainer = _Simplicity2['default'].UIManager.add('win', '');
@@ -715,9 +744,9 @@ var Level = (function (_State) {
       var percentageLeft = 1 - this.curSteps / this.maxSteps;
       var color = 0xFFFFFF;
 
-      if (percentageLeft < 0.2) {
+      if (percentageLeft < 0.1) {
         color = 0xFF0000;
-      } else if (percentageLeft <= 0.6) {
+      } else if (percentageLeft <= 0.5) {
         color = 0xfff200;
       }
 
@@ -738,7 +767,7 @@ var Level = (function (_State) {
       this.timer = new TWEEN.Tween(this.time).to({ val: 0 }, 2000);
 
       this.timer.onUpdate(function () {
-        _Simplicity2['default'].UIManager.update('test', Math.round(this.val * 10) / 10);
+        _Simplicity2['default'].UIManager.update('timer', Math.round(this.val * 10) / 10);
       });
 
       this.timer.start();
