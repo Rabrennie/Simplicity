@@ -22,6 +22,14 @@ body {
   font-size: 5vh;
 }
 
+.counter {
+  position: absolute;
+  left:2vw;
+  top:8vh;
+  color:white;
+  font-size: 5vh;
+}
+
 .win {
   width: 30vw;
   height: 60vh;

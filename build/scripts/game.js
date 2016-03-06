@@ -572,10 +572,13 @@ var Level = (function (_State) {
       this.player.addToScene(_Simplicity2['default'].scene);
       this.player.cameraFollow(_Simplicity2['default'].camera);
       this.spawnTiles();
-      _Simplicity2['default'].UIManager.add('test', '2');
+
+      this.timeBetween = 2;
+      _Simplicity2['default'].UIManager.add('test', this.timeBetween);
+
       this.maxSteps = 5;
       this.curSteps = 0;
-      this.timeBetween = 2;
+      _Simplicity2['default'].UIManager.add('counter', this.curSteps + ' / ' + this.maxSteps);
     }
   }, {
     key: 'spawnTiles',
@@ -685,6 +688,8 @@ var Level = (function (_State) {
     value: function reset() {
       this.moved = false;
       _Simplicity2['default'].keysDown = {};
+      var color = new THREE.Color(1, 1, 1);
+      this.player.material.color.setHex(color.getHex());
       _Simplicity2['default'].StateManager.load('test');
     }
   }, {
@@ -706,6 +711,12 @@ var Level = (function (_State) {
     value: function onStep() {
       this.curSteps += 1;
       this.moved = false;
+
+      var gb = 1 - this.curSteps / this.maxSteps;
+      var color = new THREE.Color(1, gb, gb);
+      this.player.material.color.setHex(color.getHex());
+
+      _Simplicity2['default'].UIManager.update('counter', this.curSteps + ' / ' + this.maxSteps);
 
       if (this.timer) {
         this.timer.stop();

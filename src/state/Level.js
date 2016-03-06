@@ -16,11 +16,13 @@ class Level extends State {
     this.player.addToScene(Simplicity.scene);
     this.player.cameraFollow(Simplicity.camera);
     this.spawnTiles();
-    Simplicity.UIManager.add('test', '2');
+
+    this.timeBetween = 2;
+    Simplicity.UIManager.add('test', this.timeBetween);
+
     this.maxSteps = 5;
     this.curSteps = 0;
-    this.timeBetween = 2;
-
+    Simplicity.UIManager.add('counter', `${this.curSteps} / ${this.maxSteps}`);
   }
 
   spawnTiles() {
@@ -120,6 +122,8 @@ class Level extends State {
   reset() {
     this.moved = false;
     Simplicity.keysDown = {}
+    const color = new THREE.Color(1, 1, 1);
+    this.player.material.color.setHex(color.getHex());
     Simplicity.StateManager.load('test');
   }
 
@@ -137,6 +141,12 @@ class Level extends State {
   onStep() {
     this.curSteps+=1;
     this.moved = false;
+
+    const gb = 1-(this.curSteps/this.maxSteps);
+    const color = new THREE.Color(1, gb, gb);
+    this.player.material.color.setHex(color.getHex());
+
+    Simplicity.UIManager.update('counter', `${this.curSteps} / ${this.maxSteps}`)
 
     if(this.timer) {
       this.timer.stop();
