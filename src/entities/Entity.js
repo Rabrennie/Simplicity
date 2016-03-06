@@ -9,7 +9,7 @@ class Entity {
 
   addToScene(scene) {
     scene.add(this.mesh);
-    this.egh = new THREE.EdgesHelper(this.mesh, 0x373B44);
+    this.egh = new THREE.EdgesHelper(this.mesh, 0x515151);
     this.egh.material.linewidth = 1;
     scene.add(this.egh);
   }

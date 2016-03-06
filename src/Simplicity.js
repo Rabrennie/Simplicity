@@ -10,11 +10,13 @@ Simplicity.renderer = supportsWebGL? new THREE.WebGLRenderer({ antialias: true }
 Simplicity.keysDown = {};
 Simplicity.StateManager = new StateManager();
 Simplicity.UIManager = new UIManager();
-
+Simplicity.clear = ()=> {
+  Simplicity.UIManager.clear();
+}
 Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
 Simplicity.camera.position.z = 1500;
 Simplicity.camera.position.y = 1000;
-Simplicity.renderer.setClearColor(0x373B44, 1);
+Simplicity.renderer.setClearColor(0x161616, 1);
 
 Object.defineProperties(Simplicity, {
   scene: { get: function() { return this.StateManager.scene; } } // eslint-disable-line object-shorthand

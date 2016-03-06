@@ -1,5 +1,6 @@
 body {
   overflow: hidden;
+  font-family: 'Open Sans', sans-serif;
 }
 
 * {
@@ -15,8 +16,37 @@ body {
 
 .test {
   position: absolute;
+  left:2vw;
+  top:2vh;
+  color:white;
+  font-size: 5vh;
+}
+
+.win {
+  width: 30vw;
+  height: 60vh;
+  position: absolute;
   left:50vw;
   top:50vh;
-  color:green;
-  font-size: 100px;
+  color:#515151;
+  background: white;
+  font-size: 5vh;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.win .title {
+  margin: 20px;
+  font-weight: 300;
+}
+
+.win .nextBtn{
+  color: #00B4FF;
+  position: absolute;
+  width: Calc(100% - 60px);
+  bottom: 10px;
+  margin: 20px;
+  font-weight: 400;
+  border: 2px solid #00B4FF;
+  padding: 10px 10px;
 }

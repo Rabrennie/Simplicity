@@ -2,7 +2,7 @@ import Simplicity from 'Simplicity';
 
 import Level from './state/Level';
 
-Simplicity.StateManager.add('test', new Level());
+Simplicity.StateManager.add('test', Level);
 Simplicity.StateManager.load('test');
 
 gameLoop();

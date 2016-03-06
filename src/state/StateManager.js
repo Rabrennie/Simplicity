@@ -15,9 +15,12 @@ class StateManager {
       return;
     }
 
-    this.scene = new THREE.Scene();
+    if(this.currentState.state) {
+      this.currentState.state.destroy();
+    }
 
-    const state = this.states[name];
+    this.scene = new THREE.Scene();
+    const state = new this.states[name]();
 
     state.preload();
     state.create();

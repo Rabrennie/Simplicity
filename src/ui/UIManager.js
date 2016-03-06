@@ -6,14 +6,16 @@ class UIManager {
 
   add(name, html, parent) {
     const div = document.createElement('div');
-    div.innerHTML = html;
-    div.className = name;
     if(parent) {
       parent.appendChild(div);
     } else {
       this.wrapper.appendChild(div);
     }
+    div.innerHTML = html;
+    div.className = name;
     this.elems[name] = div;
+
+    return div;
   }
 
   get(name) {
@@ -26,6 +28,14 @@ class UIManager {
 
   update(name, html) {
     this.get(name).innerHTML = html;
+  }
+
+  clear() {
+    for (var elem in this.elems) {
+      if (this.elems.hasOwnProperty(elem)) {
+        this.get(elem).remove();
+      }
+    }
   }
 }
 
