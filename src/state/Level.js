@@ -7,7 +7,7 @@ import Tiles from '../entities/tiles/Tiles.js';
 class Level extends State {
   constructor() {
     super();
-    this.layout = [[1, 2, 4],[4, 2, 1],[0, 2, 0],[1, 2, 4],[1, 3, 4]];
+    this.layout = [[1, 2, 5],[6, 5, 1],[0, 2, 0],[1, 2, 4],[1, 3, 4]];
     this.tiles = [];
     this.levelName = 'test';
     this.nextLevelName = 'test';
@@ -28,6 +28,7 @@ class Level extends State {
     Simplicity.UIManager.add('counter', `${this.curSteps} / ${this.maxSteps}`);
 
     this.spikeTiles = [];
+    this.electricTiles = [];
 
     this.spawnTiles();
   }
@@ -49,6 +50,10 @@ class Level extends State {
           test.position.x = x*200;
           test.position.z = z*200;
           this.spikeTiles.push(this.tiles[z][x]);
+        }
+
+        if(this.layout[z][x] === 5) {
+          this.electricTiles.push(this.tiles[z][x]);
         }
       }
     }
@@ -222,6 +227,12 @@ class Level extends State {
 
     this.timer.start();
 
+  }
+
+  switchElectric() {
+    this.electricTiles.forEach((tile) =>{
+      tile.switchActive();
+    });
   }
 
 
