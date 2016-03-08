@@ -5,6 +5,7 @@ import ElectricTile from './ElectricTile'
 import SpikeTile from './SpikeTile'
 import ButtonTile from './ButtonTile'
 import FallingTile from './FallingTile'
+import TrampolineTile from './TrampolineTile'
 
 const Tiles = {
   1: Tile,
@@ -14,6 +15,7 @@ const Tiles = {
   5: ElectricTile,
   6: ButtonTile,
   7: FallingTile,
+  8: TrampolineTile,
 };
 
 export default Tiles;

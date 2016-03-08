@@ -7,7 +7,7 @@ import Tiles from '../entities/tiles/Tiles.js';
 class Level extends State {
   constructor() {
     super();
-    this.layout = [[7, 7, 7],[7, 7, 7],[7, 7, 7],[7, 7, 7],[7, 3, 7]];
+    this.layout = [[7, 7, 7],[7, 7, 7],[7, 8, 7],[7, 0, 7],[7, 3, 7]];
     this.tiles = [];
     this.levelName = 'test';
     this.nextLevelName = 'test';

@@ -13,7 +13,7 @@ class FallingTile extends Tile {
 
       level.tiles[z][x] = undefined;
 
-      const move = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y-2000 }, 600)
+      const move = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y-4000 }, 1200)
       move.start();
 
       move.onComplete(() => {
