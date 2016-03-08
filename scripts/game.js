@@ -1015,7 +1015,7 @@ var Level = (function (_State) {
     _classCallCheck(this, Level);
 
     _get(Object.getPrototypeOf(Level.prototype), 'constructor', this).call(this);
-    this.layout = [[7, 7, 7], [7, 7, 7], [7, 8, 7], [7, 0, 7], [7, 3, 7]];
+    this.layout = [[7, 7, 7], [7, 7, 7], [7, 8, 7], [7, 0, 7], [7, 8, 7], [7, 0, 7], [7, 3, 7]];
     this.tiles = [];
     this.levelName = 'test';
     this.nextLevelName = 'test';
