@@ -57,7 +57,7 @@ window.addEventListener('keyup', function (e) {
 exports['default'] = Simplicity;
 module.exports = exports['default'];
 
-},{"./state/StateManager":16,"./ui/UIManager":18}],2:[function(require,module,exports){
+},{"./state/StateManager":17,"./ui/UIManager":19}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -284,6 +284,90 @@ var Player = (function (_Entity) {
 
       move.start();
       rotate.start();
+    }
+  }, {
+    key: 'trampolineDownAnim',
+    value: function trampolineDownAnim() {
+      var _this = this;
+
+      this.tweening = true;
+      var move = new TWEEN.Tween(this.mesh.position).to({ z: this.mesh.position.z + 400 }, 600);
+      var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y + 200 }, 300);
+      var moveDown = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y }, 300);
+
+      moveUp.chain(moveDown);
+      moveUp.easing(TWEEN.Easing.Quadratic.Out);
+      moveDown.easing(TWEEN.Easing.Quadratic.In);
+
+      move.start();
+      moveUp.start();
+
+      moveDown.onComplete(function () {
+        _this.tweening = false;
+      });
+    }
+  }, {
+    key: 'trampolineUpAnim',
+    value: function trampolineUpAnim() {
+      var _this2 = this;
+
+      this.tweening = true;
+      var move = new TWEEN.Tween(this.mesh.position).to({ z: this.mesh.position.z - 400 }, 600);
+      var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y + 200 }, 300);
+      var moveDown = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y }, 300);
+
+      moveUp.chain(moveDown);
+      moveUp.easing(TWEEN.Easing.Quadratic.Out);
+      moveDown.easing(TWEEN.Easing.Quadratic.In);
+
+      move.start();
+      moveUp.start();
+
+      moveDown.onComplete(function () {
+        _this2.tweening = false;
+      });
+    }
+  }, {
+    key: 'trampolineRightAnim',
+    value: function trampolineRightAnim() {
+      var _this3 = this;
+
+      this.tweening = true;
+      var move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x + 400 }, 600);
+      var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y + 200 }, 300);
+      var moveDown = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y }, 300);
+
+      moveUp.chain(moveDown);
+      moveUp.easing(TWEEN.Easing.Quadratic.Out);
+      moveDown.easing(TWEEN.Easing.Quadratic.In);
+
+      move.start();
+      moveUp.start();
+
+      moveDown.onComplete(function () {
+        _this3.tweening = false;
+      });
+    }
+  }, {
+    key: 'trampolineLeftAnim',
+    value: function trampolineLeftAnim() {
+      var _this4 = this;
+
+      this.tweening = true;
+      var move = new TWEEN.Tween(this.mesh.position).to({ x: this.mesh.position.x - 400 }, 600);
+      var moveUp = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y + 200 }, 300);
+      var moveDown = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y }, 300);
+
+      moveUp.chain(moveDown);
+      moveUp.easing(TWEEN.Easing.Quadratic.Out);
+      moveDown.easing(TWEEN.Easing.Quadratic.In);
+
+      move.start();
+      moveUp.start();
+
+      moveDown.onComplete(function () {
+        _this4.tweening = false;
+      });
     }
   }, {
     key: 'tileX',
@@ -535,7 +619,7 @@ var FallingTile = (function (_Tile) {
 
       level.tiles[z][x] = undefined;
 
-      var move = new TWEEN.Tween(_this.mesh.position).to({ y: _this.mesh.position.y - 2000 }, 600);
+      var move = new TWEEN.Tween(_this.mesh.position).to({ y: _this.mesh.position.y - 4000 }, 1200);
       move.start();
 
       move.onComplete(function () {
@@ -728,6 +812,10 @@ var _FallingTile = require('./FallingTile');
 
 var _FallingTile2 = _interopRequireDefault(_FallingTile);
 
+var _TrampolineTile = require('./TrampolineTile');
+
+var _TrampolineTile2 = _interopRequireDefault(_TrampolineTile);
+
 var Tiles = {
   1: _Tile2['default'],
   2: _GuideTile2['default'],
@@ -735,13 +823,69 @@ var Tiles = {
   4: _SpikeTile2['default'],
   5: _ElectricTile2['default'],
   6: _ButtonTile2['default'],
-  7: _FallingTile2['default']
+  7: _FallingTile2['default'],
+  8: _TrampolineTile2['default']
 };
 
 exports['default'] = Tiles;
 module.exports = exports['default'];
 
-},{"../Tile":4,"./ButtonTile":5,"./ElectricTile":6,"./FallingTile":7,"./GoalTile":8,"./GuideTile":9,"./SpikeTile":10}],12:[function(require,module,exports){
+},{"../Tile":4,"./ButtonTile":5,"./ElectricTile":6,"./FallingTile":7,"./GoalTile":8,"./GuideTile":9,"./SpikeTile":10,"./TrampolineTile":12}],12:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _TileJs = require('../Tile.js');
+
+var _TileJs2 = _interopRequireDefault(_TileJs);
+
+// TODO: Find a better way to represent the tile
+
+var TrampolineTile = (function (_Tile) {
+  _inherits(TrampolineTile, _Tile);
+
+  function TrampolineTile() {
+    _classCallCheck(this, TrampolineTile);
+
+    _get(Object.getPrototypeOf(TrampolineTile.prototype), 'constructor', this).call(this, new THREE.MeshBasicMaterial({ color: 0xCCFFFF }));
+
+    this.afterCallback = function (level) {
+
+      if (level.player.lastDirection === 'down') {
+        level.player.trampolineDownAnim();
+      }
+
+      if (level.player.lastDirection === 'up') {
+        level.player.trampolineUpAnim();
+      }
+
+      if (level.player.lastDirection === 'left') {
+        level.player.trampolineLeftAnim();
+      }
+
+      if (level.player.lastDirection === 'right') {
+        level.player.trampolineRightAnim();
+      }
+    };
+  }
+
+  return TrampolineTile;
+})(_TileJs2['default']);
+
+exports['default'] = TrampolineTile;
+module.exports = exports['default'];
+
+},{"../Tile.js":4}],13:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -780,7 +924,7 @@ function gameLoop() {
   _Simplicity2['default'].renderer.render(_Simplicity2['default'].scene, _Simplicity2['default'].camera);
 }
 
-},{"./state/Init":13,"./state/Level":14,"./state/menus/MainMenu":17,"Simplicity":1}],13:[function(require,module,exports){
+},{"./state/Init":14,"./state/Level":15,"./state/menus/MainMenu":18,"Simplicity":1}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -831,7 +975,7 @@ var Init = (function (_State) {
 exports['default'] = Init;
 module.exports = exports['default'];
 
-},{"../Simplicity":1,"./State":15}],14:[function(require,module,exports){
+},{"../Simplicity":1,"./State":16}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -871,7 +1015,7 @@ var Level = (function (_State) {
     _classCallCheck(this, Level);
 
     _get(Object.getPrototypeOf(Level.prototype), 'constructor', this).call(this);
-    this.layout = [[7, 7, 7], [7, 7, 7], [7, 7, 7], [7, 7, 7], [7, 3, 7]];
+    this.layout = [[7, 7, 7], [7, 7, 7], [7, 8, 7], [7, 0, 7], [7, 3, 7]];
     this.tiles = [];
     this.levelName = 'test';
     this.nextLevelName = 'test';
@@ -1131,7 +1275,7 @@ var Level = (function (_State) {
 exports['default'] = Level;
 module.exports = exports['default'];
 
-},{"../Simplicity":1,"../entities/Player.js":3,"../entities/tiles/Tiles.js":11,"./State":15}],15:[function(require,module,exports){
+},{"../Simplicity":1,"../entities/Player.js":3,"../entities/tiles/Tiles.js":11,"./State":16}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1178,7 +1322,7 @@ var State = (function () {
 exports['default'] = State;
 module.exports = exports['default'];
 
-},{"../Simplicity":1}],16:[function(require,module,exports){
+},{"../Simplicity":1}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1237,7 +1381,7 @@ var StateManager = (function () {
 exports['default'] = StateManager;
 module.exports = exports['default'];
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1290,7 +1434,7 @@ var MainMenu = (function (_State) {
 exports['default'] = MainMenu;
 module.exports = exports['default'];
 
-},{"../../Simplicity":1,"../State":15}],18:[function(require,module,exports){
+},{"../../Simplicity":1,"../State":16}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1356,5 +1500,5 @@ var UIManager = (function () {
 exports['default'] = UIManager;
 module.exports = exports['default'];
 
-},{}]},{},[12])
+},{}]},{},[13])
 //# sourceMappingURL=game.js.map
