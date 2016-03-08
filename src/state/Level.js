@@ -7,25 +7,29 @@ import Tiles from '../entities/tiles/Tiles.js';
 class Level extends State {
   constructor() {
     super();
-    this.layout = [[1, 2, 1],[1, 2, 1],[0, 2, 0],[1, 2, 1],[1, 3, 1]];
+    this.layout = [[1, 2, 4],[4, 2, 1],[0, 2, 0],[1, 2, 4],[1, 3, 4]];
     this.tiles = [];
     this.levelName = 'test';
     this.nextLevelName = 'test';
+
   }
 
   create() {
     this.player = new Player();
     this.player.addToScene(Simplicity.scene);
     this.player.cameraFollow(Simplicity.camera);
-    this.spawnTiles();
+
 
     this.timeBetween = 2;
     Simplicity.UIManager.add('timer', this.timeBetween);
 
-    this.maxSteps = 5;
+    this.maxSteps = 10;
     this.curSteps = 0;
     Simplicity.UIManager.add('counter', `${this.curSteps} / ${this.maxSteps}`);
 
+    this.spikeTiles = [];
+
+    this.spawnTiles();
   }
 
   spawnTiles() {
@@ -37,6 +41,14 @@ class Level extends State {
           this.tiles[z][x].addToScene(Simplicity.scene);
           this.tiles[z][x].position.x = x*200;
           this.tiles[z][x].position.z = z*200;
+        }
+
+        if(this.layout[z][x] === 4) {
+          const test = new Tiles[1]();
+          test.addToScene(Simplicity.scene);
+          test.position.x = x*200;
+          test.position.z = z*200;
+          this.spikeTiles.push(this.tiles[z][x]);
         }
       }
     }
@@ -171,6 +183,10 @@ class Level extends State {
     this.curSteps+=1;
     this.moved = false;
 
+    this.spikeTiles.forEach((tile) =>{
+      tile.switchActive();
+    });
+
     const percentageLeft = 1-(this.curSteps/this.maxSteps);
     let color = 0xFFFFFF;
 
@@ -198,6 +214,10 @@ class Level extends State {
 
     this.timer.onUpdate(function() {
       Simplicity.UIManager.update('timer', Math.round(this.val*10)/10)
+    })
+
+    this.timer.onComplete(() => {
+      this.reset();
     })
 
     this.timer.start();

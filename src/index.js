@@ -1,9 +1,11 @@
 import Simplicity from 'Simplicity';
 
 import Level from './state/Level';
+import Init from './state/Init';
 
 Simplicity.StateManager.add('test', Level);
-Simplicity.StateManager.load('test');
+Simplicity.StateManager.add('Init', Init);
+Simplicity.StateManager.load('Init');
 
 gameLoop();
 
