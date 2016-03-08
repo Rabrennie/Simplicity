@@ -57,7 +57,7 @@ window.addEventListener('keyup', function (e) {
 exports['default'] = Simplicity;
 module.exports = exports['default'];
 
-},{"./state/StateManager":13,"./ui/UIManager":14}],2:[function(require,module,exports){
+},{"./state/StateManager":13,"./ui/UIManager":15}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -575,11 +575,16 @@ var _stateLevel = require('./state/Level');
 
 var _stateLevel2 = _interopRequireDefault(_stateLevel);
 
+var _stateMenusMainMenu = require('./state/menus/MainMenu');
+
+var _stateMenusMainMenu2 = _interopRequireDefault(_stateMenusMainMenu);
+
 var _stateInit = require('./state/Init');
 
 var _stateInit2 = _interopRequireDefault(_stateInit);
 
 _Simplicity2['default'].StateManager.add('test', _stateLevel2['default']);
+_Simplicity2['default'].StateManager.add('MainMenu', _stateMenusMainMenu2['default']);
 _Simplicity2['default'].StateManager.add('Init', _stateInit2['default']);
 _Simplicity2['default'].StateManager.load('Init');
 
@@ -596,7 +601,7 @@ function gameLoop() {
   _Simplicity2['default'].renderer.render(_Simplicity2['default'].scene, _Simplicity2['default'].camera);
 }
 
-},{"./state/Init":10,"./state/Level":11,"Simplicity":1}],10:[function(require,module,exports){
+},{"./state/Init":10,"./state/Level":11,"./state/menus/MainMenu":14,"Simplicity":1}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -636,7 +641,7 @@ var Init = (function (_State) {
       var loader = new THREE.JSONLoader();
       loader.load('./assets/test.json', function (geometry) {
         _Simplicity2['default'].models.spikes = geometry;
-        _Simplicity2['default'].StateManager.load('test');
+        _Simplicity2['default'].StateManager.load('MainMenu');
       });
     }
   }]);
@@ -1034,6 +1039,59 @@ exports['default'] = StateManager;
 module.exports = exports['default'];
 
 },{}],14:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _Simplicity = require('../../Simplicity');
+
+var _Simplicity2 = _interopRequireDefault(_Simplicity);
+
+var _State2 = require('../State');
+
+var _State3 = _interopRequireDefault(_State2);
+
+var MainMenu = (function (_State) {
+  _inherits(MainMenu, _State);
+
+  function MainMenu() {
+    _classCallCheck(this, MainMenu);
+
+    _get(Object.getPrototypeOf(MainMenu.prototype), 'constructor', this).apply(this, arguments);
+  }
+
+  _createClass(MainMenu, [{
+    key: 'create',
+    value: function create() {
+      var menuContainer = _Simplicity2['default'].UIManager.add('menuContainer', '');
+      var playBtn = _Simplicity2['default'].UIManager.add('playBtn', 'Play', menuContainer);
+      _Simplicity2['default'].UIManager.add('title', 'Simplicity', menuContainer);
+
+      playBtn.addEventListener('mouseup', function () {
+        _Simplicity2['default'].StateManager.load('test');
+      });
+    }
+  }]);
+
+  return MainMenu;
+})(_State3['default']);
+
+exports['default'] = MainMenu;
+module.exports = exports['default'];
+
+},{"../../Simplicity":1,"../State":12}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
