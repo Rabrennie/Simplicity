@@ -632,7 +632,7 @@ var Init = (function (_State) {
     key: 'preload',
     value: function preload() {
       var loader = new THREE.JSONLoader();
-      loader.load('../assets/test.json', function (geometry) {
+      loader.load('./assets/test.json', function (geometry) {
         _Simplicity2['default'].models.spikes = geometry;
         _Simplicity2['default'].StateManager.load('test');
       });
