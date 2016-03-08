@@ -7,7 +7,7 @@ import Tiles from '../entities/tiles/Tiles.js';
 class Level extends State {
   constructor() {
     super();
-    this.layout = [[1, 2, 5],[6, 5, 1],[0, 2, 0],[1, 2, 4],[1, 3, 4]];
+    this.layout = [[1, 2, 5],[6, 5, 1],[0, 7, 0],[1, 2, 4],[1, 3, 4]];
     this.tiles = [];
     this.levelName = 'test';
     this.nextLevelName = 'test';
@@ -78,18 +78,22 @@ class Level extends State {
     if(!this.player.tweening) {
       this.moved = false;
       if(Simplicity.keysDown[68]) {
+        this.lastPosition = { x:this.player.tileX, z:this.player.tileZ };
         this.beforeTrigger(this.player.tileZ,this.player.tileX+1);
         this.player.move('right');
         this.moved = true;
       } else if(Simplicity.keysDown[83]) {
+        this.lastPosition = { x:this.player.tileX, z:this.player.tileZ };
         this.beforeTrigger(this.player.tileZ+1,this.player.tileX);
         this.player.move('down');
         this.moved = true;
       } else if(Simplicity.keysDown[65]) {
+        this.lastPosition = { x:this.player.tileX, z:this.player.tileZ };
         this.beforeTrigger(this.player.tileZ,this.player.tileX-1);
         this.player.move('left');
         this.moved = true;
       } else if(Simplicity.keysDown[87]) {
+        this.lastPosition = { x:this.player.tileX, z:this.player.tileZ };
         this.beforeTrigger(this.player.tileZ-1,this.player.tileX);
         this.player.move('up');
         this.moved = true;
@@ -191,6 +195,10 @@ class Level extends State {
     this.spikeTiles.forEach((tile) =>{
       tile.switchActive();
     });
+
+    if(this.lastPosition) {
+      this.tiles[this.lastPosition.z][this.lastPosition.x].stepOff(this);
+    }
 
     const percentageLeft = 1-(this.curSteps/this.maxSteps);
     let color = 0xFFFFFF;

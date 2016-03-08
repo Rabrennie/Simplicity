@@ -57,7 +57,7 @@ window.addEventListener('keyup', function (e) {
 exports['default'] = Simplicity;
 module.exports = exports['default'];
 
-},{"./state/StateManager":15,"./ui/UIManager":17}],2:[function(require,module,exports){
+},{"./state/StateManager":16,"./ui/UIManager":18}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -344,10 +344,12 @@ var Tile = (function (_Entity) {
     this.nextTriggered = false;
     this.afterTriggered = false;
     this.beforeTriggered = false;
+    this.stepTriggered = false;
 
     this.nextCallback = function () {};
     this.beforeCallback = function () {};
     this.afterCallback = function () {};
+    this.stepCallback = function () {};
   }
 
   // can only trigger once for now
@@ -378,6 +380,15 @@ var Tile = (function (_Entity) {
       this.afterTriggered = true;
       this.beforeTriggered = false;
     }
+  }, {
+    key: 'stepOff',
+    value: function stepOff(level) {
+      if (!this.stepTriggered) {
+        this.stepCallback(level);
+      }
+
+      this.stepTriggered = true;
+    }
   }]);
 
   return Tile;
@@ -404,6 +415,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 var _TileJs = require('../Tile.js');
 
 var _TileJs2 = _interopRequireDefault(_TileJs);
+
+// TODO: Find a better way to represent the tile
 
 var ButtonTile = (function (_Tile) {
   _inherits(ButtonTile, _Tile);
@@ -445,9 +458,7 @@ var _TileJs = require('../Tile.js');
 
 var _TileJs2 = _interopRequireDefault(_TileJs);
 
-var _Simplicity = require('Simplicity');
-
-var _Simplicity2 = _interopRequireDefault(_Simplicity);
+// TODO: find a different style for the tile
 
 var ElectricTile = (function (_Tile) {
   _inherits(ElectricTile, _Tile);
@@ -486,7 +497,61 @@ var ElectricTile = (function (_Tile) {
 exports['default'] = ElectricTile;
 module.exports = exports['default'];
 
-},{"../Tile.js":4,"Simplicity":1}],7:[function(require,module,exports){
+},{"../Tile.js":4}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _TileJs = require('../Tile.js');
+
+var _TileJs2 = _interopRequireDefault(_TileJs);
+
+// TODO: Find a better way to represent the tile
+
+var FallingTile = (function (_Tile) {
+  _inherits(FallingTile, _Tile);
+
+  function FallingTile() {
+    var _this = this;
+
+    _classCallCheck(this, FallingTile);
+
+    _get(Object.getPrototypeOf(FallingTile.prototype), 'constructor', this).call(this, new THREE.MeshBasicMaterial({ color: 0xFFCCCC }));
+
+    this.stepCallback = function (level) {
+
+      var x = _this.mesh.position.x / 200;
+      var z = _this.mesh.position.z / 200;
+
+      level.tiles[z][x] = undefined;
+
+      var move = new TWEEN.Tween(_this.mesh.position).to({ y: _this.mesh.position.y - 2000 }, 600);
+      move.start();
+
+      move.onComplete(function () {
+        _this.mesh.visible = false;
+        _this.egh.visible = false;
+      });
+    };
+  }
+
+  return FallingTile;
+})(_TileJs2['default']);
+
+exports['default'] = FallingTile;
+module.exports = exports['default'];
+
+},{"../Tile.js":4}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -523,7 +588,7 @@ var GoalTile = (function (_Tile) {
 exports['default'] = GoalTile;
 module.exports = exports['default'];
 
-},{"../Tile.js":4}],8:[function(require,module,exports){
+},{"../Tile.js":4}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -561,7 +626,7 @@ var GuideTile = (function (_Tile) {
 exports['default'] = GuideTile;
 module.exports = exports['default'];
 
-},{"../Tile.js":4}],9:[function(require,module,exports){
+},{"../Tile.js":4}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -626,7 +691,7 @@ var SpikeTile = (function (_Tile) {
 exports['default'] = SpikeTile;
 module.exports = exports['default'];
 
-},{"../Tile.js":4,"Simplicity":1}],10:[function(require,module,exports){
+},{"../Tile.js":4,"Simplicity":1}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -659,19 +724,24 @@ var _ButtonTile = require('./ButtonTile');
 
 var _ButtonTile2 = _interopRequireDefault(_ButtonTile);
 
+var _FallingTile = require('./FallingTile');
+
+var _FallingTile2 = _interopRequireDefault(_FallingTile);
+
 var Tiles = {
   1: _Tile2['default'],
   2: _GuideTile2['default'],
   3: _GoalTile2['default'],
   4: _SpikeTile2['default'],
   5: _ElectricTile2['default'],
-  6: _ButtonTile2['default']
+  6: _ButtonTile2['default'],
+  7: _FallingTile2['default']
 };
 
 exports['default'] = Tiles;
 module.exports = exports['default'];
 
-},{"../Tile":4,"./ButtonTile":5,"./ElectricTile":6,"./GoalTile":7,"./GuideTile":8,"./SpikeTile":9}],11:[function(require,module,exports){
+},{"../Tile":4,"./ButtonTile":5,"./ElectricTile":6,"./FallingTile":7,"./GoalTile":8,"./GuideTile":9,"./SpikeTile":10}],12:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -710,7 +780,7 @@ function gameLoop() {
   _Simplicity2['default'].renderer.render(_Simplicity2['default'].scene, _Simplicity2['default'].camera);
 }
 
-},{"./state/Init":12,"./state/Level":13,"./state/menus/MainMenu":16,"Simplicity":1}],12:[function(require,module,exports){
+},{"./state/Init":13,"./state/Level":14,"./state/menus/MainMenu":17,"Simplicity":1}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -761,7 +831,7 @@ var Init = (function (_State) {
 exports['default'] = Init;
 module.exports = exports['default'];
 
-},{"../Simplicity":1,"./State":14}],13:[function(require,module,exports){
+},{"../Simplicity":1,"./State":15}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -801,7 +871,7 @@ var Level = (function (_State) {
     _classCallCheck(this, Level);
 
     _get(Object.getPrototypeOf(Level.prototype), 'constructor', this).call(this);
-    this.layout = [[1, 2, 5], [6, 5, 1], [0, 2, 0], [1, 2, 4], [1, 3, 4]];
+    this.layout = [[1, 2, 5], [6, 5, 1], [0, 7, 0], [1, 2, 4], [1, 3, 4]];
     this.tiles = [];
     this.levelName = 'test';
     this.nextLevelName = 'test';
@@ -874,18 +944,22 @@ var Level = (function (_State) {
       if (!this.player.tweening) {
         this.moved = false;
         if (_Simplicity2['default'].keysDown[68]) {
+          this.lastPosition = { x: this.player.tileX, z: this.player.tileZ };
           this.beforeTrigger(this.player.tileZ, this.player.tileX + 1);
           this.player.move('right');
           this.moved = true;
         } else if (_Simplicity2['default'].keysDown[83]) {
+          this.lastPosition = { x: this.player.tileX, z: this.player.tileZ };
           this.beforeTrigger(this.player.tileZ + 1, this.player.tileX);
           this.player.move('down');
           this.moved = true;
         } else if (_Simplicity2['default'].keysDown[65]) {
+          this.lastPosition = { x: this.player.tileX, z: this.player.tileZ };
           this.beforeTrigger(this.player.tileZ, this.player.tileX - 1);
           this.player.move('left');
           this.moved = true;
         } else if (_Simplicity2['default'].keysDown[87]) {
+          this.lastPosition = { x: this.player.tileX, z: this.player.tileZ };
           this.beforeTrigger(this.player.tileZ - 1, this.player.tileX);
           this.player.move('up');
           this.moved = true;
@@ -1003,6 +1077,10 @@ var Level = (function (_State) {
         tile.switchActive();
       });
 
+      if (this.lastPosition) {
+        this.tiles[this.lastPosition.z][this.lastPosition.x].stepOff(this);
+      }
+
       var percentageLeft = 1 - this.curSteps / this.maxSteps;
       var color = 0xFFFFFF;
 
@@ -1053,7 +1131,7 @@ var Level = (function (_State) {
 exports['default'] = Level;
 module.exports = exports['default'];
 
-},{"../Simplicity":1,"../entities/Player.js":3,"../entities/tiles/Tiles.js":10,"./State":14}],14:[function(require,module,exports){
+},{"../Simplicity":1,"../entities/Player.js":3,"../entities/tiles/Tiles.js":11,"./State":15}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1100,7 +1178,7 @@ var State = (function () {
 exports['default'] = State;
 module.exports = exports['default'];
 
-},{"../Simplicity":1}],15:[function(require,module,exports){
+},{"../Simplicity":1}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1159,7 +1237,7 @@ var StateManager = (function () {
 exports['default'] = StateManager;
 module.exports = exports['default'];
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1212,7 +1290,7 @@ var MainMenu = (function (_State) {
 exports['default'] = MainMenu;
 module.exports = exports['default'];
 
-},{"../../Simplicity":1,"../State":14}],17:[function(require,module,exports){
+},{"../../Simplicity":1,"../State":15}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1278,5 +1356,5 @@ var UIManager = (function () {
 exports['default'] = UIManager;
 module.exports = exports['default'];
 
-},{}]},{},[11])
+},{}]},{},[12])
 //# sourceMappingURL=game.js.map

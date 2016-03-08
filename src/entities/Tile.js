@@ -18,10 +18,12 @@ class Tile extends Entity {
     this.nextTriggered = false;
     this.afterTriggered = false;
     this.beforeTriggered = false;
+    this.stepTriggered = false;
 
     this.nextCallback = function() {};
     this.beforeCallback = function() {};
     this.afterCallback = function() {};
+    this.stepCallback = function() {};
 
   }
 
@@ -47,6 +49,15 @@ class Tile extends Entity {
     }
     this.afterTriggered = true;
     this.beforeTriggered = false;
+
+  }
+
+  stepOff(level) {
+    if(!this.stepTriggered) {
+      this.stepCallback(level);
+    }
+
+    this.stepTriggered = true;
 
   }
 
