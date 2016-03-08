@@ -1,7 +1,7 @@
 import Tile from '../Tile.js';
-import Simplicity from 'Simplicity';
 
 
+// TODO: find a different style for the tile
 class ElectricTile extends Tile {
   constructor() {
     super(new THREE.MeshBasicMaterial({ color: 0x0000FF }));
