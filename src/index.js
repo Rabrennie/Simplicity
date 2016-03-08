@@ -1,9 +1,11 @@
 import Simplicity from 'Simplicity';
 
 import Level from './state/Level';
+import MainMenu from './state/menus/MainMenu';
 import Init from './state/Init';
 
 Simplicity.StateManager.add('test', Level);
+Simplicity.StateManager.add('MainMenu', MainMenu);
 Simplicity.StateManager.add('Init', Init);
 Simplicity.StateManager.load('Init');
 

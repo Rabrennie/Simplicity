@@ -30,7 +30,7 @@ body {
   font-size: 5vh;
 }
 
-.win {
+.win, .menuContainer {
   width: 30vw;
   height: 60vh;
   position: absolute;
@@ -43,18 +43,20 @@ body {
   text-align: center;
 }
 
-.win .title {
+.win .title, .menuContainer .title {
   margin: 20px;
   font-weight: 300;
 }
 
-.win .nextBtn{
+.win .nextBtn, .menuContainer .playBtn{
   color: #00B4FF;
   position: absolute;
   width: Calc(100% - 60px);
   bottom: 10px;
   margin: 20px;
   font-weight: 400;
-  border: 2px solid #00B4FF;
+  border: 1px solid #00B4FF;
   padding: 10px 10px;
+  font-weight: 300;
+  cursor: pointer;
 }
