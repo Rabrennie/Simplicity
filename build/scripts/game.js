@@ -511,9 +511,11 @@ var SpikeTile = (function (_Tile) {
     value: function switchActive() {
       this.active = !this.active;
       if (this.active) {
-        this.mesh.position.y += 50;
+        var move = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y + 50 }, 150);
+        move.start();
       } else {
-        this.mesh.position.y -= 50;
+        var move = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y - 50 }, 150);
+        move.start();
       }
     }
   }]);

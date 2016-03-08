@@ -19,9 +19,11 @@ class SpikeTile extends Tile {
   switchActive() {
     this.active = !this.active;
     if(this.active) {
-      this.mesh.position.y+=50;
+      const move = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y+50 }, 150);
+      move.start();
     } else {
-      this.mesh.position.y-=50;
+      const move = new TWEEN.Tween(this.mesh.position).to({ y: this.mesh.position.y-50 }, 150);
+      move.start();
     }
 
   }
