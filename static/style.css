@@ -48,7 +48,7 @@ body {
   font-weight: 300;
 }
 
-.win .nextBtn, .menuContainer .playBtn{
+.win .nextBtn, .menuContainer .playBtn, .menuContainer .levelEditBtn{
   color: #00B4FF;
   position: absolute;
   width: Calc(100% - 60px);
@@ -59,4 +59,8 @@ body {
   padding: 10px 10px;
   font-weight: 300;
   cursor: pointer;
+}
+
+.menuContainer .levelEditBtn{
+  bottom: 100px;
 }

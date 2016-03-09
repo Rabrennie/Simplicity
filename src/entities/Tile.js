@@ -1,7 +1,6 @@
 import Entity from './Entity';
 
-const geometry = new THREE.BoxGeometry(200, 100, 200, 1, 1, 1),
-  material =  new THREE.MeshBasicMaterial({ color: 0xEEEEEE });
+const geometry = new THREE.BoxGeometry(200, 100, 200, 1, 1, 1);
 
 class Tile extends Entity {
   constructor(newMaterial) {
@@ -10,7 +9,7 @@ class Tile extends Entity {
       super(geometry, newMaterial);
 
     } else {
-      super(geometry, material);
+      super(geometry, new THREE.MeshBasicMaterial({ color: 0xEEEEEE }));
     }
 
     this.mesh.position.y = -150
