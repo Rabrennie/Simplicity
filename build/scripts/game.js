@@ -1406,6 +1406,7 @@ var LevelEditor = (function (_State) {
     value: function spawnTiles() {
       for (var z = 0; z < 5; z++) {
         this.tiles.push([]);
+        this.layout.push([]);
         for (var x = 0; x < 5; x++) {
 
           this.tiles[z][x] = new _entitiesTilesTilesJs2['default'][9]();
@@ -1469,43 +1470,99 @@ var LevelEditor = (function (_State) {
         var z = this.tempTile.mesh.position.z / 200;
         var x = this.tempTile.mesh.position.x / 200;
 
-        this.tiles[z][x] = this.tempTile;
+        _Simplicity2['default'].scene.remove(this.tiles[z][x].mesh);
+        _Simplicity2['default'].scene.remove(this.tiles[z][x].mesh);
 
-        if (!this.layout[z]) {
-          this.layout[z] = [];
+        var index = this.meshes.indexOf(this.tiles[z][x]);
+        if (index !== -1) {
+          _Simplicity2['default'].scene.remove(this.meshes[i]);
+          this.meshes.splice(index, 1);
         }
+
+        this.tiles[z][x] = this.tempTile;
 
         this.layout[z][x] = 1;
 
         if (z === this.tiles.length - 1) {
-
-          this.tiles.push([]);
-          for (var tX = 0; tX < this.tiles[0].length; tX++) {
-            var _tZ = this.tiles.length - 1;
-            this.tiles[_tZ][tX] = new _entitiesTilesTilesJs2['default'][9]();
-            this.meshes.push(this.tiles[_tZ][tX].mesh);
-            this.tiles[_tZ][tX].addToScene(_Simplicity2['default'].scene);
-            this.tiles[_tZ][tX].position.x = tX * 200;
-            this.tiles[_tZ][tX].position.z = _tZ * 200;
-          }
+          this.addZ();
         }
 
         if (x === this.tiles[z].length - 1) {
+          this.addX();
+        }
+
+        if (x === 0) {
+
+          this.tiles.forEach(function (e) {
+            e.forEach(function (tile) {
+              tile.position.x += 200;
+            });
+          });
 
           for (var tZ = 0; tZ < this.tiles.length; tZ++) {
-            var _tX = this.tiles[tZ].length;
-            this.tiles[tZ][_tX] = new _entitiesTilesTilesJs2['default'][9]();
-            this.meshes.push(this.tiles[tZ][_tX].mesh);
-            this.tiles[tZ][_tX].addToScene(_Simplicity2['default'].scene);
-            this.tiles[tZ][_tX].position.x = _tX * 200;
-            this.tiles[tZ][_tX].position.z = tZ * 200;
+            this.tiles[tZ].unshift(new _entitiesTilesTilesJs2['default'][9]());
+            this.layout[tZ].unshift(null);
+            this.meshes.push(this.tiles[tZ][0].mesh);
+            this.tiles[tZ][0].addToScene(_Simplicity2['default'].scene);
+            this.tiles[tZ][0].position.x = 0 * 200;
+            this.tiles[tZ][0].position.z = tZ * 200;
           }
+
+          this.player.position.x += 200;
+        }
+
+        if (z === 0) {
+
+          this.tiles.forEach(function (e) {
+            e.forEach(function (tile) {
+              tile.position.z += 200;
+            });
+          });
+          this.layout.unshift([]);
+          this.tiles.unshift([]);
+
+          for (var tX = 0; tX < this.tiles[1].length; tX++) {
+            this.tiles[0][tX] = new _entitiesTilesTilesJs2['default'][9]();
+            this.meshes.push(this.tiles[0][tX].mesh);
+            this.tiles[0][tX].addToScene(_Simplicity2['default'].scene);
+            this.tiles[0][tX].position.x = tX * 200;
+          }
+
+          this.player.position.z += 200;
         }
 
         this.tempTile = new _entitiesTilesTilesJs2['default'][1]();
         this.tempTile.addToScene(_Simplicity2['default'].scene);
         this.tempTile.position.x = 10000;
         this.tempTile.position.z = 10000;
+
+        console.log(this.layout);
+      }
+    }
+  }, {
+    key: 'addX',
+    value: function addX() {
+      for (var tZ = 0; tZ < this.tiles.length; tZ++) {
+        var tX = this.tiles[tZ].length;
+        this.tiles[tZ][tX] = new _entitiesTilesTilesJs2['default'][9]();
+        this.meshes.push(this.tiles[tZ][tX].mesh);
+        this.tiles[tZ][tX].addToScene(_Simplicity2['default'].scene);
+        this.tiles[tZ][tX].position.x = tX * 200;
+        this.tiles[tZ][tX].position.z = tZ * 200;
+      }
+    }
+  }, {
+    key: 'addZ',
+    value: function addZ() {
+      this.layout.push([]);
+      this.tiles.push([]);
+      for (var tX = 0; tX < this.tiles[0].length; tX++) {
+        var tZ = this.tiles.length - 1;
+        this.tiles[tZ][tX] = new _entitiesTilesTilesJs2['default'][9]();
+        this.meshes.push(this.tiles[tZ][tX].mesh);
+        this.tiles[tZ][tX].addToScene(_Simplicity2['default'].scene);
+        this.tiles[tZ][tX].position.x = tX * 200;
+        this.tiles[tZ][tX].position.z = tZ * 200;
       }
     }
   }]);

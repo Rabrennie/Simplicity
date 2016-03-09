@@ -31,6 +31,7 @@ class LevelEditor extends State {
   spawnTiles() {
     for (var z = 0; z < 5; z++) {
       this.tiles.push([]);
+      this.layout.push([])
       for (var x = 0; x < 5; x++) {
 
         this.tiles[z][x] = new Tiles[9]();
@@ -95,47 +96,99 @@ class LevelEditor extends State {
       const z = this.tempTile.mesh.position.z/200;
       const x = this.tempTile.mesh.position.x/200;
 
-      this.tiles[z][x] = this.tempTile;
+      Simplicity.scene.remove(this.tiles[z][x].mesh);
+      Simplicity.scene.remove(this.tiles[z][x].mesh);
 
-      if(!this.layout[z]) {
-        this.layout[z] = [];
+      var index = this.meshes.indexOf(this.tiles[z][x]);
+      if(index !== -1) {
+        Simplicity.scene.remove(this.meshes[i]);
+        this.meshes.splice(index, 1);
       }
+
+      this.tiles[z][x] = this.tempTile;
 
       this.layout[z][x] = 1;
 
       if(z === this.tiles.length-1) {
-
-        this.tiles.push([]);
-        for (var tX = 0; tX < this.tiles[0].length; tX++) {
-          const tZ = this.tiles.length-1;
-          this.tiles[tZ][tX] = new Tiles[9]();
-          this.meshes.push(this.tiles[tZ][tX].mesh);
-          this.tiles[tZ][tX].addToScene(Simplicity.scene);
-          this.tiles[tZ][tX].position.x = tX*200;
-          this.tiles[tZ][tX].position.z = tZ*200;
-
-        }
-
+        this.addZ();
       }
 
       if(x === this.tiles[z].length-1) {
+        this.addX();
+      }
+
+      if(x === 0) {
+
+        this.tiles.forEach((e) => {
+          e.forEach((tile) => {
+            tile.position.x += 200;
+          })
+        })
 
         for (var tZ = 0; tZ < this.tiles.length; tZ++) {
-          const tX = this.tiles[tZ].length;
-          this.tiles[tZ][tX] = new Tiles[9]();
-          this.meshes.push(this.tiles[tZ][tX].mesh);
-          this.tiles[tZ][tX].addToScene(Simplicity.scene);
-          this.tiles[tZ][tX].position.x = (tX)*200;
-          this.tiles[tZ][tX].position.z = tZ*200;
-
+          this.tiles[tZ].unshift(new Tiles[9]());
+          this.layout[tZ].unshift(null);
+          this.meshes.push(this.tiles[tZ][0].mesh);
+          this.tiles[tZ][0].addToScene(Simplicity.scene);
+          this.tiles[tZ][0].position.x = 0*200;
+          this.tiles[tZ][0].position.z = tZ*200;
         }
 
+        this.player.position.x += 200;
+      }
+
+      if(z === 0) {
+
+        this.tiles.forEach((e) => {
+          e.forEach((tile) => {
+            tile.position.z += 200;
+          })
+        })
+        this.layout.unshift([])
+        this.tiles.unshift([]);
+
+        for (var tX = 0; tX < this.tiles[1].length; tX++) {
+          this.tiles[0][tX] = new Tiles[9]();
+          this.meshes.push(this.tiles[0][tX].mesh);
+          this.tiles[0][tX].addToScene(Simplicity.scene);
+          this.tiles[0][tX].position.x = tX*200;
+        }
+
+        this.player.position.z += 200;
       }
 
       this.tempTile = new Tiles[1];
       this.tempTile.addToScene(Simplicity.scene);
       this.tempTile.position.x =  10000;
       this.tempTile.position.z = 10000;
+
+      console.log(this.layout)
+    }
+  }
+
+  addX() {
+    for (var tZ = 0; tZ < this.tiles.length; tZ++) {
+      const tX = this.tiles[tZ].length;
+      this.tiles[tZ][tX] = new Tiles[9]();
+      this.meshes.push(this.tiles[tZ][tX].mesh);
+      this.tiles[tZ][tX].addToScene(Simplicity.scene);
+      this.tiles[tZ][tX].position.x = (tX)*200;
+      this.tiles[tZ][tX].position.z = tZ*200;
+
+    }
+  }
+
+  addZ() {
+    this.layout.push([])
+    this.tiles.push([]);
+    for (var tX = 0; tX < this.tiles[0].length; tX++) {
+      const tZ = this.tiles.length-1;
+      this.tiles[tZ][tX] = new Tiles[9]();
+      this.meshes.push(this.tiles[tZ][tX].mesh);
+      this.tiles[tZ][tX].addToScene(Simplicity.scene);
+      this.tiles[tZ][tX].position.x = tX*200;
+      this.tiles[tZ][tX].position.z = tZ*200;
+
     }
   }
 
