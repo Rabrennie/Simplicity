@@ -67,6 +67,8 @@ class Level extends State {
 
   update() {
 
+    console.log('test');
+
     if(this.moved) {
       this.onStep();
     }

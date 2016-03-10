@@ -3,6 +3,8 @@ class StateManager {
     this.states = {}
     this.currentState = { name:null, state:null };
     this.scene = new THREE.Scene();
+    this.doLoop = true;
+
   }
 
   add(name, state) {
@@ -21,11 +23,12 @@ class StateManager {
 
     this.scene = new THREE.Scene();
     const state = new this.states[name]();
-
-    state.preload();
-    state.create();
-
     this.currentState = { name, state };
+
+    
+    state.preload();
+    state.create()
+
   }
 
   loop() {

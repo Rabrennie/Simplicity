@@ -6,7 +6,12 @@ class Init extends State {
     var loader = new THREE.JSONLoader();
     loader.load('./assets/test.json', function(geometry) {
       Simplicity.models.spikes = geometry;
-      Simplicity.StateManager.load('MainMenu');
+      if(window.location.hash) {
+        Simplicity.StateManager.load('SharedLevel');
+      } else {
+        Simplicity.StateManager.load('MainMenu');
+
+      }
     });
 
   }
