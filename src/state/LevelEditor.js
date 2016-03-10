@@ -36,6 +36,7 @@ class LevelEditor extends State {
     const FallingTileBtn = Simplicity.UIManager.add('btn', '7', menuBar);
     const TrampolineTileBtn = Simplicity.UIManager.add('btn', '8', menuBar);
     const PlayBtn = Simplicity.UIManager.add('btn', 'Play', menuBar);
+    const ShareBtn = Simplicity.UIManager.add('btn', 'Share', menuBar);
 
 
     TileBtn.addEventListener('mouseup',() => { this.setTile(1) });
@@ -47,6 +48,8 @@ class LevelEditor extends State {
     FallingTileBtn.addEventListener('mouseup',() => { this.setTile(7) });
     TrampolineTileBtn.addEventListener('mouseup',() => { this.setTile(8) });
     PlayBtn.addEventListener('mouseup',() => { this.play() });
+    ShareBtn.addEventListener('mouseup',() => { this.share() });
+
   }
 
   spawnTiles() {
@@ -133,6 +136,19 @@ class LevelEditor extends State {
   onMouseUp(event) {
 
     event.preventDefault();
+
+
+    if(this.shareContainer) {
+      if(event.target.className === 'ui') {
+        Simplicity.UIManager.remove('shareContainer');
+        this.shareContainer = null;
+        return;
+      }
+    }
+
+    if(event.target.className !== 'ui') {
+      return;
+    }
 
     if(this.place && event.button === 2) {
       const z = this.tempTile.mesh.position.z/200;
@@ -305,6 +321,56 @@ class LevelEditor extends State {
     Simplicity.StateManager.add('temp', temp);
     Simplicity.StateManager.load('temp');
 
+  }
+
+  share() {
+
+    if(this.shareContainer) {
+      Simplicity.UIManager.remove('shareContainer');
+    }
+
+    var level = this.encodeLevel();
+    var text = text = 'http://rabrennie.com/Simplicity/#' + level;
+
+
+    this.shareContainer = Simplicity.UIManager.add('shareContainer', '');
+    Simplicity.UIManager.add('share', `Send this to your friend <textarea onclick="this.focus();this.select()">${text}</textarea>`, this.shareContainer);
+    const close = Simplicity.UIManager.add('close', 'X', this.shareContainer);
+
+    close.addEventListener('mouseup', () => {
+      Simplicity.UIManager.remove('shareContainer');
+      this.shareContainer = null;
+    })
+
+
+  }
+
+  encodeLevel() {
+    let levelString = ''
+
+    let length = 0;
+
+    for (var z = 0; z < this.layout.length; z++) {
+      if(this.layout[z].length > length) {
+        length = this.layout[z].length;
+      }
+    }
+
+    for (z = 0; z < this.layout.length; z++) {
+      for (var x = 0; x < length; x++) {
+        if(this.layout[z][x] === null || !this.layout[z][x]) {
+          levelString += 0;
+        } else {
+          levelString += this.layout[z][x];
+        }
+      }
+    }
+
+    const level = { w: length, h:this.layout.length, m:levelString };
+
+    const base64 = btoa(JSON.stringify(level));
+
+    return base64;
   }
 
 }

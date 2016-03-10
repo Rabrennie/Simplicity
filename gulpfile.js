@@ -17,6 +17,7 @@ var browserSync = require('browser-sync');
 */
 var THREE_PATH = './node_modules/three/';
 var TWEEN_PATH = './node_modules/tween.js/src/';
+var CLIPBOARD_PATH = './node_modules/clipboard/dist/'
 var BUILD_PATH = './build';
 var SCRIPTS_PATH = BUILD_PATH + '/scripts';
 var SOURCE_PATH = './src';
@@ -103,6 +104,19 @@ function copyTween() {
 
 }
 
+function copyClipboard() {
+
+  var srcList = ['clipboard.min.js'];
+
+  srcList = srcList.map(function(file) {
+    return CLIPBOARD_PATH + file;
+  });
+
+  return gulp.src(srcList)
+  .pipe(gulp.dest(SCRIPTS_PATH));
+
+}
+
 /**
 * Transforms ES2015 code into ES5 code.
 * Optionally: Creates a sourcemap file 'game.js.map' for debugging.
@@ -165,7 +179,8 @@ gulp.task('cleanBuild', cleanBuild);
 gulp.task('copyStatic', ['cleanBuild'], copyStatic);
 gulp.task('copyThree', ['copyStatic'], copyThree);
 gulp.task('copyTween', ['copyStatic'], copyTween);
-gulp.task('build', ['copyThree', 'copyTween'], build);
+gulp.task('copyClipboard', ['copyStatic'], copyClipboard);
+gulp.task('build', ['copyThree', 'copyTween', 'copyClipboard'], build);
 gulp.task('fastBuild', build);
 gulp.task('serve', ['build'], serve);
 gulp.task('watch-js', ['fastBuild'], browserSync.reload); // Rebuilds and reloads the project when executed.

@@ -25,7 +25,7 @@ var supportsWebGL = (function () {
   }
 })();
 
-Simplicity.camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 20000);
+Simplicity.camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 5000);
 Simplicity.renderer = supportsWebGL ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer({ antialias: true });
 Simplicity.keysDown = {};
 Simplicity.StateManager = new _stateStateManager2['default']();
@@ -34,10 +34,12 @@ Simplicity.models = {};
 Simplicity.clear = function () {
   Simplicity.UIManager.clear();
 };
+
 Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
 Simplicity.camera.position.z = 1500;
 Simplicity.camera.position.y = 1000;
 Simplicity.renderer.setClearColor(0x161616, 1);
+Simplicity.renderer.domElement.id = 'renderer';
 Object.defineProperties(Simplicity, {
   scene: { get: function get() {
       return this.StateManager.scene;
@@ -1438,6 +1440,7 @@ var LevelEditor = (function (_State) {
       var FallingTileBtn = _Simplicity2['default'].UIManager.add('btn', '7', menuBar);
       var TrampolineTileBtn = _Simplicity2['default'].UIManager.add('btn', '8', menuBar);
       var PlayBtn = _Simplicity2['default'].UIManager.add('btn', 'Play', menuBar);
+      var ShareBtn = _Simplicity2['default'].UIManager.add('btn', 'Share', menuBar);
 
       TileBtn.addEventListener('mouseup', function () {
         _this.setTile(1);
@@ -1465,6 +1468,9 @@ var LevelEditor = (function (_State) {
       });
       PlayBtn.addEventListener('mouseup', function () {
         _this.play();
+      });
+      ShareBtn.addEventListener('mouseup', function () {
+        _this.share();
       });
     }
   }, {
@@ -1550,6 +1556,18 @@ var LevelEditor = (function (_State) {
     value: function onMouseUp(event) {
 
       event.preventDefault();
+
+      if (this.shareContainer) {
+        if (event.target.className === 'ui') {
+          _Simplicity2['default'].UIManager.remove('shareContainer');
+          this.shareContainer = null;
+          return;
+        }
+      }
+
+      if (event.target.className !== 'ui') {
+        return;
+      }
 
       if (this.place && event.button === 2) {
         var z = this.tempTile.mesh.position.z / 200;
@@ -1730,6 +1748,56 @@ var LevelEditor = (function (_State) {
 
       _Simplicity2['default'].StateManager.add('temp', temp);
       _Simplicity2['default'].StateManager.load('temp');
+    }
+  }, {
+    key: 'share',
+    value: function share() {
+      var _this2 = this;
+
+      if (this.shareContainer) {
+        _Simplicity2['default'].UIManager.remove('shareContainer');
+      }
+
+      var level = this.encodeLevel();
+      var text = text = 'http://rabrennie.com/Simplicity/#' + level;
+
+      this.shareContainer = _Simplicity2['default'].UIManager.add('shareContainer', '');
+      _Simplicity2['default'].UIManager.add('share', 'Send this to your friend <textarea onclick="this.focus();this.select()">' + text + '</textarea>', this.shareContainer);
+      var close = _Simplicity2['default'].UIManager.add('close', 'X', this.shareContainer);
+
+      close.addEventListener('mouseup', function () {
+        _Simplicity2['default'].UIManager.remove('shareContainer');
+        _this2.shareContainer = null;
+      });
+    }
+  }, {
+    key: 'encodeLevel',
+    value: function encodeLevel() {
+      var levelString = '';
+
+      var length = 0;
+
+      for (var z = 0; z < this.layout.length; z++) {
+        if (this.layout[z].length > length) {
+          length = this.layout[z].length;
+        }
+      }
+
+      for (z = 0; z < this.layout.length; z++) {
+        for (var x = 0; x < length; x++) {
+          if (this.layout[z][x] === null || !this.layout[z][x]) {
+            levelString += 0;
+          } else {
+            levelString += this.layout[z][x];
+          }
+        }
+      }
+
+      var level = { w: length, h: this.layout.length, m: levelString };
+
+      var base64 = btoa(JSON.stringify(level));
+
+      return base64;
     }
   }]);
 

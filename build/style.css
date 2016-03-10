@@ -6,6 +6,12 @@ body {
 * {
   margin: 0;
   padding: 0;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  user-select: none;
 }
 
 .ui {
@@ -30,7 +36,7 @@ body {
   font-size: 5vh;
 }
 
-.win, .menuContainer {
+.win, .menuContainer, .shareContainer {
   width: 30vw;
   height: 60vh;
   position: absolute;
@@ -81,5 +87,28 @@ body {
   margin: 5px 20px;
   padding: 8px 10px;
   cursor: pointer;
-  
+
+}
+
+.shareContainer {
+  height: 25vh;
+  font-size: 20px;
+}
+
+.shareContainer .share textarea {
+  margin: 10px;
+  min-height: 150px;
+  min-width: Calc(100% - 60px);
+  border: 1px solid #00B4FF;
+  resize: none;
+}
+
+.shareContainer .close {
+  position: absolute;
+  right:0;
+  top: 0;
+  font-size: 20px;
+  color:#00B4FF;
+  cursor: pointer;
+  padding: 10px;
 }

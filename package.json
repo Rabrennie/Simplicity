@@ -31,6 +31,7 @@
     "yargs": "^3.16.1"
   },
   "dependencies": {
+    "clipboard": "^1.5.9",
     "tween.js": "^16.3.4"
   }
 }
