@@ -1,5 +1,6 @@
 import Simplicity from '../Simplicity';
 import State from './State';
+import Level from './Level';
 import Tiles from '../entities/tiles/Tiles.js';
 import Player from '../entities/Player.js';
 
@@ -34,6 +35,8 @@ class LevelEditor extends State {
     const ButtonTileBtn = Simplicity.UIManager.add('btn', '6', menuBar);
     const FallingTileBtn = Simplicity.UIManager.add('btn', '7', menuBar);
     const TrampolineTileBtn = Simplicity.UIManager.add('btn', '8', menuBar);
+    const PlayBtn = Simplicity.UIManager.add('btn', 'Play', menuBar);
+
 
     TileBtn.addEventListener('mouseup',() => { this.setTile(1) });
     GuideTileBtn.addEventListener('mouseup',() => { this.setTile(2) });
@@ -43,6 +46,7 @@ class LevelEditor extends State {
     ButtonTileBtn.addEventListener('mouseup',() => { this.setTile(6) });
     FallingTileBtn.addEventListener('mouseup',() => { this.setTile(7) });
     TrampolineTileBtn.addEventListener('mouseup',() => { this.setTile(8) });
+    PlayBtn.addEventListener('mouseup',() => { this.play() });
   }
 
   spawnTiles() {
@@ -152,7 +156,7 @@ class LevelEditor extends State {
       Simplicity.scene.remove(this.tiles[z][x].egh);
 
       this.tiles[z][x] = this.tempTile;
-      this.layout[z][x] = 1;
+      this.layout[z][x] = this.tileId;
 
       this.meshes.push(this.tiles[z][x].mesh);
 
@@ -248,6 +252,39 @@ class LevelEditor extends State {
     this.tempTile.position.x =  10000;
     this.tempTile.position.z = 10000;
     this.place = false;
+  }
+
+  play() {
+
+    var self = this;
+    var found = false;
+    var pos;
+
+    for (var z = 0; z < this.layout.length; z++) {
+      for (var x = 0; x < this.layout[z].length; x++) {
+        if(this.layout[z][x] === 1) {
+          pos = { x:x*200, z:z*200 };
+          found = true;
+          break;
+        }
+      }
+      if(found) {
+        break;
+      }
+    }
+
+    class temp extends Level {
+      constructor() {
+        super(self.layout);
+        this.playerStart = pos;
+
+        this.levelName = 'temp';
+        this.nextLevelName = 'temp';
+      }
+    }
+    Simplicity.StateManager.add('temp', temp);
+    Simplicity.StateManager.load('temp');
+
   }
 
 }

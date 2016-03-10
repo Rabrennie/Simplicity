@@ -5,13 +5,17 @@ import Tiles from '../entities/tiles/Tiles.js';
 
 
 class Level extends State {
-  constructor() {
+  constructor(layout) {
     super();
-    this.layout = [[7, 7, 7],[7, 7, 7],[7, 8, 7],[7, 0, 7],[7, 8, 7],[7, 0, 7],[7, 3, 7]];
+    if(layout) {
+      this.layout = layout;
+    } else {
+      this.layout = [[7, 7, 7],[7, 7, 7],[7, 8, 7],[7, 0, 7],[7, 8, 7],[7, 0, 7],[7, 3, 7]];
+    }
     this.tiles = [];
     this.levelName = 'test';
     this.nextLevelName = 'test';
-
+    this.playerStart = { x:0, z:0 }
   }
 
   create() {
@@ -19,6 +23,8 @@ class Level extends State {
     this.player.addToScene(Simplicity.scene);
     this.player.cameraFollow(Simplicity.camera);
 
+    this.player.mesh.position.x = this.playerStart.x;
+    this.player.mesh.position.z = this.playerStart.z;
 
     this.timeBetween = 2;
     Simplicity.UIManager.add('timer', this.timeBetween);
