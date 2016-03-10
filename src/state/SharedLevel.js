@@ -17,7 +17,6 @@ class SharedLevel extends State {
       }
     }
 
-    console.log(layout)
 
     var pos = {};
     var found;
@@ -35,12 +34,10 @@ class SharedLevel extends State {
       }
     }
 
-    console.log(pos)
 
     class temp extends Level {
       constructor() {
         super(layout);
-        console.log(layout)
         this.playerStart = pos;
 
         this.levelName = 'temp';
@@ -50,7 +47,6 @@ class SharedLevel extends State {
     Simplicity.StateManager.add('temp', temp);
     Simplicity.StateManager.load('temp');
 
-    return false;
   }
 
 

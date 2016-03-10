@@ -1149,8 +1149,6 @@ var Level = (function (_State) {
     key: 'update',
     value: function update() {
 
-      console.log('test');
-
       if (this.moved) {
         this.onStep();
       }
@@ -1874,8 +1872,6 @@ var SharedLevel = (function (_State) {
         }
       }
 
-      console.log(layout);
-
       var pos = {};
       var found;
 
@@ -1892,8 +1888,6 @@ var SharedLevel = (function (_State) {
         }
       }
 
-      console.log(pos);
-
       var temp = (function (_Level) {
         _inherits(temp, _Level);
 
@@ -1901,7 +1895,6 @@ var SharedLevel = (function (_State) {
           _classCallCheck(this, temp);
 
           _get(Object.getPrototypeOf(temp.prototype), 'constructor', this).call(this, layout);
-          console.log(layout);
           this.playerStart = pos;
 
           this.levelName = 'temp';
@@ -1913,8 +1906,6 @@ var SharedLevel = (function (_State) {
 
       _Simplicity2['default'].StateManager.add('temp', temp);
       _Simplicity2['default'].StateManager.load('temp');
-
-      return false;
     }
   }]);
 
