@@ -228,6 +228,11 @@ class Level extends State {
 
     Simplicity.UIManager.update('counter', `${this.curSteps} / ${this.maxSteps}`)
 
+    this.resetTimer();
+
+  }
+
+  resetTimer() {
     if(this.timer) {
       this.timer.stop();
     }
@@ -249,7 +254,6 @@ class Level extends State {
     })
 
     this.timer.start();
-
   }
 
   switchElectric() {

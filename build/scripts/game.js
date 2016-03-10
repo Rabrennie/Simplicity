@@ -911,6 +911,8 @@ var TrampolineTile = (function (_Tile) {
 
     this.afterCallback = function (level) {
 
+      level.resetTimer();
+
       if (level.player.lastDirection === 'down') {
         level.player.trampolineDownAnim();
       }
@@ -1284,8 +1286,6 @@ var Level = (function (_State) {
   }, {
     key: 'onStep',
     value: function onStep() {
-      var _this3 = this;
-
       this.curSteps += 1;
       this.moved = false;
 
@@ -1309,6 +1309,13 @@ var Level = (function (_State) {
       this.player.material.color.setHex(color);
 
       _Simplicity2['default'].UIManager.update('counter', this.curSteps + ' / ' + this.maxSteps);
+
+      this.resetTimer();
+    }
+  }, {
+    key: 'resetTimer',
+    value: function resetTimer() {
+      var _this3 = this;
 
       if (this.timer) {
         this.timer.stop();

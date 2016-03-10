@@ -8,6 +8,8 @@ class TrampolineTile extends Tile {
 
     this.afterCallback = (level) => {
 
+      level.resetTimer();
+
       if(level.player.lastDirection === 'down') {
         level.player.trampolineDownAnim();
       }
