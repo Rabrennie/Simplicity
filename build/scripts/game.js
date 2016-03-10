@@ -1144,6 +1144,15 @@ var Level = (function (_State) {
         this.reset();
       }
 
+      if (_Simplicity2['default'].keysDown[27]) {
+        if (this.timer) {
+          this.timer.stop();
+        }
+        this.moved = false;
+        _Simplicity2['default'].keysDown = {};
+        _Simplicity2['default'].StateManager.load('MainMenu');
+      }
+
       if (_Simplicity2['default'].keysDown[32] && this.won) {
         this.reset();
       }
@@ -1347,7 +1356,7 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -1454,16 +1463,30 @@ var LevelEditor = (function (_State) {
   }, {
     key: 'spawnTiles',
     value: function spawnTiles() {
-      for (var z = 0; z < 5; z++) {
-        this.tiles.push([]);
-        this.layout.push([]);
-        for (var x = 0; x < 5; x++) {
+      if (_Simplicity2['default'].editorTiles) {
 
-          this.tiles[z][x] = new _entitiesTilesTilesJs2['default'][9]();
-          this.meshes.push(this.tiles[z][x].mesh);
-          this.tiles[z][x].addToScene(_Simplicity2['default'].scene);
-          this.tiles[z][x].position.x = x * 200;
-          this.tiles[z][x].position.z = z * 200;
+        this.tiles = _Simplicity2['default'].editorTiles;
+        this.layout = _Simplicity2['default'].editorLayout;
+        for (var z = 0; z < this.tiles.length; z++) {
+          for (var x = 0; x < this.tiles[z].length; x++) {
+            this.meshes.push(this.tiles[z][x].mesh);
+            this.tiles[z][x].addToScene(_Simplicity2['default'].scene);
+            this.tiles[z][x].position.x = x * 200;
+            this.tiles[z][x].position.z = z * 200;
+          }
+        }
+      } else {
+        for (var _z = 0; _z < 5; _z++) {
+          this.tiles.push([]);
+          this.layout.push([]);
+          for (var _x = 0; _x < 5; _x++) {
+
+            this.tiles[_z][_x] = new _entitiesTilesTilesJs2['default'][9]();
+            this.meshes.push(this.tiles[_z][_x].mesh);
+            this.tiles[_z][_x].addToScene(_Simplicity2['default'].scene);
+            this.tiles[_z][_x].position.x = _x * 200;
+            this.tiles[_z][_x].position.z = _z * 200;
+          }
         }
       }
     }
@@ -1665,6 +1688,10 @@ var LevelEditor = (function (_State) {
       var found = false;
       var pos;
 
+      _Simplicity2['default'].editorTiles = this.tiles;
+      _Simplicity2['default'].editorLayout = this.layout;
+
+      // TODO: change this to be a spawn tile at some point
       for (var z = 0; z < this.layout.length; z++) {
         for (var x = 0; x < this.layout[z].length; x++) {
           if (this.layout[z][x] === 1) {

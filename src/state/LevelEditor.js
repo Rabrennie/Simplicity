@@ -50,17 +50,33 @@ class LevelEditor extends State {
   }
 
   spawnTiles() {
-    for (var z = 0; z < 5; z++) {
-      this.tiles.push([]);
-      this.layout.push([])
-      for (var x = 0; x < 5; x++) {
+    if(Simplicity.editorTiles) {
 
-        this.tiles[z][x] = new Tiles[9]();
-        this.meshes.push(this.tiles[z][x].mesh);
-        this.tiles[z][x].addToScene(Simplicity.scene);
-        this.tiles[z][x].position.x = x*200;
-        this.tiles[z][x].position.z = z*200;
+      this.tiles = Simplicity.editorTiles;
+      this.layout = Simplicity.editorLayout
+      for (var z = 0; z < this.tiles.length; z++) {
+        for (var x = 0; x < this.tiles[z].length; x++) {
+          this.meshes.push(this.tiles[z][x].mesh);
+          this.tiles[z][x].addToScene(Simplicity.scene);
+          this.tiles[z][x].position.x = x*200;
+          this.tiles[z][x].position.z = z*200;
 
+        }
+      }
+
+    } else {
+      for (let z = 0; z < 5; z++) {
+        this.tiles.push([]);
+        this.layout.push([])
+        for (let x = 0; x < 5; x++) {
+
+          this.tiles[z][x] = new Tiles[9]();
+          this.meshes.push(this.tiles[z][x].mesh);
+          this.tiles[z][x].addToScene(Simplicity.scene);
+          this.tiles[z][x].position.x = x*200;
+          this.tiles[z][x].position.z = z*200;
+
+        }
       }
     }
   }
@@ -260,6 +276,10 @@ class LevelEditor extends State {
     var found = false;
     var pos;
 
+    Simplicity.editorTiles = this.tiles;
+    Simplicity.editorLayout = this.layout;
+
+    // TODO: change this to be a spawn tile at some point
     for (var z = 0; z < this.layout.length; z++) {
       for (var x = 0; x < this.layout[z].length; x++) {
         if(this.layout[z][x] === 1) {

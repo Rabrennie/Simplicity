@@ -77,6 +77,15 @@ class Level extends State {
       this.reset();
     }
 
+    if(Simplicity.keysDown[27]) {
+      if(this.timer) {
+        this.timer.stop();
+      }
+      this.moved = false;
+      Simplicity.keysDown = {}
+      Simplicity.StateManager.load('MainMenu')
+    }
+
     if(Simplicity.keysDown[32] && this.won) {
       this.reset();
     }
