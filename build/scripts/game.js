@@ -1433,6 +1433,8 @@ var LevelEditor = (function (_State) {
         this.place = true;
         this.tempTile.position.x = intersects[0].object.position.x;
         this.tempTile.position.z = intersects[0].object.position.z;
+        this.tempTile.mesh.material.transparent = true;
+        this.tempTile.mesh.material.opacity = 0.7;
       } else {
         this.place = false;
 
@@ -1465,83 +1467,72 @@ var LevelEditor = (function (_State) {
     }
   }, {
     key: 'onMouseUp',
-    value: function onMouseUp() {
-      if (this.place) {
+    value: function onMouseUp(event) {
+
+      event.preventDefault();
+
+      if (this.place && event.button === 2) {
         var z = this.tempTile.mesh.position.z / 200;
         var x = this.tempTile.mesh.position.x / 200;
 
         _Simplicity2['default'].scene.remove(this.tiles[z][x].mesh);
-        _Simplicity2['default'].scene.remove(this.tiles[z][x].mesh);
+        _Simplicity2['default'].scene.remove(this.tiles[z][x].egh);
+
+        this.tiles[z][x] = new _entitiesTilesTilesJs2['default'][9]();
+        this.tiles[z][x].mesh.position.z = this.tempTile.mesh.position.z;
+        this.tiles[z][x].mesh.position.x = this.tempTile.mesh.position.x;
+        this.tiles[z][x].addToScene(_Simplicity2['default'].scene);
+
+        this.layout[z][x] = null;
 
         var index = this.meshes.indexOf(this.tiles[z][x]);
         if (index !== -1) {
-          _Simplicity2['default'].scene.remove(this.meshes[i]);
-          this.meshes.splice(index, 1);
+          this.meshes[index] = this.tiles[z][x];
         }
+      }
+
+      if (this.place && event.button === 0) {
+        var z = this.tempTile.mesh.position.z / 200;
+        var x = this.tempTile.mesh.position.x / 200;
+
+        this.tempTile.mesh.material.transparent = false;
+
+        _Simplicity2['default'].scene.remove(this.tiles[z][x].mesh);
+        _Simplicity2['default'].scene.remove(this.tiles[z][x].egh);
 
         this.tiles[z][x] = this.tempTile;
-
         this.layout[z][x] = 1;
 
+        var index = this.meshes.indexOf(this.tiles[z][x]);
+        if (index !== -1) {
+          this.meshes[index] = this.tiles[z][x];
+        }
+
         if (z === this.tiles.length - 1) {
-          this.addZ();
+          this.addDown();
         }
 
         if (x === this.tiles[z].length - 1) {
-          this.addX();
+          this.addRight();
         }
 
         if (x === 0) {
-
-          this.tiles.forEach(function (e) {
-            e.forEach(function (tile) {
-              tile.position.x += 200;
-            });
-          });
-
-          for (var tZ = 0; tZ < this.tiles.length; tZ++) {
-            this.tiles[tZ].unshift(new _entitiesTilesTilesJs2['default'][9]());
-            this.layout[tZ].unshift(null);
-            this.meshes.push(this.tiles[tZ][0].mesh);
-            this.tiles[tZ][0].addToScene(_Simplicity2['default'].scene);
-            this.tiles[tZ][0].position.x = 0 * 200;
-            this.tiles[tZ][0].position.z = tZ * 200;
-          }
-
-          this.player.position.x += 200;
+          this.addLeft();
         }
 
         if (z === 0) {
-
-          this.tiles.forEach(function (e) {
-            e.forEach(function (tile) {
-              tile.position.z += 200;
-            });
-          });
-          this.layout.unshift([]);
-          this.tiles.unshift([]);
-
-          for (var tX = 0; tX < this.tiles[1].length; tX++) {
-            this.tiles[0][tX] = new _entitiesTilesTilesJs2['default'][9]();
-            this.meshes.push(this.tiles[0][tX].mesh);
-            this.tiles[0][tX].addToScene(_Simplicity2['default'].scene);
-            this.tiles[0][tX].position.x = tX * 200;
-          }
-
-          this.player.position.z += 200;
+          this.addUp();
         }
 
         this.tempTile = new _entitiesTilesTilesJs2['default'][1]();
         this.tempTile.addToScene(_Simplicity2['default'].scene);
         this.tempTile.position.x = 10000;
         this.tempTile.position.z = 10000;
-
-        console.log(this.layout);
       }
     }
   }, {
-    key: 'addX',
-    value: function addX() {
+    key: 'addRight',
+    value: function addRight() {
       for (var tZ = 0; tZ < this.tiles.length; tZ++) {
         var tX = this.tiles[tZ].length;
         this.tiles[tZ][tX] = new _entitiesTilesTilesJs2['default'][9]();
@@ -1552,8 +1543,8 @@ var LevelEditor = (function (_State) {
       }
     }
   }, {
-    key: 'addZ',
-    value: function addZ() {
+    key: 'addDown',
+    value: function addDown() {
       this.layout.push([]);
       this.tiles.push([]);
       for (var tX = 0; tX < this.tiles[0].length; tX++) {
@@ -1564,6 +1555,46 @@ var LevelEditor = (function (_State) {
         this.tiles[tZ][tX].position.x = tX * 200;
         this.tiles[tZ][tX].position.z = tZ * 200;
       }
+    }
+  }, {
+    key: 'addLeft',
+    value: function addLeft() {
+      this.tiles.forEach(function (e) {
+        e.forEach(function (tile) {
+          tile.position.x += 200;
+        });
+      });
+
+      for (var tZ = 0; tZ < this.tiles.length; tZ++) {
+        this.tiles[tZ].unshift(new _entitiesTilesTilesJs2['default'][9]());
+        this.layout[tZ].unshift(null);
+        this.meshes.push(this.tiles[tZ][0].mesh);
+        this.tiles[tZ][0].addToScene(_Simplicity2['default'].scene);
+        this.tiles[tZ][0].position.x = 0 * 200;
+        this.tiles[tZ][0].position.z = tZ * 200;
+      }
+
+      this.player.position.x += 200;
+    }
+  }, {
+    key: 'addUp',
+    value: function addUp() {
+      this.tiles.forEach(function (e) {
+        e.forEach(function (tile) {
+          tile.position.z += 200;
+        });
+      });
+      this.layout.unshift([]);
+      this.tiles.unshift([]);
+
+      for (var tX = 0; tX < this.tiles[1].length; tX++) {
+        this.tiles[0][tX] = new _entitiesTilesTilesJs2['default'][9]();
+        this.meshes.push(this.tiles[0][tX].mesh);
+        this.tiles[0][tX].addToScene(_Simplicity2['default'].scene);
+        this.tiles[0][tX].position.x = tX * 200;
+      }
+
+      this.player.position.z += 200;
     }
   }]);
 

@@ -58,6 +58,8 @@ class LevelEditor extends State {
       this.place = true;
       this.tempTile.position.x = intersects[0].object.position.x;
       this.tempTile.position.z = intersects[0].object.position.z;
+      this.tempTile.mesh.material.transparent = true;
+      this.tempTile.mesh.material.opacity = 0.7;
 
     } else {
       this.place = false;
@@ -91,70 +93,62 @@ class LevelEditor extends State {
     this.mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
   }
 
-  onMouseUp() {
-    if(this.place) {
+  onMouseUp(event) {
+
+    event.preventDefault();
+
+    if(this.place && event.button === 2) {
       const z = this.tempTile.mesh.position.z/200;
       const x = this.tempTile.mesh.position.x/200;
 
       Simplicity.scene.remove(this.tiles[z][x].mesh);
-      Simplicity.scene.remove(this.tiles[z][x].mesh);
+      Simplicity.scene.remove(this.tiles[z][x].egh);
 
-      var index = this.meshes.indexOf(this.tiles[z][x]);
+      this.tiles[z][x] = new Tiles[9]();
+      this.tiles[z][x].mesh.position.z = this.tempTile.mesh.position.z;
+      this.tiles[z][x].mesh.position.x = this.tempTile.mesh.position.x;
+      this.tiles[z][x].addToScene(Simplicity.scene);
+
+      this.layout[z][x] = null;
+
+      const index = this.meshes.indexOf(this.tiles[z][x]);
       if(index !== -1) {
-        Simplicity.scene.remove(this.meshes[i]);
-        this.meshes.splice(index, 1);
+        this.meshes[index] = this.tiles[z][x];
       }
 
-      this.tiles[z][x] = this.tempTile;
+    }
 
+    if(this.place && event.button === 0) {
+      const z = this.tempTile.mesh.position.z/200;
+      const x = this.tempTile.mesh.position.x/200;
+
+      this.tempTile.mesh.material.transparent = false;
+
+      Simplicity.scene.remove(this.tiles[z][x].mesh);
+      Simplicity.scene.remove(this.tiles[z][x].egh);
+
+      this.tiles[z][x] = this.tempTile;
       this.layout[z][x] = 1;
 
+      const index = this.meshes.indexOf(this.tiles[z][x]);
+      if(index !== -1) {
+        this.meshes[index] = this.tiles[z][x];
+      }
+
       if(z === this.tiles.length-1) {
-        this.addZ();
+        this.addDown();
       }
 
       if(x === this.tiles[z].length-1) {
-        this.addX();
+        this.addRight();
       }
 
       if(x === 0) {
-
-        this.tiles.forEach((e) => {
-          e.forEach((tile) => {
-            tile.position.x += 200;
-          })
-        })
-
-        for (var tZ = 0; tZ < this.tiles.length; tZ++) {
-          this.tiles[tZ].unshift(new Tiles[9]());
-          this.layout[tZ].unshift(null);
-          this.meshes.push(this.tiles[tZ][0].mesh);
-          this.tiles[tZ][0].addToScene(Simplicity.scene);
-          this.tiles[tZ][0].position.x = 0*200;
-          this.tiles[tZ][0].position.z = tZ*200;
-        }
-
-        this.player.position.x += 200;
+        this.addLeft();
       }
 
       if(z === 0) {
-
-        this.tiles.forEach((e) => {
-          e.forEach((tile) => {
-            tile.position.z += 200;
-          })
-        })
-        this.layout.unshift([])
-        this.tiles.unshift([]);
-
-        for (var tX = 0; tX < this.tiles[1].length; tX++) {
-          this.tiles[0][tX] = new Tiles[9]();
-          this.meshes.push(this.tiles[0][tX].mesh);
-          this.tiles[0][tX].addToScene(Simplicity.scene);
-          this.tiles[0][tX].position.x = tX*200;
-        }
-
-        this.player.position.z += 200;
+        this.addUp();
       }
 
       this.tempTile = new Tiles[1];
@@ -162,11 +156,10 @@ class LevelEditor extends State {
       this.tempTile.position.x =  10000;
       this.tempTile.position.z = 10000;
 
-      console.log(this.layout)
     }
   }
 
-  addX() {
+  addRight() {
     for (var tZ = 0; tZ < this.tiles.length; tZ++) {
       const tX = this.tiles[tZ].length;
       this.tiles[tZ][tX] = new Tiles[9]();
@@ -178,7 +171,7 @@ class LevelEditor extends State {
     }
   }
 
-  addZ() {
+  addDown() {
     this.layout.push([])
     this.tiles.push([]);
     for (var tX = 0; tX < this.tiles[0].length; tX++) {
@@ -190,6 +183,44 @@ class LevelEditor extends State {
       this.tiles[tZ][tX].position.z = tZ*200;
 
     }
+  }
+
+  addLeft() {
+    this.tiles.forEach((e) => {
+      e.forEach((tile) => {
+        tile.position.x += 200;
+      })
+    })
+
+    for (var tZ = 0; tZ < this.tiles.length; tZ++) {
+      this.tiles[tZ].unshift(new Tiles[9]());
+      this.layout[tZ].unshift(null);
+      this.meshes.push(this.tiles[tZ][0].mesh);
+      this.tiles[tZ][0].addToScene(Simplicity.scene);
+      this.tiles[tZ][0].position.x = 0*200;
+      this.tiles[tZ][0].position.z = tZ*200;
+    }
+
+    this.player.position.x += 200;
+  }
+
+  addUp() {
+    this.tiles.forEach((e) => {
+      e.forEach((tile) => {
+        tile.position.z += 200;
+      })
+    })
+    this.layout.unshift([])
+    this.tiles.unshift([]);
+
+    for (var tX = 0; tX < this.tiles[1].length; tX++) {
+      this.tiles[0][tX] = new Tiles[9]();
+      this.meshes.push(this.tiles[0][tX].mesh);
+      this.tiles[0][tX].addToScene(Simplicity.scene);
+      this.tiles[0][tX].position.x = tX*200;
+    }
+
+    this.player.position.z += 200;
   }
 
 }
