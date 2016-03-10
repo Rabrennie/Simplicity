@@ -1386,11 +1386,10 @@ var LevelEditor = (function (_State) {
       this.player.cameraFollow(_Simplicity2['default'].camera);
       this.player.mesh.visible = false;
       this.player.egh.visible = false;
-      this.tempTile = new _entitiesTilesTilesJs2['default'][1]();
-      this.tempTile.addToScene(_Simplicity2['default'].scene);
-      this.tempTile.position.x = 10000;
-      this.tempTile.position.z = 10000;
-      this.place = false;
+
+      this.tileId = 1;
+
+      this.setTile(1);
 
       this.raycaster = new THREE.Raycaster();
       this.mouse = new THREE.Vector2();
@@ -1400,6 +1399,41 @@ var LevelEditor = (function (_State) {
       window.addEventListener('mouseup', function (e) {
         return _this.onMouseUp(e);
       }, false);
+
+      var menuBar = _Simplicity2['default'].UIManager.add('menuBar', '');
+      var TileBtn = _Simplicity2['default'].UIManager.add('btn', '1', menuBar);
+      var GuideTileBtn = _Simplicity2['default'].UIManager.add('btn', '2', menuBar);
+      var GoalTileBtn = _Simplicity2['default'].UIManager.add('btn', '3', menuBar);
+      var SpikeTileBtn = _Simplicity2['default'].UIManager.add('btn', '4', menuBar);
+      var ElectricTileBtn = _Simplicity2['default'].UIManager.add('btn', '5', menuBar);
+      var ButtonTileBtn = _Simplicity2['default'].UIManager.add('btn', '6', menuBar);
+      var FallingTileBtn = _Simplicity2['default'].UIManager.add('btn', '7', menuBar);
+      var TrampolineTileBtn = _Simplicity2['default'].UIManager.add('btn', '8', menuBar);
+
+      TileBtn.addEventListener('mouseup', function () {
+        _this.setTile(1);
+      });
+      GuideTileBtn.addEventListener('mouseup', function () {
+        _this.setTile(2);
+      });
+      GoalTileBtn.addEventListener('mouseup', function () {
+        _this.setTile(3);
+      });
+      SpikeTileBtn.addEventListener('mouseup', function () {
+        _this.setTile(4);
+      });
+      ElectricTileBtn.addEventListener('mouseup', function () {
+        _this.setTile(5);
+      });
+      ButtonTileBtn.addEventListener('mouseup', function () {
+        _this.setTile(6);
+      });
+      FallingTileBtn.addEventListener('mouseup', function () {
+        _this.setTile(7);
+      });
+      TrampolineTileBtn.addEventListener('mouseup', function () {
+        _this.setTile(8);
+      });
     }
   }, {
     key: 'spawnTiles',
@@ -1425,9 +1459,9 @@ var LevelEditor = (function (_State) {
       // calculate objects intersecting the picking ray
       var intersects = this.raycaster.intersectObjects(this.meshes);
 
-      this.meshes.forEach(function (tile) {
-        tile.material.color.setHex(0xEEEEEE);
-      });
+      // this.meshes.forEach(function(tile) {
+      //   tile.material.color.setHex(0xEEEEEE);
+      // });
 
       if (intersects.length > 0) {
         this.place = true;
@@ -1512,10 +1546,7 @@ var LevelEditor = (function (_State) {
 
         this.meshes.push(this.tiles[z][x].mesh);
 
-        this.tempTile = new _entitiesTilesTilesJs2['default'][1]();
-        this.tempTile.addToScene(_Simplicity2['default'].scene);
-        this.tempTile.position.x = 10000;
-        this.tempTile.position.z = 10000;
+        this.setTile(this.tileId);
 
         if (z === this.tiles.length - 1) {
           this.addDown();
@@ -1599,6 +1630,16 @@ var LevelEditor = (function (_State) {
       }
 
       this.player.position.z += 200;
+    }
+  }, {
+    key: 'setTile',
+    value: function setTile(id) {
+      this.tileId = id;
+      this.tempTile = new _entitiesTilesTilesJs2['default'][id]();
+      this.tempTile.addToScene(_Simplicity2['default'].scene);
+      this.tempTile.position.x = 10000;
+      this.tempTile.position.z = 10000;
+      this.place = false;
     }
   }]);
 
