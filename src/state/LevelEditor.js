@@ -101,6 +101,11 @@ class LevelEditor extends State {
       const z = this.tempTile.mesh.position.z/200;
       const x = this.tempTile.mesh.position.x/200;
 
+      const index = this.meshes.indexOf(this.tiles[z][x]);
+      if(index !== -1) {
+        this.meshes.splice(index, 1);
+      }
+
       Simplicity.scene.remove(this.tiles[z][x].mesh);
       Simplicity.scene.remove(this.tiles[z][x].egh);
 
@@ -109,12 +114,9 @@ class LevelEditor extends State {
       this.tiles[z][x].mesh.position.x = this.tempTile.mesh.position.x;
       this.tiles[z][x].addToScene(Simplicity.scene);
 
-      this.layout[z][x] = null;
+      this.meshes.push(this.tiles[z][x].mesh);
 
-      const index = this.meshes.indexOf(this.tiles[z][x]);
-      if(index !== -1) {
-        this.meshes[index] = this.tiles[z][x];
-      }
+      this.layout[z][x] = null;
 
     }
 
@@ -124,16 +126,24 @@ class LevelEditor extends State {
 
       this.tempTile.mesh.material.transparent = false;
 
+      const index = this.meshes.indexOf(this.tiles[z][x]);
+      if(index !== -1) {
+        this.meshes.splice(index, 1);
+      }
+
       Simplicity.scene.remove(this.tiles[z][x].mesh);
       Simplicity.scene.remove(this.tiles[z][x].egh);
 
       this.tiles[z][x] = this.tempTile;
       this.layout[z][x] = 1;
 
-      const index = this.meshes.indexOf(this.tiles[z][x]);
-      if(index !== -1) {
-        this.meshes[index] = this.tiles[z][x];
-      }
+      this.meshes.push(this.tiles[z][x].mesh);
+
+
+      this.tempTile = new Tiles[1];
+      this.tempTile.addToScene(Simplicity.scene);
+      this.tempTile.position.x =  10000;
+      this.tempTile.position.z = 10000;
 
       if(z === this.tiles.length-1) {
         this.addDown();
@@ -150,11 +160,6 @@ class LevelEditor extends State {
       if(z === 0) {
         this.addUp();
       }
-
-      this.tempTile = new Tiles[1];
-      this.tempTile.addToScene(Simplicity.scene);
-      this.tempTile.position.x =  10000;
-      this.tempTile.position.z = 10000;
 
     }
   }

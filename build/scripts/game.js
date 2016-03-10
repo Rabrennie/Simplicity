@@ -1475,6 +1475,11 @@ var LevelEditor = (function (_State) {
         var z = this.tempTile.mesh.position.z / 200;
         var x = this.tempTile.mesh.position.x / 200;
 
+        var index = this.meshes.indexOf(this.tiles[z][x]);
+        if (index !== -1) {
+          this.meshes.splice(index, 1);
+        }
+
         _Simplicity2['default'].scene.remove(this.tiles[z][x].mesh);
         _Simplicity2['default'].scene.remove(this.tiles[z][x].egh);
 
@@ -1483,12 +1488,9 @@ var LevelEditor = (function (_State) {
         this.tiles[z][x].mesh.position.x = this.tempTile.mesh.position.x;
         this.tiles[z][x].addToScene(_Simplicity2['default'].scene);
 
-        this.layout[z][x] = null;
+        this.meshes.push(this.tiles[z][x].mesh);
 
-        var index = this.meshes.indexOf(this.tiles[z][x]);
-        if (index !== -1) {
-          this.meshes[index] = this.tiles[z][x];
-        }
+        this.layout[z][x] = null;
       }
 
       if (this.place && event.button === 0) {
@@ -1497,16 +1499,23 @@ var LevelEditor = (function (_State) {
 
         this.tempTile.mesh.material.transparent = false;
 
+        var index = this.meshes.indexOf(this.tiles[z][x]);
+        if (index !== -1) {
+          this.meshes.splice(index, 1);
+        }
+
         _Simplicity2['default'].scene.remove(this.tiles[z][x].mesh);
         _Simplicity2['default'].scene.remove(this.tiles[z][x].egh);
 
         this.tiles[z][x] = this.tempTile;
         this.layout[z][x] = 1;
 
-        var index = this.meshes.indexOf(this.tiles[z][x]);
-        if (index !== -1) {
-          this.meshes[index] = this.tiles[z][x];
-        }
+        this.meshes.push(this.tiles[z][x].mesh);
+
+        this.tempTile = new _entitiesTilesTilesJs2['default'][1]();
+        this.tempTile.addToScene(_Simplicity2['default'].scene);
+        this.tempTile.position.x = 10000;
+        this.tempTile.position.z = 10000;
 
         if (z === this.tiles.length - 1) {
           this.addDown();
@@ -1523,11 +1532,6 @@ var LevelEditor = (function (_State) {
         if (z === 0) {
           this.addUp();
         }
-
-        this.tempTile = new _entitiesTilesTilesJs2['default'][1]();
-        this.tempTile.addToScene(_Simplicity2['default'].scene);
-        this.tempTile.position.x = 10000;
-        this.tempTile.position.z = 10000;
       }
     }
   }, {
