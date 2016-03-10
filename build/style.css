@@ -64,3 +64,22 @@ body {
 .menuContainer .levelEditBtn{
   bottom: 100px;
 }
+
+.menuBar {
+  background-color: white;
+  position: absolute;
+  width: 100vw;
+  height:50px;
+  top:0;
+  left:0;
+}
+
+.menuBar .btn {
+  display: inline-block;
+  color: #00B4FF;
+  border: 1px solid #00B4FF;
+  margin: 5px 20px;
+  padding: 8px 10px;
+  cursor: pointer;
+  
+}

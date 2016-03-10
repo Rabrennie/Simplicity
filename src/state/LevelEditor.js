@@ -15,17 +15,34 @@ class LevelEditor extends State {
     this.player.cameraFollow(Simplicity.camera);
     this.player.mesh.visible = false;
     this.player.egh.visible = false;
-    this.tempTile = new Tiles[1];
-    this.tempTile.addToScene(Simplicity.scene);
-    this.tempTile.position.x =  10000;
-    this.tempTile.position.z = 10000;
-    this.place = false;
+
+    this.tileId = 1;
+
+    this.setTile(1);
 
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
     window.addEventListener('mousemove', (e) => this.onMouseMove(e) , false);
     window.addEventListener('mouseup', (e) => this.onMouseUp(e) , false);
 
+    const menuBar = Simplicity.UIManager.add('menuBar', '');
+    const TileBtn = Simplicity.UIManager.add('btn', '1', menuBar);
+    const GuideTileBtn = Simplicity.UIManager.add('btn', '2', menuBar);
+    const GoalTileBtn = Simplicity.UIManager.add('btn', '3', menuBar);
+    const SpikeTileBtn = Simplicity.UIManager.add('btn', '4', menuBar);
+    const ElectricTileBtn = Simplicity.UIManager.add('btn', '5', menuBar);
+    const ButtonTileBtn = Simplicity.UIManager.add('btn', '6', menuBar);
+    const FallingTileBtn = Simplicity.UIManager.add('btn', '7', menuBar);
+    const TrampolineTileBtn = Simplicity.UIManager.add('btn', '8', menuBar);
+
+    TileBtn.addEventListener('mouseup',() => { this.setTile(1) });
+    GuideTileBtn.addEventListener('mouseup',() => { this.setTile(2) });
+    GoalTileBtn.addEventListener('mouseup',() => { this.setTile(3) });
+    SpikeTileBtn.addEventListener('mouseup',() => { this.setTile(4) });
+    ElectricTileBtn.addEventListener('mouseup',() => { this.setTile(5) });
+    ButtonTileBtn.addEventListener('mouseup',() => { this.setTile(6) });
+    FallingTileBtn.addEventListener('mouseup',() => { this.setTile(7) });
+    TrampolineTileBtn.addEventListener('mouseup',() => { this.setTile(8) });
   }
 
   spawnTiles() {
@@ -50,9 +67,9 @@ class LevelEditor extends State {
     // calculate objects intersecting the picking ray
     var intersects = this.raycaster.intersectObjects(this.meshes);
 
-    this.meshes.forEach(function(tile) {
-      tile.material.color.setHex(0xEEEEEE);
-    });
+    // this.meshes.forEach(function(tile) {
+    //   tile.material.color.setHex(0xEEEEEE);
+    // });
 
     if(intersects.length > 0) {
       this.place = true;
@@ -139,11 +156,7 @@ class LevelEditor extends State {
 
       this.meshes.push(this.tiles[z][x].mesh);
 
-
-      this.tempTile = new Tiles[1];
-      this.tempTile.addToScene(Simplicity.scene);
-      this.tempTile.position.x =  10000;
-      this.tempTile.position.z = 10000;
+      this.setTile(this.tileId);
 
       if(z === this.tiles.length-1) {
         this.addDown();
@@ -226,6 +239,15 @@ class LevelEditor extends State {
     }
 
     this.player.position.z += 200;
+  }
+
+  setTile(id) {
+    this.tileId = id;
+    this.tempTile = new Tiles[id];
+    this.tempTile.addToScene(Simplicity.scene);
+    this.tempTile.position.x =  10000;
+    this.tempTile.position.z = 10000;
+    this.place = false;
   }
 
 }
