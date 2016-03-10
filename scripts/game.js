@@ -1066,14 +1066,19 @@ var _entitiesTilesTilesJs2 = _interopRequireDefault(_entitiesTilesTilesJs);
 var Level = (function (_State) {
   _inherits(Level, _State);
 
-  function Level() {
+  function Level(layout) {
     _classCallCheck(this, Level);
 
     _get(Object.getPrototypeOf(Level.prototype), 'constructor', this).call(this);
-    this.layout = [[7, 7, 7], [7, 7, 7], [7, 8, 7], [7, 0, 7], [7, 8, 7], [7, 0, 7], [7, 3, 7]];
+    if (layout) {
+      this.layout = layout;
+    } else {
+      this.layout = [[7, 7, 7], [7, 7, 7], [7, 8, 7], [7, 0, 7], [7, 8, 7], [7, 0, 7], [7, 3, 7]];
+    }
     this.tiles = [];
     this.levelName = 'test';
     this.nextLevelName = 'test';
+    this.playerStart = { x: 0, z: 0 };
   }
 
   _createClass(Level, [{
@@ -1082,6 +1087,9 @@ var Level = (function (_State) {
       this.player = new _entitiesPlayerJs2['default']();
       this.player.addToScene(_Simplicity2['default'].scene);
       this.player.cameraFollow(_Simplicity2['default'].camera);
+
+      this.player.mesh.position.x = this.playerStart.x;
+      this.player.mesh.position.z = this.playerStart.z;
 
       this.timeBetween = 2;
       _Simplicity2['default'].UIManager.add('timer', this.timeBetween);
@@ -1355,6 +1363,10 @@ var _State2 = require('./State');
 
 var _State3 = _interopRequireDefault(_State2);
 
+var _Level2 = require('./Level');
+
+var _Level3 = _interopRequireDefault(_Level2);
+
 var _entitiesTilesTilesJs = require('../entities/tiles/Tiles.js');
 
 var _entitiesTilesTilesJs2 = _interopRequireDefault(_entitiesTilesTilesJs);
@@ -1409,6 +1421,7 @@ var LevelEditor = (function (_State) {
       var ButtonTileBtn = _Simplicity2['default'].UIManager.add('btn', '6', menuBar);
       var FallingTileBtn = _Simplicity2['default'].UIManager.add('btn', '7', menuBar);
       var TrampolineTileBtn = _Simplicity2['default'].UIManager.add('btn', '8', menuBar);
+      var PlayBtn = _Simplicity2['default'].UIManager.add('btn', 'Play', menuBar);
 
       TileBtn.addEventListener('mouseup', function () {
         _this.setTile(1);
@@ -1433,6 +1446,9 @@ var LevelEditor = (function (_State) {
       });
       TrampolineTileBtn.addEventListener('mouseup', function () {
         _this.setTile(8);
+      });
+      PlayBtn.addEventListener('mouseup', function () {
+        _this.play();
       });
     }
   }, {
@@ -1542,7 +1558,7 @@ var LevelEditor = (function (_State) {
         _Simplicity2['default'].scene.remove(this.tiles[z][x].egh);
 
         this.tiles[z][x] = this.tempTile;
-        this.layout[z][x] = 1;
+        this.layout[z][x] = this.tileId;
 
         this.meshes.push(this.tiles[z][x].mesh);
 
@@ -1641,6 +1657,46 @@ var LevelEditor = (function (_State) {
       this.tempTile.position.z = 10000;
       this.place = false;
     }
+  }, {
+    key: 'play',
+    value: function play() {
+
+      var self = this;
+      var found = false;
+      var pos;
+
+      for (var z = 0; z < this.layout.length; z++) {
+        for (var x = 0; x < this.layout[z].length; x++) {
+          if (this.layout[z][x] === 1) {
+            pos = { x: x * 200, z: z * 200 };
+            found = true;
+            break;
+          }
+        }
+        if (found) {
+          break;
+        }
+      }
+
+      var temp = (function (_Level) {
+        _inherits(temp, _Level);
+
+        function temp() {
+          _classCallCheck(this, temp);
+
+          _get(Object.getPrototypeOf(temp.prototype), 'constructor', this).call(this, self.layout);
+          this.playerStart = pos;
+
+          this.levelName = 'temp';
+          this.nextLevelName = 'temp';
+        }
+
+        return temp;
+      })(_Level3['default']);
+
+      _Simplicity2['default'].StateManager.add('temp', temp);
+      _Simplicity2['default'].StateManager.load('temp');
+    }
   }]);
 
   return LevelEditor;
@@ -1649,7 +1705,7 @@ var LevelEditor = (function (_State) {
 exports['default'] = LevelEditor;
 module.exports = exports['default'];
 
-},{"../Simplicity":1,"../entities/Player.js":3,"../entities/tiles/Tiles.js":12,"./State":18}],18:[function(require,module,exports){
+},{"../Simplicity":1,"../entities/Player.js":3,"../entities/tiles/Tiles.js":12,"./Level":16,"./State":18}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
