@@ -6,7 +6,7 @@ class SharedLevel extends State {
   create() {
 
     const hash = window.location.hash.substring(1)
-    const level = JSON.parse(atob(hash));
+    var level = JSON.parse(atob(hash));
 
     var layout = [];
 
@@ -42,6 +42,9 @@ class SharedLevel extends State {
 
         this.levelName = 'temp';
         this.nextLevelName = 'temp';
+        this.timeBetween = level.t;
+        this.maxSteps = level.s;
+        this.name = level.n;
       }
     }
     Simplicity.StateManager.add('temp', temp);

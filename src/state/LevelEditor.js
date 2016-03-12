@@ -10,6 +10,7 @@ class LevelEditor extends State {
     this.tiles = [];
     this.meshes = [];
     this.layout = [];
+    this.options = { s:1, n:'Level', t:1 };
     this.spawnTiles();
     this.player = new Player();
     this.player.addToScene(Simplicity.scene);
@@ -37,6 +38,7 @@ class LevelEditor extends State {
     const TrampolineTileBtn = Simplicity.UIManager.add('btn', '8', menuBar);
     const PlayBtn = Simplicity.UIManager.add('btn', 'Play', menuBar);
     const ShareBtn = Simplicity.UIManager.add('btn', 'Share', menuBar);
+    const OptionsBtn = Simplicity.UIManager.add('btn', 'Options', menuBar);
 
 
     TileBtn.addEventListener('mouseup',() => { this.setTile(1) });
@@ -49,6 +51,7 @@ class LevelEditor extends State {
     TrampolineTileBtn.addEventListener('mouseup',() => { this.setTile(8) });
     PlayBtn.addEventListener('mouseup',() => { this.play() });
     ShareBtn.addEventListener('mouseup',() => { this.share() });
+    OptionsBtn.addEventListener('mouseup',() => { this.option() });
 
   }
 
@@ -56,7 +59,8 @@ class LevelEditor extends State {
     if(Simplicity.editorTiles) {
 
       this.tiles = Simplicity.editorTiles;
-      this.layout = Simplicity.editorLayout
+      this.layout = Simplicity.editorLayout;
+      this.options = Simplicity.editorOptions;
       for (var z = 0; z < this.tiles.length; z++) {
         for (var x = 0; x < this.tiles[z].length; x++) {
           this.meshes.push(this.tiles[z][x].mesh);
@@ -142,6 +146,14 @@ class LevelEditor extends State {
       if(event.target.className === 'ui') {
         Simplicity.UIManager.remove('shareContainer');
         this.shareContainer = null;
+        return;
+      }
+    }
+
+    if(this.optionContainer) {
+      if(event.target.className === 'ui') {
+        Simplicity.UIManager.remove('optionContainer');
+        this.optionContainer = null;
         return;
       }
     }
@@ -294,6 +306,7 @@ class LevelEditor extends State {
 
     Simplicity.editorTiles = this.tiles;
     Simplicity.editorLayout = this.layout;
+    Simplicity.editorOptions = this.options;
 
     // TODO: change this to be a spawn tile at some point
     for (var z = 0; z < this.layout.length; z++) {
@@ -316,6 +329,9 @@ class LevelEditor extends State {
 
         this.levelName = 'temp';
         this.nextLevelName = 'temp';
+        this.timeBetween = self.options.t;
+        this.maxSteps = self.options.s;
+        this.name = self.options.n;
       }
     }
     Simplicity.StateManager.add('temp', temp);
@@ -329,9 +345,8 @@ class LevelEditor extends State {
       Simplicity.UIManager.remove('shareContainer');
     }
 
-    var level = this.encodeLevel();
-    var text = text = 'http://rabrennie.com/Simplicity/#' + level;
-
+    const level = this.encodeLevel();
+    const text = 'http://rabrennie.com/Simplicity/#' + level;
 
     this.shareContainer = Simplicity.UIManager.add('shareContainer', '');
     Simplicity.UIManager.add('share', `Send this to your friend <textarea onclick="this.focus();this.select()">${text}</textarea>`, this.shareContainer);
@@ -340,6 +355,36 @@ class LevelEditor extends State {
     close.addEventListener('mouseup', () => {
       Simplicity.UIManager.remove('shareContainer');
       this.shareContainer = null;
+    })
+
+
+  }
+
+  option() {
+
+    if(this.optionContainer) {
+      Simplicity.UIManager.remove('optionContainer');
+    }
+
+    this.optionContainer = Simplicity.UIManager.add('optionContainer', '');
+    const close = Simplicity.UIManager.add('close', 'X', this.optionContainer);
+    const name = Simplicity.UIManager.add('name', `Name: <input type="text" value="${this.options.n}" />`, this.optionContainer);
+    const steps = Simplicity.UIManager.add('steps', `Steps:  <input type="text" value="${this.options.s}" />`, this.optionContainer);
+    const time = Simplicity.UIManager.add('time', `Time: <input type="text" value="${this.options.t}" />`, this.optionContainer);
+    const saveBtn = Simplicity.UIManager.add('saveBtn', 'Save', this.optionContainer);
+
+
+    close.addEventListener('mouseup', () => {
+      Simplicity.UIManager.remove('optionContainer');
+      this.optionContainer = null;
+    })
+
+    saveBtn.addEventListener('mouseup', () => {
+      this.options.n = name.childNodes[1].value;
+      this.options.s = parseInt(steps.childNodes[1].value);
+      this.options.t = parseInt(time.childNodes[1].value);
+      Simplicity.UIManager.remove('optionContainer');
+      this.optionContainer = null;
     })
 
 
@@ -367,6 +412,10 @@ class LevelEditor extends State {
     }
 
     const level = { w: length, h:this.layout.length, m:levelString };
+
+    level.s = this.options.s;
+    level.n = this.options.n;
+    level.t = this.options.t;
 
     const base64 = btoa(JSON.stringify(level));
 

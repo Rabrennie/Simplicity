@@ -36,7 +36,7 @@ body {
   font-size: 5vh;
 }
 
-.win, .menuContainer, .shareContainer {
+.win, .menuContainer, .shareContainer, .optionContainer {
   width: 30vw;
   height: 60vh;
   position: absolute;
@@ -54,7 +54,7 @@ body {
   font-weight: 300;
 }
 
-.win .nextBtn, .menuContainer .playBtn, .menuContainer .levelEditBtn{
+.win .nextBtn, .menuContainer .playBtn, .menuContainer .levelEditBtn, .optionContainer .saveBtn{
   color: #00B4FF;
   position: absolute;
   width: Calc(100% - 60px);
@@ -90,7 +90,7 @@ body {
 
 }
 
-.shareContainer {
+.shareContainer, .optionContainer {
   height: 25vh;
   font-size: 20px;
 }
@@ -103,7 +103,7 @@ body {
   resize: none;
 }
 
-.shareContainer .close {
+.shareContainer .close, .optionContainer .close {
   position: absolute;
   right:0;
   top: 0;
@@ -111,4 +111,16 @@ body {
   color:#00B4FF;
   cursor: pointer;
   padding: 10px;
+}
+
+.levelName {
+  position: absolute;
+  left:50vw;
+  top:50vh;
+  color:#00B4FF;
+  background: white;
+  font-size: 5vh;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 20px;
 }

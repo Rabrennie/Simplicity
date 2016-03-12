@@ -13,9 +13,13 @@ class Level extends State {
       this.layout = [[7, 7, 7],[7, 7, 7],[7, 8, 7],[7, 0, 7],[7, 8, 7],[7, 0, 7],[7, 3, 7]];
     }
     this.tiles = [];
+    this.name = 'Level One'
     this.levelName = 'test';
     this.nextLevelName = 'test';
     this.playerStart = { x:0, z:0 }
+    this.timeBetween = 2;
+    this.maxSteps = 10;
+
   }
 
   create() {
@@ -26,12 +30,15 @@ class Level extends State {
     this.player.mesh.position.x = this.playerStart.x;
     this.player.mesh.position.z = this.playerStart.z;
 
-    this.timeBetween = 2;
     Simplicity.UIManager.add('timer', this.timeBetween);
 
-    this.maxSteps = 10;
     this.curSteps = 0;
     Simplicity.UIManager.add('counter', `${this.curSteps} / ${this.maxSteps}`);
+
+    this.name = this.htmlEscape(this.name)
+
+    this.levelElem = Simplicity.UIManager.add('levelName', `${this.name}`);
+    this.player.tweening = true;
 
     this.spikeTiles = [];
     this.electricTiles = [];
@@ -65,8 +72,23 @@ class Level extends State {
     }
   }
 
+  htmlEscape(str) {
+    return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+  }
+
+
   update() {
 
+    if(this.player.tweening && Object.keys(Simplicity.keysDown).length > 0 && this.levelElem) {
+      Simplicity.UIManager.remove('levelName');
+      this.player.tweening = false;
+      this.levelElem = false;
+    }
 
     if(this.moved) {
       this.onStep();
