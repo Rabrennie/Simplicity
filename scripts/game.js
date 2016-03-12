@@ -1091,9 +1091,12 @@ var Level = (function (_State) {
       this.layout = [[7, 7, 7], [7, 7, 7], [7, 8, 7], [7, 0, 7], [7, 8, 7], [7, 0, 7], [7, 3, 7]];
     }
     this.tiles = [];
+    this.name = 'Level One';
     this.levelName = 'test';
     this.nextLevelName = 'test';
     this.playerStart = { x: 0, z: 0 };
+    this.timeBetween = 2;
+    this.maxSteps = 10;
   }
 
   _createClass(Level, [{
@@ -1106,12 +1109,15 @@ var Level = (function (_State) {
       this.player.mesh.position.x = this.playerStart.x;
       this.player.mesh.position.z = this.playerStart.z;
 
-      this.timeBetween = 2;
       _Simplicity2['default'].UIManager.add('timer', this.timeBetween);
 
-      this.maxSteps = 10;
       this.curSteps = 0;
       _Simplicity2['default'].UIManager.add('counter', this.curSteps + ' / ' + this.maxSteps);
+
+      this.name = this.htmlEscape(this.name);
+
+      this.levelElem = _Simplicity2['default'].UIManager.add('levelName', '' + this.name);
+      this.player.tweening = true;
 
       this.spikeTiles = [];
       this.electricTiles = [];
@@ -1146,8 +1152,19 @@ var Level = (function (_State) {
       }
     }
   }, {
+    key: 'htmlEscape',
+    value: function htmlEscape(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+  }, {
     key: 'update',
     value: function update() {
+
+      if (this.player.tweening && Object.keys(_Simplicity2['default'].keysDown).length > 0 && this.levelElem) {
+        _Simplicity2['default'].UIManager.remove('levelName');
+        this.player.tweening = false;
+        this.levelElem = false;
+      }
 
       if (this.moved) {
         this.onStep();
@@ -1421,6 +1438,7 @@ var LevelEditor = (function (_State) {
       this.tiles = [];
       this.meshes = [];
       this.layout = [];
+      this.options = { s: 1, n: 'Level', t: 1 };
       this.spawnTiles();
       this.player = new _entitiesPlayerJs2['default']();
       this.player.addToScene(_Simplicity2['default'].scene);
@@ -1452,6 +1470,7 @@ var LevelEditor = (function (_State) {
       var TrampolineTileBtn = _Simplicity2['default'].UIManager.add('btn', '8', menuBar);
       var PlayBtn = _Simplicity2['default'].UIManager.add('btn', 'Play', menuBar);
       var ShareBtn = _Simplicity2['default'].UIManager.add('btn', 'Share', menuBar);
+      var OptionsBtn = _Simplicity2['default'].UIManager.add('btn', 'Options', menuBar);
 
       TileBtn.addEventListener('mouseup', function () {
         _this.setTile(1);
@@ -1483,6 +1502,9 @@ var LevelEditor = (function (_State) {
       ShareBtn.addEventListener('mouseup', function () {
         _this.share();
       });
+      OptionsBtn.addEventListener('mouseup', function () {
+        _this.option();
+      });
     }
   }, {
     key: 'spawnTiles',
@@ -1491,6 +1513,7 @@ var LevelEditor = (function (_State) {
 
         this.tiles = _Simplicity2['default'].editorTiles;
         this.layout = _Simplicity2['default'].editorLayout;
+        this.options = _Simplicity2['default'].editorOptions;
         for (var z = 0; z < this.tiles.length; z++) {
           for (var x = 0; x < this.tiles[z].length; x++) {
             this.meshes.push(this.tiles[z][x].mesh);
@@ -1572,6 +1595,14 @@ var LevelEditor = (function (_State) {
         if (event.target.className === 'ui') {
           _Simplicity2['default'].UIManager.remove('shareContainer');
           this.shareContainer = null;
+          return;
+        }
+      }
+
+      if (this.optionContainer) {
+        if (event.target.className === 'ui') {
+          _Simplicity2['default'].UIManager.remove('optionContainer');
+          this.optionContainer = null;
           return;
         }
       }
@@ -1726,6 +1757,7 @@ var LevelEditor = (function (_State) {
 
       _Simplicity2['default'].editorTiles = this.tiles;
       _Simplicity2['default'].editorLayout = this.layout;
+      _Simplicity2['default'].editorOptions = this.options;
 
       // TODO: change this to be a spawn tile at some point
       for (var z = 0; z < this.layout.length; z++) {
@@ -1752,6 +1784,9 @@ var LevelEditor = (function (_State) {
 
           this.levelName = 'temp';
           this.nextLevelName = 'temp';
+          this.timeBetween = self.options.t;
+          this.maxSteps = self.options.s;
+          this.name = self.options.n;
         }
 
         return temp;
@@ -1770,7 +1805,7 @@ var LevelEditor = (function (_State) {
       }
 
       var level = this.encodeLevel();
-      var text = text = 'http://rabrennie.com/Simplicity/#' + level;
+      var text = 'http://rabrennie.com/Simplicity/#' + level;
 
       this.shareContainer = _Simplicity2['default'].UIManager.add('shareContainer', '');
       _Simplicity2['default'].UIManager.add('share', 'Send this to your friend <textarea onclick="this.focus();this.select()">' + text + '</textarea>', this.shareContainer);
@@ -1779,6 +1814,35 @@ var LevelEditor = (function (_State) {
       close.addEventListener('mouseup', function () {
         _Simplicity2['default'].UIManager.remove('shareContainer');
         _this2.shareContainer = null;
+      });
+    }
+  }, {
+    key: 'option',
+    value: function option() {
+      var _this3 = this;
+
+      if (this.optionContainer) {
+        _Simplicity2['default'].UIManager.remove('optionContainer');
+      }
+
+      this.optionContainer = _Simplicity2['default'].UIManager.add('optionContainer', '');
+      var close = _Simplicity2['default'].UIManager.add('close', 'X', this.optionContainer);
+      var name = _Simplicity2['default'].UIManager.add('name', 'Name: <input type="text" value="' + this.options.n + '" />', this.optionContainer);
+      var steps = _Simplicity2['default'].UIManager.add('steps', 'Steps:  <input type="text" value="' + this.options.s + '" />', this.optionContainer);
+      var time = _Simplicity2['default'].UIManager.add('time', 'Time: <input type="text" value="' + this.options.t + '" />', this.optionContainer);
+      var saveBtn = _Simplicity2['default'].UIManager.add('saveBtn', 'Save', this.optionContainer);
+
+      close.addEventListener('mouseup', function () {
+        _Simplicity2['default'].UIManager.remove('optionContainer');
+        _this3.optionContainer = null;
+      });
+
+      saveBtn.addEventListener('mouseup', function () {
+        _this3.options.n = name.childNodes[1].value;
+        _this3.options.s = parseInt(steps.childNodes[1].value);
+        _this3.options.t = parseInt(time.childNodes[1].value);
+        _Simplicity2['default'].UIManager.remove('optionContainer');
+        _this3.optionContainer = null;
       });
     }
   }, {
@@ -1805,6 +1869,10 @@ var LevelEditor = (function (_State) {
       }
 
       var level = { w: length, h: this.layout.length, m: levelString };
+
+      level.s = this.options.s;
+      level.n = this.options.n;
+      level.t = this.options.t;
 
       var base64 = btoa(JSON.stringify(level));
 
@@ -1899,6 +1967,9 @@ var SharedLevel = (function (_State) {
 
           this.levelName = 'temp';
           this.nextLevelName = 'temp';
+          this.timeBetween = level.t;
+          this.maxSteps = level.s;
+          this.name = level.n;
         }
 
         return temp;
