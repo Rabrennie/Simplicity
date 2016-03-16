@@ -54,7 +54,7 @@ body {
   font-weight: 300;
 }
 
-.win .nextBtn, .menuContainer .playBtn, .menuContainer .levelEditBtn, .optionContainer .saveBtn{
+.win .nextBtn, .menuContainer .playBtn, .menuContainer .levelEditBtn, .optionContainer .saveBtn, .menuContainer .backBtn{
   color: #00B4FF;
   position: absolute;
   width: Calc(100% - 60px);
@@ -123,4 +123,39 @@ body {
   transform: translate(-50%, -50%);
   text-align: center;
   padding: 20px;
+}
+
+.list {
+  overflow-y: scroll;
+  height: 35vh;
+}
+
+.list .item {
+  position: relative;
+  border: 1px solid #00b4ff;
+  border-left-style: none;
+  border-right-style: none;
+  font-size: 20px;
+  padding: 10px 0px;
+  transition: background-color 0.1s linear;
+}
+
+.list .item:hover {
+  background: rgba(0,188,212, 0.5);
+}
+.list .item:not(:first-child) {
+  border-top: none;
+}
+
+.list .item .play {
+  cursor: pointer;
+  position: absolute;
+  top:50%;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 0 10px 17.3px;
+  border-color: transparent transparent transparent #00b3ff;
+  transform: translateY(-50%);
 }

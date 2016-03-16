@@ -56,10 +56,12 @@ window.addEventListener('keyup', function (e) {
   delete Simplicity.keysDown[e.keyCode];
 });
 
+Simplicity.hash = null;
+
 exports['default'] = Simplicity;
 module.exports = exports['default'];
 
-},{"./state/StateManager":20,"./ui/UIManager":22}],2:[function(require,module,exports){
+},{"./state/StateManager":20,"./ui/UIManager":23}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -956,6 +958,10 @@ var _stateMenusMainMenu = require('./state/menus/MainMenu');
 
 var _stateMenusMainMenu2 = _interopRequireDefault(_stateMenusMainMenu);
 
+var _stateMenusPlayMenu = require('./state/menus/PlayMenu');
+
+var _stateMenusPlayMenu2 = _interopRequireDefault(_stateMenusPlayMenu);
+
 var _stateInit = require('./state/Init');
 
 var _stateInit2 = _interopRequireDefault(_stateInit);
@@ -970,6 +976,7 @@ var _stateSharedLevel2 = _interopRequireDefault(_stateSharedLevel);
 
 _Simplicity2['default'].StateManager.add('test', _stateLevel2['default']);
 _Simplicity2['default'].StateManager.add('MainMenu', _stateMenusMainMenu2['default']);
+_Simplicity2['default'].StateManager.add('PlayMenu', _stateMenusPlayMenu2['default']);
 _Simplicity2['default'].StateManager.add('LevelEditor', _stateLevelEditor2['default']);
 _Simplicity2['default'].StateManager.add('SharedLevel', _stateSharedLevel2['default']);
 _Simplicity2['default'].StateManager.add('Init', _stateInit2['default']);
@@ -990,7 +997,7 @@ function gameLoop() {
   _Simplicity2['default'].renderer.render(_Simplicity2['default'].scene, _Simplicity2['default'].camera);
 }
 
-},{"./state/Init":15,"./state/Level":16,"./state/LevelEditor":17,"./state/SharedLevel":18,"./state/menus/MainMenu":21,"Simplicity":1}],15:[function(require,module,exports){
+},{"./state/Init":15,"./state/Level":16,"./state/LevelEditor":17,"./state/SharedLevel":18,"./state/menus/MainMenu":21,"./state/menus/PlayMenu":22,"Simplicity":1}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1031,6 +1038,7 @@ var Init = (function (_State) {
       loader.load('./assets/test.json', function (geometry) {
         _Simplicity2['default'].models.spikes = geometry;
         if (window.location.hash) {
+          _Simplicity2['default'].hash = window.location.hash.substring(1);
           _Simplicity2['default'].StateManager.load('SharedLevel');
         } else {
           _Simplicity2['default'].StateManager.load('MainMenu');
@@ -1928,11 +1936,12 @@ var SharedLevel = (function (_State) {
     key: 'create',
     value: function create() {
 
-      var hash = window.location.hash.substring(1);
+      var hash = _Simplicity2['default'].hash;
       var level = JSON.parse(atob(hash));
 
       var layout = [];
 
+      // puts layout back into array
       for (var h = 0; h < level.h; h++) {
         layout.push([]);
         for (var w = 0; w < level.w; w++) {
@@ -1943,6 +1952,8 @@ var SharedLevel = (function (_State) {
       var pos = {};
       var found;
 
+      // look for first normal tile.
+      // TODO: make this look for a starting tile
       for (var z = 0; z < layout.length; z++) {
         for (var x = 0; x < layout[z].length; x++) {
           if (layout[z][x] === 1) {
@@ -1955,6 +1966,30 @@ var SharedLevel = (function (_State) {
           break;
         }
       }
+
+      // use localstorage to save shared levels the player has played
+      var levels = JSON.parse(localStorage.getItem('levels'));
+
+      if (!levels) {
+        levels = [];
+      }
+
+      found = false;
+
+      for (var i = 0; i < levels.length; i++) {
+        if (levels[i] === hash) {
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        levels.push(hash);
+
+        localStorage.setItem('levels', JSON.stringify(levels));
+      }
+
+      // make a new temp level class
 
       var temp = (function (_Level) {
         _inherits(temp, _Level);
@@ -1972,6 +2007,7 @@ var SharedLevel = (function (_State) {
           this.name = level.n;
         }
 
+        // add the temp level to the state manager and load it
         return temp;
       })(_Level3['default']);
 
@@ -2135,7 +2171,7 @@ var MainMenu = (function (_State) {
       _Simplicity2['default'].UIManager.add('title', 'Simplicity', menuContainer);
 
       playBtn.addEventListener('mouseup', function () {
-        _Simplicity2['default'].StateManager.load('test');
+        _Simplicity2['default'].StateManager.load('PlayMenu');
       });
 
       levelEditBtn.addEventListener('mouseup', function () {
@@ -2151,6 +2187,81 @@ exports['default'] = MainMenu;
 module.exports = exports['default'];
 
 },{"../../Simplicity":1,"../State":19}],22:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _Simplicity = require('../../Simplicity');
+
+var _Simplicity2 = _interopRequireDefault(_Simplicity);
+
+var _State2 = require('../State');
+
+var _State3 = _interopRequireDefault(_State2);
+
+var PlayMenu = (function (_State) {
+  _inherits(PlayMenu, _State);
+
+  function PlayMenu() {
+    _classCallCheck(this, PlayMenu);
+
+    _get(Object.getPrototypeOf(PlayMenu.prototype), 'constructor', this).apply(this, arguments);
+  }
+
+  _createClass(PlayMenu, [{
+    key: 'create',
+    value: function create() {
+      var _this = this;
+
+      var menuContainer = _Simplicity2['default'].UIManager.add('menuContainer', '');
+      _Simplicity2['default'].UIManager.add('title', 'Recently Played', menuContainer);
+      var list = _Simplicity2['default'].UIManager.add('list', '', menuContainer);
+      var backBtn = _Simplicity2['default'].UIManager.add('backBtn', 'Back', menuContainer);
+
+      backBtn.addEventListener('mouseup', function () {
+        _Simplicity2['default'].StateManager.load('MainMenu');
+      });
+
+      var levels = JSON.parse(window.localStorage.levels);
+      levels.forEach(function (level) {
+        var levelElem = _Simplicity2['default'].UIManager.add(level, '', list);
+        _Simplicity2['default'].UIManager.add('name', JSON.parse(atob(level)).n, levelElem);
+        var playBtn = _Simplicity2['default'].UIManager.add('play', '', levelElem);
+
+        levelElem.className += ' item';
+
+        playBtn.addEventListener('mouseup', function () {
+          _this.play(level);
+        });
+      });
+    }
+  }, {
+    key: 'play',
+    value: function play(level) {
+      _Simplicity2['default'].hash = level;
+      _Simplicity2['default'].StateManager.load('SharedLevel');
+    }
+  }]);
+
+  return PlayMenu;
+})(_State3['default']);
+
+exports['default'] = PlayMenu;
+module.exports = exports['default'];
+
+},{"../../Simplicity":1,"../State":19}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

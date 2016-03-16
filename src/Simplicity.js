@@ -34,5 +34,7 @@ window.addEventListener('keyup', (e) => {
   delete Simplicity.keysDown[e.keyCode];
 });
 
+Simplicity.hash = null;
+
 
 export default Simplicity;
