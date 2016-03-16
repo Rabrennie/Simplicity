@@ -7,6 +7,7 @@ class Init extends State {
     loader.load('./assets/test.json', function(geometry) {
       Simplicity.models.spikes = geometry;
       if(window.location.hash) {
+        Simplicity.hash = window.location.hash.substring(1);
         Simplicity.StateManager.load('SharedLevel');
       } else {
         Simplicity.StateManager.load('MainMenu');

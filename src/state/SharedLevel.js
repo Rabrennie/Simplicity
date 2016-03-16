@@ -5,11 +5,12 @@ import Level from './Level';
 class SharedLevel extends State {
   create() {
 
-    const hash = window.location.hash.substring(1)
+    const hash = Simplicity.hash;
     var level = JSON.parse(atob(hash));
 
     var layout = [];
 
+    // puts layout back into array
     for (var h = 0; h < level.h; h++) {
       layout.push([]);
       for (var w = 0; w < level.w; w++) {
@@ -21,6 +22,8 @@ class SharedLevel extends State {
     var pos = {};
     var found;
 
+    // look for first normal tile.
+    // TODO: make this look for a starting tile
     for (var z = 0; z < layout.length; z++) {
       for (var x = 0; x < layout[z].length; x++) {
         if(layout[z][x] === 1) {
@@ -34,8 +37,31 @@ class SharedLevel extends State {
       }
     }
 
+    // use localstorage to save shared levels the player has played
+    let levels = JSON.parse(localStorage.getItem('levels'));
 
-    class temp extends Level {
+    if(!levels) {
+      levels = [];
+    }
+
+    found = false;
+
+    for (var i = 0; i < levels.length; i++) {
+      if(levels[i] === hash) {
+        found = true;
+        break;
+      }
+    }
+
+    if(!found) {
+      levels.push(hash);
+
+      localStorage.setItem('levels', JSON.stringify(levels));
+    }
+
+
+    // make a new temp level class
+    class temp extends Level {z
       constructor() {
         super(layout);
         this.playerStart = pos;
@@ -47,6 +73,8 @@ class SharedLevel extends State {
         this.name = level.n;
       }
     }
+
+    // add the temp level to the state manager and load it
     Simplicity.StateManager.add('temp', temp);
     Simplicity.StateManager.load('temp');
 

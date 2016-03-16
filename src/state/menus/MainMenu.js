@@ -10,7 +10,7 @@ class MainMenu extends State {
     Simplicity.UIManager.add('title', 'Simplicity', menuContainer);
 
     playBtn.addEventListener('mouseup', function() {
-      Simplicity.StateManager.load('test')
+      Simplicity.StateManager.load('PlayMenu')
     })
 
     levelEditBtn.addEventListener('mouseup', function() {
