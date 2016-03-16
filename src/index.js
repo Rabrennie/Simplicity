@@ -1,22 +1,30 @@
-import BootState from 'states/BootState';
-import MainMenu from 'states/MainMenu';
-import Level1 from 'states/Level1';
-import Level2 from 'states/Level2';
-import Level3 from 'states/Level3';
+import Simplicity from 'Simplicity';
+
+import Level from './state/Level';
+import MainMenu from './state/menus/MainMenu';
+import Init from './state/Init';
+import LevelEditor from './state/LevelEditor';
+import SharedLevel from './state/SharedLevel';
+
+Simplicity.StateManager.add('test', Level);
+Simplicity.StateManager.add('MainMenu', MainMenu);
+Simplicity.StateManager.add('LevelEditor', LevelEditor);
+Simplicity.StateManager.add('SharedLevel', SharedLevel);
+Simplicity.StateManager.add('Init', Init);
+Simplicity.StateManager.load('Init');
 
 
-class Game extends Phaser.Game {
+gameLoop();
 
-  constructor() {
-    super(800, 400, Phaser.AUTO, 'content', null, true, false);
-    this.state.add('BootState', BootState, false);
-    this.state.add('MainMenu', MainMenu, false);
-    this.state.add('Level1', Level1, false);
-    this.state.add('Level2', Level2, false);
-    this.state.add('Level3', Level3, false);
-    this.state.start('BootState');
+function gameLoop() {
+  window.requestAnimationFrame(gameLoop);
+  TWEEN.update();
+  if(Simplicity.camera.follow) {
+    Simplicity.camera.position.x = Simplicity.camera.follow.position.x;
+    Simplicity.camera.position.z = Simplicity.camera.follow.position.z+1500;
   }
-
+  if(Simplicity.StateManager.doLoop) {
+    Simplicity.StateManager.loop();
+  }
+  Simplicity.renderer.render(Simplicity.scene, Simplicity.camera);
 }
-
-new Game();

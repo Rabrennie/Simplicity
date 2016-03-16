@@ -11,7 +11,9 @@
     "commonjs": true
   },
   "globals": {
-    "Phaser": true,
+    "THREE": true,
+    "TWEEN": true,
+    "Clipboard": true,
   },
   "rules": {
     "semi": 0,

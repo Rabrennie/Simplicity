@@ -1,0 +1,126 @@
+body {
+  overflow: hidden;
+  font-family: 'Open Sans', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  user-select: none;
+}
+
+.ui {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+}
+
+.timer {
+  position: absolute;
+  left:2vw;
+  top:2vh;
+  color:white;
+  font-size: 5vh;
+}
+
+.counter {
+  position: absolute;
+  left:2vw;
+  top:8vh;
+  color:white;
+  font-size: 5vh;
+}
+
+.win, .menuContainer, .shareContainer, .optionContainer {
+  width: 30vw;
+  height: 60vh;
+  position: absolute;
+  left:50vw;
+  top:50vh;
+  color:#515151;
+  background: white;
+  font-size: 5vh;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.win .title, .menuContainer .title {
+  margin: 20px;
+  font-weight: 300;
+}
+
+.win .nextBtn, .menuContainer .playBtn, .menuContainer .levelEditBtn, .optionContainer .saveBtn{
+  color: #00B4FF;
+  position: absolute;
+  width: Calc(100% - 60px);
+  bottom: 10px;
+  margin: 20px;
+  font-weight: 400;
+  border: 1px solid #00B4FF;
+  padding: 10px 10px;
+  font-weight: 300;
+  cursor: pointer;
+}
+
+.menuContainer .levelEditBtn{
+  bottom: 100px;
+}
+
+.menuBar {
+  background-color: white;
+  position: absolute;
+  width: 100vw;
+  height:50px;
+  top:0;
+  left:0;
+}
+
+.menuBar .btn {
+  display: inline-block;
+  color: #00B4FF;
+  border: 1px solid #00B4FF;
+  margin: 5px 20px;
+  padding: 8px 10px;
+  cursor: pointer;
+
+}
+
+.shareContainer, .optionContainer {
+  height: 25vh;
+  font-size: 20px;
+}
+
+.shareContainer .share textarea {
+  margin: 10px;
+  min-height: 150px;
+  min-width: Calc(100% - 60px);
+  border: 1px solid #00B4FF;
+  resize: none;
+}
+
+.shareContainer .close, .optionContainer .close {
+  position: absolute;
+  right:0;
+  top: 0;
+  font-size: 20px;
+  color:#00B4FF;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.levelName {
+  position: absolute;
+  left:50vw;
+  top:50vh;
+  color:#00B4FF;
+  background: white;
+  font-size: 5vh;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 20px;
+}
