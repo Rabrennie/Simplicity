@@ -1468,14 +1468,14 @@ var LevelEditor = (function (_State) {
       }, false);
 
       var menuBar = _Simplicity2['default'].UIManager.add('menuBar', '');
-      var TileBtn = _Simplicity2['default'].UIManager.add('btn', '1', menuBar);
-      var GuideTileBtn = _Simplicity2['default'].UIManager.add('btn', '2', menuBar);
-      var GoalTileBtn = _Simplicity2['default'].UIManager.add('btn', '3', menuBar);
-      var SpikeTileBtn = _Simplicity2['default'].UIManager.add('btn', '4', menuBar);
-      var ElectricTileBtn = _Simplicity2['default'].UIManager.add('btn', '5', menuBar);
-      var ButtonTileBtn = _Simplicity2['default'].UIManager.add('btn', '6', menuBar);
-      var FallingTileBtn = _Simplicity2['default'].UIManager.add('btn', '7', menuBar);
-      var TrampolineTileBtn = _Simplicity2['default'].UIManager.add('btn', '8', menuBar);
+      var TileBtn = _Simplicity2['default'].UIManager.add('btn', 'Tile', menuBar);
+      var GuideTileBtn = _Simplicity2['default'].UIManager.add('btn', 'Guide', menuBar);
+      var GoalTileBtn = _Simplicity2['default'].UIManager.add('btn', 'Goal', menuBar);
+      var SpikeTileBtn = _Simplicity2['default'].UIManager.add('btn', 'Spiked', menuBar);
+      var ElectricTileBtn = _Simplicity2['default'].UIManager.add('btn', 'Electric', menuBar);
+      var ButtonTileBtn = _Simplicity2['default'].UIManager.add('btn', 'Button', menuBar);
+      var FallingTileBtn = _Simplicity2['default'].UIManager.add('btn', 'Falling', menuBar);
+      var TrampolineTileBtn = _Simplicity2['default'].UIManager.add('btn', 'Trampoline', menuBar);
       var PlayBtn = _Simplicity2['default'].UIManager.add('btn', 'Play', menuBar);
       var ShareBtn = _Simplicity2['default'].UIManager.add('btn', 'Share', menuBar);
       var OptionsBtn = _Simplicity2['default'].UIManager.add('btn', 'Options', menuBar);
@@ -1813,10 +1813,14 @@ var LevelEditor = (function (_State) {
       }
 
       var level = this.encodeLevel();
-      var text = 'http://rabrennie.com/Simplicity/#' + level;
+      var text = 'http://rabrennie.com/Simplicity/?t=' + Date.now() + '#' + level;
 
       this.shareContainer = _Simplicity2['default'].UIManager.add('shareContainer', '');
       _Simplicity2['default'].UIManager.add('share', 'Send this to your friend <textarea onclick="this.focus();this.select()">' + text + '</textarea>', this.shareContainer);
+
+      var redditLink = '//www.reddit.com/r/SimplicityGame/submit?url=' + encodeURIComponent(text);
+
+      _Simplicity2['default'].UIManager.add('reddit', '<a href="#" onclick="window.location = \'' + redditLink + '\'"> <img src="//www.redditstatic.com/spreddit12.gif" alt="submit to reddit" border="0" /> </a>', this.shareContainer);
       var close = _Simplicity2['default'].UIManager.add('close', 'X', this.shareContainer);
 
       close.addEventListener('mouseup', function () {

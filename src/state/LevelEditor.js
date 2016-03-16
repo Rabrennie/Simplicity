@@ -28,14 +28,14 @@ class LevelEditor extends State {
     window.addEventListener('mouseup', (e) => this.onMouseUp(e) , false);
 
     const menuBar = Simplicity.UIManager.add('menuBar', '');
-    const TileBtn = Simplicity.UIManager.add('btn', '1', menuBar);
-    const GuideTileBtn = Simplicity.UIManager.add('btn', '2', menuBar);
-    const GoalTileBtn = Simplicity.UIManager.add('btn', '3', menuBar);
-    const SpikeTileBtn = Simplicity.UIManager.add('btn', '4', menuBar);
-    const ElectricTileBtn = Simplicity.UIManager.add('btn', '5', menuBar);
-    const ButtonTileBtn = Simplicity.UIManager.add('btn', '6', menuBar);
-    const FallingTileBtn = Simplicity.UIManager.add('btn', '7', menuBar);
-    const TrampolineTileBtn = Simplicity.UIManager.add('btn', '8', menuBar);
+    const TileBtn = Simplicity.UIManager.add('btn', 'Tile', menuBar);
+    const GuideTileBtn = Simplicity.UIManager.add('btn', 'Guide', menuBar);
+    const GoalTileBtn = Simplicity.UIManager.add('btn', 'Goal', menuBar);
+    const SpikeTileBtn = Simplicity.UIManager.add('btn', 'Spiked', menuBar);
+    const ElectricTileBtn = Simplicity.UIManager.add('btn', 'Electric', menuBar);
+    const ButtonTileBtn = Simplicity.UIManager.add('btn', 'Button', menuBar);
+    const FallingTileBtn = Simplicity.UIManager.add('btn', 'Falling', menuBar);
+    const TrampolineTileBtn = Simplicity.UIManager.add('btn', 'Trampoline', menuBar);
     const PlayBtn = Simplicity.UIManager.add('btn', 'Play', menuBar);
     const ShareBtn = Simplicity.UIManager.add('btn', 'Share', menuBar);
     const OptionsBtn = Simplicity.UIManager.add('btn', 'Options', menuBar);
@@ -346,10 +346,14 @@ class LevelEditor extends State {
     }
 
     const level = this.encodeLevel();
-    const text = 'http://rabrennie.com/Simplicity/#' + level;
+    const text = `http://rabrennie.com/Simplicity/?t=${Date.now()}#${level}`;
 
     this.shareContainer = Simplicity.UIManager.add('shareContainer', '');
     Simplicity.UIManager.add('share', `Send this to your friend <textarea onclick="this.focus();this.select()">${text}</textarea>`, this.shareContainer);
+
+    const redditLink = '//www.reddit.com/r/SimplicityGame/submit?url=' + encodeURIComponent(text);
+
+    Simplicity.UIManager.add('reddit', `<a href="#" onclick="window.location = '${redditLink}'"> <img src="//www.redditstatic.com/spreddit12.gif" alt="submit to reddit" border="0" /> </a>`, this.shareContainer)
     const close = Simplicity.UIManager.add('close', 'X', this.shareContainer);
 
     close.addEventListener('mouseup', () => {
