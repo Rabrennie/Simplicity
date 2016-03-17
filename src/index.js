@@ -2,6 +2,7 @@ import Simplicity from 'Simplicity';
 
 import Level from './state/Level';
 import MainMenu from './state/menus/MainMenu';
+import RecentMenu from './state/menus/RecentMenu';
 import PlayMenu from './state/menus/PlayMenu';
 import Init from './state/Init';
 import LevelEditor from './state/LevelEditor';
@@ -9,6 +10,7 @@ import SharedLevel from './state/SharedLevel';
 
 Simplicity.StateManager.add('test', Level);
 Simplicity.StateManager.add('MainMenu', MainMenu);
+Simplicity.StateManager.add('RecentMenu', RecentMenu);
 Simplicity.StateManager.add('PlayMenu', PlayMenu);
 Simplicity.StateManager.add('LevelEditor', LevelEditor);
 Simplicity.StateManager.add('SharedLevel', SharedLevel);
