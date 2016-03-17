@@ -54,12 +54,13 @@ body {
   font-weight: 300;
 }
 
-.win .nextBtn, .menuContainer .playBtn, .menuContainer .levelEditBtn, .optionContainer .saveBtn, .menuContainer .backBtn{
+.win .nextBtn, .menuContainer .recentBtn, .menuContainer .playBtn, .menuContainer .levelEditBtn, .optionContainer .saveBtn, .menuContainer .backBtn{
   color: #00B4FF;
   position: absolute;
   width: Calc(100% - 60px);
   bottom: 10px;
   margin: 20px;
+  height: calc(5vh + 20px);
   font-weight: 400;
   border: 1px solid #00B4FF;
   padding: 10px 10px;
@@ -68,7 +69,15 @@ body {
 }
 
 .menuContainer .levelEditBtn{
-  bottom: 100px;
+  top: 320px;
+}
+
+.menuContainer .recentBtn{
+  top: 210px;
+}
+
+.menuContainer .playBtn{
+  top: 100px;
 }
 
 .menuBar {
