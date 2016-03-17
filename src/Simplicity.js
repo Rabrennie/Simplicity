@@ -17,7 +17,7 @@ Simplicity.clear = ()=> {
 
 Simplicity.sound = {
   move: new Howl({
-    urls: ['../assets/sounds/move.wav']
+    urls: ['./assets/sounds/move.wav']
   })
 }
 
