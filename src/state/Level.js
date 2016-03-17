@@ -177,6 +177,7 @@ class Level extends State {
   checkTile(z, x) {
     if(this.tiles[z] !== undefined) {
       if(this.tiles[z][x]) {
+
         return true;
       }
     }

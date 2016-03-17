@@ -15,6 +15,12 @@ Simplicity.clear = ()=> {
   Simplicity.UIManager.clear();
 }
 
+Simplicity.sound = {
+  move: new Howl({
+    urls: ['../assets/sounds/move.wav']
+  })
+}
+
 Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
 Simplicity.camera.position.z = 1500;
 Simplicity.camera.position.y = 1000;

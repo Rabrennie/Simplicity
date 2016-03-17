@@ -1,4 +1,5 @@
 import Entity from './Entity';
+import Simplicity from '../Simplicity'
 
 const geometry = new THREE.BoxGeometry(200, 100, 200, 1, 1, 1);
 
@@ -24,6 +25,8 @@ class Tile extends Entity {
     this.afterCallback = function() {};
     this.stepCallback = function() {};
 
+    this.sound = Simplicity.sound.move;
+
   }
 
   // can only trigger once for now
@@ -44,6 +47,7 @@ class Tile extends Entity {
 
   afterStepOn(level) {
     if(!this.afterTriggered) {
+      this.sound.play();
       this.afterCallback(level);
     }
     this.afterTriggered = true;

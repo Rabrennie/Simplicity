@@ -17,7 +17,6 @@ Simplicity.StateManager.add('SharedLevel', SharedLevel);
 Simplicity.StateManager.add('Init', Init);
 Simplicity.StateManager.load('Init');
 
-
 gameLoop();
 
 function gameLoop() {

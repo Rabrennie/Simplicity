@@ -35,6 +35,12 @@ Simplicity.clear = function () {
   Simplicity.UIManager.clear();
 };
 
+Simplicity.sound = {
+  move: new Howl({
+    urls: ['../assets/sounds/move.wav']
+  })
+};
+
 Simplicity.renderer.setSize(window.innerWidth, window.innerHeight);
 Simplicity.camera.position.z = 1500;
 Simplicity.camera.position.y = 1000;
@@ -412,6 +418,10 @@ var _Entity2 = require('./Entity');
 
 var _Entity3 = _interopRequireDefault(_Entity2);
 
+var _Simplicity = require('../Simplicity');
+
+var _Simplicity2 = _interopRequireDefault(_Simplicity);
+
 var geometry = new THREE.BoxGeometry(200, 100, 200, 1, 1, 1);
 
 var Tile = (function (_Entity) {
@@ -437,6 +447,8 @@ var Tile = (function (_Entity) {
     this.beforeCallback = function () {};
     this.afterCallback = function () {};
     this.stepCallback = function () {};
+
+    this.sound = _Simplicity2['default'].sound.move;
   }
 
   // can only trigger once for now
@@ -462,6 +474,7 @@ var Tile = (function (_Entity) {
     key: 'afterStepOn',
     value: function afterStepOn(level) {
       if (!this.afterTriggered) {
+        this.sound.play();
         this.afterCallback(level);
       }
       this.afterTriggered = true;
@@ -484,7 +497,7 @@ var Tile = (function (_Entity) {
 exports['default'] = Tile;
 module.exports = exports['default'];
 
-},{"./Entity":2}],5:[function(require,module,exports){
+},{"../Simplicity":1,"./Entity":2}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1268,6 +1281,7 @@ var Level = (function (_State) {
     value: function checkTile(z, x) {
       if (this.tiles[z] !== undefined) {
         if (this.tiles[z][x]) {
+
           return true;
         }
       }

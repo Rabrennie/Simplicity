@@ -14,6 +14,7 @@
     "THREE": true,
     "TWEEN": true,
     "Clipboard": true,
+    "Howl": true
   },
   "rules": {
     "semi": 0,
